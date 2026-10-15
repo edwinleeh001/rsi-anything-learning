@@ -1,0 +1,19 @@
+WEBVTT
+
+00:00:00.400 --> 00:00:04.822
+This toy repair illustrates the paper's four-candidate, one-execution design.
+
+00:00:05.092 --> 00:00:09.274
+The coder stays fixed. Four patches are proposed before one is selected.
+
+00:00:09.544 --> 00:00:13.121
+The world model predicts execution outcomes and ranks the candidates.
+
+00:00:13.391 --> 00:00:18.796
+Only the selected patch is executed. Other patches have predictions, not observed outcomes.
+
+00:00:19.066 --> 00:00:24.489
+The result becomes feedback. In the adaptive setting, eligible feedback can revise the predictor.
+
+00:00:24.759 --> 00:00:28.325
+The predictor can change later rankings while the coder stays fixed.

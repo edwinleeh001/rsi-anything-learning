@@ -1,0 +1,222 @@
+<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RSI-Anything — Evidence & critical reading</title><style>@font-face{font-family:Inter;src:url('../fonts/inter-latin.woff2')}*{box-sizing:border-box}body{max-width:900px;margin:50px auto;padding:0 24px;color:#1a2b35;background:#f7fafb;font:16px/1.95 Inter,'PingFang SC',sans-serif}h1,h2,h3{line-height:1.35;margin-top:1.8em}h1{font-size:36px}h2{font-size:28px;border-top:1px solid #d4dfe6;padding-top:30px}p,li{max-width:800px}a{color:#314fbd;overflow-wrap:anywhere}img{max-width:100%;height:auto;background:white;border:1px solid #d4dfe6}table{width:100%;border-collapse:collapse;font-size:13px;display:block;overflow:auto}th,td{padding:12px;border:1px solid #d4dfe6;text-align:left;vertical-align:top}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#e8f0f8;padding:20px}code{overflow-wrap:anywhere}blockquote{border-left:3px solid #317777;padding-left:20px;color:#536775}.top{display:flex;justify-content:space-between;gap:20px;font-size:13px}.top button{padding:8px 15px;font:inherit;background:white;border:1px solid #d4dfe6;cursor:pointer}@media print{body{margin:0;color:black;background:white}.top{display:none}h2{break-before:page}a{color:inherit}pre{font-size:10px}img{max-height:80vh;object-fit:contain}}</style></head><body><div class="top"><a href="../index.html">Learning website / 返回学习网站</a><button onclick="window.print()">Print / Save PDF · 打印 / 保存 PDF</button></div><h1>RSI-Anything · 批判性阅读 / Critical reading</h1>
+<h2>先带着这些问题读 / Questions to ask first</h2>
+<ul>
+<li>各应用验证的是框架的不同部分。要证明同一任务中策略与世界模型持续相互促进，仍需联合多轮评估（§5）。<ul>
+<li>Different applications evaluate different parts of the framework. Sustained mutual policy–world-model improvement in one task requires joint multiround evaluation (§5).</li>
+</ul>
+</li>
+<li>一次更新与验收周期可以让两个版本都保持不变。追加经验本身不是策略或预测器修订（§2.1）。<ul>
+<li>An update-and-acceptance cycle can leave both versions unchanged. Appending experience is not itself a policy or predictor revision (§2.1).</li>
+</ul>
+</li>
+<li>观察覆盖不足不等于模型可靠，也不会触发模型适配（§2.4）。<ul>
+<li>Insufficient observational coverage is not evidence of reliability and does not activate the model-adaptation trigger (§2.4).</li>
+</ul>
+</li>
+<li>训练数据、验收数据与最终留出审计承担不同角色。通过验收集不等于已建立对新任务的泛化能力（§2.5）。<ul>
+<li>Training data, gate data and any held-out final audit have different roles. Accepted performance on a gate does not establish unseen-task generalization (§2.5).</li>
+</ul>
+</li>
+<li>在线测试调用相近、实验次数相同，控制的是外部反馈用量，不是全部计算量或所有实验成本（§3、§6）。<ul>
+<li>Similar external test calls and matched experiment counts control feedback use, not every source of computation or every possible experimental cost (§3, §6).</li>
+</ul>
+</li>
+<li>GUI 相对提升、百分点差、动作降幅与规划评分的单位及分母不同（§3.2–3.3）。<ul>
+<li>GUI relative gains, percentage-point differences, action reductions and planning scores have distinct units and denominators (§3.2–3.3).</li>
+</ul>
+</li>
+<li>化学两个筛选使用不同协议。当前流动筛选发布版本使用冻结预测表并顺序回放实测产率，不是在每次观察后在线重训（官方仓库）。<ul>
+<li>The chemistry screens are separate protocols. The current flow-screen release uses a frozen prediction table and sequential replay of measured yields, rather than online retraining at each observation (official repository).</li>
+</ul>
+</li>
+<li>实验室规划还需设备层面的执行验证；免疫科学中的治疗组合仍等待实验检验（§5）。<ul>
+<li>Laboratory planning needs equipment-level execution evaluation; the immune-science therapeutic nomination awaits experimental testing (§5).</li>
+</ul>
+</li>
+<li>学习网站中的小型数值例子和交互机制，除非明确标为论文实测，否则均为教学综合示例。<ul>
+<li>All small numerical examples and interactive mechanisms on this learning site are educational syntheses unless explicitly labeled as paper measurements.</li>
+</ul>
+</li>
+</ul>
+<h1>RSI-Anything evidence and original-figure audit</h1>
+<p>Checked on 2026-10-15 (Asia/Hong_Kong). Scope: arXiv v1 paper evidence, original figure assets, table transcription and read-only inspection of the authors&#39; public repository. No model training or paper benchmark was rerun.</p>
+<h2>Authoritative paper sources</h2>
+<ul>
+<li><a href="https://arxiv.org/abs/2610.13912">Abstract and version record</a></li>
+<li><a href="https://arxiv.org/html/2610.13912v1">HTML v1</a></li>
+<li><a href="https://arxiv.org/pdf/2610.13912v1">PDF v1</a></li>
+<li>Local raw HTML: <code>research/original.html</code>.</li>
+<li>Poppler layout text from the complete PDF: <code>research/paper.txt</code>.</li>
+<li>Full PDF: <code>dist/sources/rsi-anything-v1.pdf</code> (27 pages).</li>
+<li>Original HTML image URLs and verbatim source captions are recorded in <code>research/figure-sources.json</code>. They are source material; the bilingual website captions and reading guides are independently worded educational syntheses.</li>
+</ul>
+<p>The arXiv version record is v1, submitted 9 October 2026. The PDF also has a 2026-10-12 header. Website source citations should identify v1 and avoid inferring a separate submission version from that header.</p>
+<h2>Original figures</h2>
+<p>All seven images came from the paper. Figure 1 keeps the large original PNG. The HTML versions of figures 2–7 were small, so the delivered assets render and crop the same original PDF figures at 300 dpi. No labels, marks, plotted data or visual elements were changed. Captions are excluded from the crop because bilingual explanatory text is supplied in the page.</p>
+<table>
+<thead>
+<tr>
+<th>Figure</th>
+<th align="right">PDF page</th>
+<th>Delivered asset</th>
+<th>Dimensions</th>
+<th>Material</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td align="right">2</td>
+<td><code>dist/media/originals/figure-1.png</code></td>
+<td>3884 × 1618</td>
+<td>Original HTML PNG</td>
+</tr>
+<tr>
+<td>2</td>
+<td align="right">4</td>
+<td><code>dist/media/originals/figure-2.png</code></td>
+<td>1713 × 1925</td>
+<td>Original PDF crop</td>
+</tr>
+<tr>
+<td>3</td>
+<td align="right">12</td>
+<td><code>dist/media/originals/figure-3.png</code></td>
+<td>1713 × 1971</td>
+<td>Original PDF crop</td>
+</tr>
+<tr>
+<td>4</td>
+<td align="right">14</td>
+<td><code>dist/media/originals/figure-4.png</code></td>
+<td>1713 × 1750</td>
+<td>Original PDF crop</td>
+</tr>
+<tr>
+<td>5</td>
+<td align="right">15</td>
+<td><code>dist/media/originals/figure-5.png</code></td>
+<td>1713 × 1475</td>
+<td>Original PDF crop</td>
+</tr>
+<tr>
+<td>6</td>
+<td align="right">17</td>
+<td><code>dist/media/originals/figure-6.png</code></td>
+<td>1713 × 2029</td>
+<td>Original PDF crop</td>
+</tr>
+<tr>
+<td>7</td>
+<td align="right">18</td>
+<td><code>dist/media/originals/figure-7.png</code></td>
+<td>1713 × 1338</td>
+<td>Original PDF crop</td>
+</tr>
+</tbody></table>
+<p>Visual QA: original paper pages and a contact sheet of all delivered crops were inspected. All panels, titles and plot labels fit. PDF page 13 (Table 2) and page 21 (Table 4) were visually inspected after rendering. Source PNG files were verified with Pillow. <code>research/pdf-qa/crop-manifest.json</code> records PDF-point crop boxes; small downloaded HTML versions remain in that QA directory for source comparison.</p>
+<p>The paper&#39;s arXiv distribution license is the arXiv perpetual non-exclusive license. Its figures remain attributed to the paper and its authors. The authors&#39; code license does not automatically relabel the paper figures. Figure 7 itself credits adaptation from Figure 1 of the cited immune-world-model paper, arXiv:2609.14709.</p>
+<h2>Table 2 transcription (PDF page 13)</h2>
+<p>Shared ReasonFlux-Coder-7B, four repair candidates per round, at most three feedback rounds; 200 CodeContests tasks × three seeds = 600 task–seed evaluations. Online tests supply repair feedback; hidden tests determine final success.</p>
+<table>
+<thead>
+<tr>
+<th>Selection method</th>
+<th align="right">Hidden all-pass</th>
+<th align="right">Online suite calls/task</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Random-K</td>
+<td align="right">26.0%</td>
+<td align="right">3.72</td>
+</tr>
+<tr>
+<td>Capacity-matched static verifier</td>
+<td align="right">26.3%</td>
+<td align="right">3.72</td>
+</tr>
+<tr>
+<td>RSI-Anything, fixed world model (CURE-WM-Lite)</td>
+<td align="right">29.2%</td>
+<td align="right">3.71</td>
+</tr>
+<tr>
+<td>RSI-Anything, world-model adaptation</td>
+<td align="right">31.2%</td>
+<td align="right">3.72</td>
+</tr>
+</tbody></table>
+<p>Figure 3c compares static verifier with fixed world model: ranking accuracy 66.5% → 72.8%; five-class Brier 0.488 → 0.358. It does not provide an adaptive-model Brier score. The paired success gain fixed WM vs static verifier is +2.83 percentage points, 95% interval [+0.17, +5.50]. Subtracting rounded table percentages gives 2.9 points, so the exact paired estimate and the rounded difference should not be silently interchanged.</p>
+<p>The similar suite-call counts control external feedback usage. They do not establish identical total compute, training cost or latency.</p>
+<h2>Laboratory progression (PDF pages 14–15)</h2>
+<p>V1–V5 mean F200 Level-2 Final Scores are 21.80%, 38.03%, 41.99%, 44.56%, 46.01%. Final minus initial = 24.21 percentage points. This is a sequence of five versions of one 4B policy, evaluated on the same 200-task benchmark. Spacing on the plot is schematic development order, not measured training time. Final Score combines action-sequence similarity and parameter accuracy; it is not physical-execution success.</p>
+<p>The Actor–Simulator–Selector reference is 45.32%; the last version differs by 0.69 percentage points. Table 3 L1 values are 0.700 for RSI-Anything and 0.665 for the reference. No uncertainty interval for the 0.69-point mean difference is supplied in this paper, so do not describe it as statistically significant.</p>
+<h2>Table 4 update-scope mapping (PDF page 21)</h2>
+<table>
+<thead>
+<tr>
+<th>Domain</th>
+<th>Policy/workflow scope</th>
+<th>World model</th>
+<th>Observations/evaluation</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Code</td>
+<td>ReasonFlux-Coder-7B fixed</td>
+<td>W1 fixed or feedback-adapted; Qwen2.5-Coder-3B-Instruct + LoRA + JEPA-Anything design; five-class execution probabilities</td>
+<td>Execution tests; hidden final success and online calls</td>
+</tr>
+<tr>
+<td>GUI</td>
+<td>Action policy updated from interaction</td>
+<td>GUI action-consequence predictor also updated</td>
+<td>Task outcomes; completion, actions, repeated clicks, submissions</td>
+</tr>
+<tr>
+<td>Lab</td>
+<td>Five consecutive versions of the same 4B planning policy</td>
+<td>Protocol consequence predictor</td>
+<td>Development feedback; L1 accuracy and F200 L2 planning score</td>
+</tr>
+<tr>
+<td>Chemistry</td>
+<td>Measured yields guide next condition selection</td>
+<td>ReactionT5–JEPA-Anything yield distribution</td>
+<td>GC/LC–MS yields; best-so-far at matched counts</td>
+</tr>
+<tr>
+<td>Immune</td>
+<td>Workflow evolution and predictor construction, then downstream self-correcting analysis</td>
+<td>Resulting predictor frozen during downstream analysis</td>
+<td>Measured perturbation development evidence; withheld interventions/contexts for forecast assessment</td>
+</tr>
+</tbody></table>
+<p>The shared framework permits asynchronous component updates. This table is essential to avoid implying that every domain jointly updated policy and world-model parameters at every round.</p>
+<h2>GUI units and attribution</h2>
+<p>Paper Figure 4 / §3.2: selected-controller success 51% → 79% → 99%; mean actions 5.30 → 2.93 → 3.21; repeated clicks 237 → 2 → 0; incorrect-submission episodes 9 → 21 → 1. The world-based control success sequence is 49% → 96% → 98%.</p>
+<p>OSWorld reports relative success-rate improvement, not percentage-point improvement: RLAnything +12.3% vs initial agent; RSI-Anything +18.4% vs initial agent and +5.5% vs RLAnything. Formula: 100 × (method success/reference success − 1)%. An absolute endpoint is not supplied here.</p>
+<p><a href="https://github.com/Gen-Verse/RSI-Anything/blob/main/tasks/gui/docs/RESULTS.md">Official GUI results</a>, read on 2026-10-15, adds implementation detail beyond the paper: the development-selected controller has alpha=0 and follows policy ranking. Pure world-based control instead ranks the same policy candidates by model values. Thus the 99% selected endpoint is not an isolated causal measurement of the contribution of world-model ranking. The common framework and the particular selected-controller evaluation should be distinguished.</p>
+<h2>Chemistry endpoints and implementation scope</h2>
+<p>Paper Figure 6 / §3.4 reports two separate protocols:</p>
+<ul>
+<li>GC, 20 observations: 93.0% vs 87.5%, a 5.5-percentage-point difference.</li>
+<li>Flow LC–MS, 40 observations: 96.15% mean best observed yield vs 82.16%, a 13.99-percentage-point difference.</li>
+</ul>
+<p>The best-so-far curve is monotonic by definition, not a promise that each successive experiment is better. Do not splice the two screens into one trajectory or average their endpoints.</p>
+<p><a href="https://github.com/Gen-Verse/RSI-Anything/blob/main/tasks/reaction_optimization/README.md">Official reaction-optimization guide</a>, read on 2026-10-15, specifies the released flow evaluation more narrowly: sequential replay of measured yields from one fixed pool of 321 conditions, 100 runs with seeds 4001–4100, eight initial observations counted within the total 40. Predictions remain frozen; feedback changes expected-improvement selection and removes observed candidates. This is reproducible sequential selection over the released pool. It is not evidence that the published inference loop performs a fresh wet-lab experiment or neural weight adaptation after every observation.</p>
+<h2>Official repository and reproducibility</h2>
+<p>The paper itself links <a href="https://github.com/Gen-Verse/RSI-Anything">Gen-Verse/RSI-Anything</a> and <a href="https://huggingface.co/datasets/Gen-Verse/RSI-Anything">Hugging Face resources</a>. The GitHub repository is available and supplies implementation directories for code repair, GUI, laboratory planning and reaction optimization, with shared CLI, workflow recipes, tests and asset guides. Project-owned code is Apache-2.0; model/data/component terms are separately identified. The Hugging Face URL is a dataset/resource repository even though the paper&#39;s link label says Models.</p>
+<p><a href="https://github.com/Gen-Verse/RSI-Anything/blob/main/docs/reproduction.en.md">Code reproduction guide</a>, read on 2026-10-15:</p>
+<ul>
+<li>Linux + Python 3.10; isolated program judging uses runuser, unshare and the nobody account. The recorded workflow uses GPU inference/training and substantial model assets.</li>
+<li><code>recorded</code> evaluation fixes recorded programs, candidate inputs and public feedback, then recomputes scores and decisions before hidden judging. <code>fresh</code> resamples later candidates and reruns public tests.</li>
+<li>Adaptation is documented as a four-stage training chain on recorded transitions. Final benchmark evaluation does not perform optimizer updates. A conceptual online adaptation demo on this site must be labeled as synthetic pedagogy, rather than a literal replay of the released final evaluation.</li>
+<li>Packaging validation reports 600 decisions and hidden episodes, matched training reconstruction hashes, and three-step training smoke checks. Full-epoch retraining was not run during packaging. Its geometry checks for strict orthogonality/factor independence did not pass on reference checkpoints; do not claim experimentally proven exact OPF factor independence based on the released checkpoints.</li>
+</ul>
+<p>This learning artifact downloads only the paper and figures and inspects these guides. Availability of commands/assets is not a claim that we independently reproduced the experiments. The classroom demos illustrate decisions with small synthetic data and do not run the authors&#39; models.</p>
+<h2>Central interpretation limits</h2>
+<p>Paper §5 explicitly says joint multiround evaluation is needed to establish sustained mutual improvement of policy and world model within a single task. The existing results separately support predictive selection, predictor adaptation, policy progression and budgeted feedback search in their settings. They do not establish unrestricted self-improvement.</p>
+<p>Laboratory results assess protocol-aligned plans and require equipment/workflow execution evaluation. Chemistry covers the reported screens. The immune-science nomination combining SIRPα inhibition and IL-36γ-axis modulation is a hypothesis for experimental testing; it is not a validated therapy.</p>
+<p>The site&#39;s bilingual explanations, toy numbers, diagrams and scripts should explicitly distinguish (1) paper-reported observations, (2) educational synthesis and (3) proposed future evaluation. The machine-readable <code>dist/assets/evidence.json</code> contains the figure-reading text, key tables and limits for this purpose.</p>
+</body></html>

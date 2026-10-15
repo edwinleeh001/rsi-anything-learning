@@ -1,0 +1,431 @@
+{
+  "figures": [
+    {
+      "id": 1,
+      "src": "media/originals/figure-1.png",
+      "title": {
+        "en": "From predictive foundation to an improvement loop",
+        "zh": "从预测基础到自我改进闭环"
+      },
+      "caption": {
+        "en": "The opening overview places a shared predictive design underneath domain-specific tasks and a feedback loop above them. This is a conceptual map, rather than a result plot.",
+        "zh": "开篇总览把共享的预测设计放在底层，把各领域任务与反馈闭环联系起来。这是一张概念地图，并非实验结果图。"
+      },
+      "reading": {
+        "en": [
+          "Start at JEPA-Anything: the inherited contribution is a way to construct latent predictive models across different data types. RSI-Anything adds rules for using predictions and retaining changes.",
+          "Follow the outward path into different domains. Each domain still supplies its own states, actions, prediction targets, feedback and evaluation; a shared mechanism does not imply one universal trained predictor.",
+          "Follow feedback back toward the system. An observed outcome can improve the policy or persistent workflow, and can justify an attempt to adapt the predictor.",
+          "The closing arrow represents the retained policy–model pair shaping later experience. Saving more observations alone is not a change to either component."
+        ],
+        "zh": [
+          "先看 JEPA-Anything：继承的是跨数据类型构建潜在预测模型的设计。RSI-Anything 增加了如何使用预测、如何保留系统变化的规则。",
+          "再沿路径看不同领域。每个领域仍要自行定义状态、动作、预测目标、反馈与评估；共享机制不等于一个训练好的通用预测器包办所有任务。",
+          "沿反馈路径返回系统。观察到的结果可以改进策略或持久工作流，也可能为一次预测器适配尝试提供理由。",
+          "闭合箭头表示：保留下来的策略与模型组合会改变下一轮经验。仅仅存下更多观察，并不等于策略或模型发生了更新。"
+        ]
+      },
+      "source": {
+        "label": "Paper v1 · Figure 1",
+        "url": "https://arxiv.org/html/2610.13912v1#S0.F1"
+      },
+      "page": 2
+    },
+    {
+      "id": 2,
+      "src": "media/originals/figure-2.png",
+      "title": {
+        "en": "The six operations and the three decisions",
+        "zh": "六步操作与三个不同的决定"
+      },
+      "caption": {
+        "en": "The central framework separates choosing an action, deciding whether to attempt an update, and accepting a proposed system version. Its domain panel shows different bindings of this common contract.",
+        "zh": "核心框架区分了选择动作、决定是否尝试更新，以及接受哪个系统版本。下方领域面板展示同一机制的不同具体绑定。"
+      },
+      "reading": {
+        "en": [
+          "Read panel a from candidate proposals to predictions and selection. Several candidates may be forecast, while only an executed candidate produces its paired external observation.",
+          "Keep the prediction beside the observation, with the action, context and system version that generated it. Without that pairing, a failure cannot be attributed to the predictor used in the decision.",
+          "The update branch has separate policy and model pathways. World-model adaptation requires an unreliable assessment, sufficient adaptation data and enough budget; insufficient coverage is a separate state.",
+          "Acceptance is another decision. A proposed component must pass its own check, and the assembled policy–model pair must pass a compatibility check before being retained; pair failure preserves the previous pair.",
+          "Panel b is a map of applications, not evidence that every application exercised all update pathways. Read it together with Table 4."
+        ],
+        "zh": [
+          "先从 a 面板的候选生成读到预测与选择。可以预测多个候选，但只有真正执行的候选能产生与其配对的外部观察。",
+          "把预测和观察并排记录，同时保留动作、上下文与产生预测的系统版本。缺少这种配对，就无法判断决策时使用的预测器究竟哪里出了问题。",
+          "更新分支中的策略与世界模型可以各自行动。模型适配需要同时满足“不可靠、有足够适配数据、预算足够”；覆盖不足是另一个状态。",
+          "验收是第三个决定。候选组件先通过各自检查，组装后的策略与模型还要通过兼容性检查才能保留；组合不通过则保留原组合。",
+          "b 面板展示应用地图，并不说明每个应用都实际执行了全部更新路径；需要结合 Table 4 阅读。"
+        ]
+      },
+      "source": {
+        "label": "Paper v1 · Figure 2",
+        "url": "https://arxiv.org/html/2610.13912v1#S1.F2"
+      },
+      "page": 4
+    },
+    {
+      "id": 3,
+      "src": "media/originals/figure-3.png",
+      "title": {
+        "en": "Code repair: isolate selection and predictor adaptation",
+        "zh": "代码修复：分离选择收益与预测器适配收益"
+      },
+      "caption": {
+        "en": "The code study keeps the code-generating policy fixed, making it useful for separating predictive candidate selection from further improvement of the predictor.",
+        "zh": "代码实验固定了代码生成策略，因此适合分开理解：预测引导选择带来多少收益，进一步适配预测器又带来多少收益。"
+      },
+      "reading": {
+        "en": [
+          "Panel a is an illustrative program repair. It draws three example patches for readability, but the benchmark actually proposes four revisions per round and allows at most three feedback rounds.",
+          "Read panel b together with Table 2: static verification gives 26.3% hidden-test success, fixed world-model selection 29.2%, and world-model adaptation 31.2%. The generator remains ReasonFlux-Coder-7B.",
+          "Panel c checks the link from prediction to decisions. In the static-verifier versus fixed-WM comparison, ranking accuracy rises from 66.5% to 72.8% and Brier score falls from 0.488 to 0.358; the adaptive arm is not the arm in this diagnostic.",
+          "Panel d checks feedback usage: online test-suite calls per task remain about 3.7. This supports similar external test usage, rather than equal total training or inference computation.",
+          "Panels e and f extend selection evaluation to APPS Introductory and LiveCodeBench v6. Their 46.37% and 33.05% metrics are mean complete-suite success across three seeds; do not substitute public-test success."
+        ],
+        "zh": [
+          "a 面板是程序修复示意图。为便于阅读只画了三个补丁，但基准实验每轮实际提出四个修订，最多进行三轮反馈。",
+          "把 b 面板与 Table 2 一起读：静态验证器的隐藏测试成功率为 26.3%，固定世界模型为 29.2%，适配世界模型为 31.2%；生成器始终是 ReasonFlux-Coder-7B。",
+          "c 面板检查“预测是否有助于决策”。静态验证器与固定世界模型比较时，排序准确率从 66.5% 升到 72.8%，Brier 分数从 0.488 降到 0.358；这里不是适配模型的诊断结果。",
+          "d 面板检查反馈用量：每题在线测试套件调用约为 3.7 次。这说明外部测试用量相近，不能据此说总训练与推理计算量完全相同。",
+          "e、f 面板把选择评估扩展到 APPS Introductory 与 LiveCodeBench v6。46.37% 与 33.05% 是三个种子的完整测试套件成功率均值，不能替换成公开测试通过率。"
+        ]
+      },
+      "source": {
+        "label": "Paper v1 · Figure 3",
+        "url": "https://arxiv.org/html/2610.13912v1#S3.F3"
+      },
+      "page": 12
+    },
+    {
+      "id": 4,
+      "src": "media/originals/figure-4.png",
+      "title": {
+        "en": "GUI results: read success, actions and errors together",
+        "zh": "GUI 结果：成功率、动作与错误要一起看"
+      },
+      "caption": {
+        "en": "The GUI figure combines two environments and several diagnostics. Relative improvements on OSWorld use a different unit from the percentage-point changes between MiniWoB++ success rates.",
+        "zh": "GUI 图同时展示两个环境与多项诊断。OSWorld 使用相对提升百分比，其单位不同于 MiniWoB++ 成功率之间的百分点差。"
+      },
+      "reading": {
+        "en": [
+          "Panels a and b illustrate a checkbox task and a spreadsheet task. They explain what an action and an observable target state mean, rather than reporting a single shared benchmark.",
+          "Panel c shows MiniWoB++ selected-controller success of 51%, 79% and 99% across three evaluated configurations. The world-based control follows a separate 49%, 96%, 98% sequence.",
+          "Read panels e–g jointly: the intermediate configuration uses only 2.93 actions on average but has 21 incorrect-submission episodes. The final configuration uses 3.21 actions and has only one such episode.",
+          "The 39.4% action reduction compares 5.30 baseline actions with 3.21 final actions. It is a relative reduction in actions, not a 39.4-percentage-point success gain.",
+          "OSWorld gains are relative: RSI-Anything is +18.4% versus the initial agent and +5.5% versus RLAnything. The figure does not supply an absolute success rate from which to claim an 18.4-point gain.",
+          "The official repository further separates development-selected policy ranking from pure world-based ranking. The 99% selected-controller endpoint should not be treated as an isolated ablation of world-model ranking."
+        ],
+        "zh": [
+          "a、b 面板分别示意复选框任务与电子表格任务，帮助理解动作与可观察目标状态；它们不是一个共同基准中的两张截图。",
+          "c 面板给出 MiniWoB++ 选定控制器三个配置的成功率：51%、79%、99%。世界模型排序控制组另有 49%、96%、98% 的结果。",
+          "e–g 要联合阅读：中间配置平均只用 2.93 个动作，却有 21 个错误提交回合；最终配置平均 3.21 个动作，错误提交仅 1 个。",
+          "动作减少 39.4% 比较的是基线 5.30 与最终 3.21；这是动作数量的相对降幅，不是成功率增加 39.4 个百分点。",
+          "OSWorld 使用相对提升：相对初始智能体提高 18.4%，相对 RLAnything 提高 5.5%。图中没有给出足以把它解释成 18.4 个百分点的绝对成功率。",
+          "官方仓库还区分了开发集选定的策略排序与纯世界模型排序。99% 的选定控制器端点，不能当成单独隔离世界模型排序作用的消融证据。"
+        ]
+      },
+      "source": {
+        "label": "Paper v1 · Figure 4",
+        "url": "https://arxiv.org/html/2610.13912v1#S3.F4"
+      },
+      "page": 14
+    },
+    {
+      "id": 5,
+      "src": "media/originals/figure-5.png",
+      "title": {
+        "en": "Lab planning: follow retained policy versions",
+        "zh": "实验室规划：跟踪保留的策略版本"
+      },
+      "caption": {
+        "en": "This figure follows five versions of one 4B policy in development order on the same 200-task F200 Level-2 benchmark. The score measures plan alignment, not successful robot execution.",
+        "zh": "本图在相同的 200 任务 F200 Level-2 基准上，按开发顺序比较一个 4B 策略的五个版本。评分衡量计划对齐程度，并非机器人执行成功率。"
+      },
+      "reading": {
+        "en": [
+          "Panel a connects a protocol, proposed action sequences and parameter choices to predictive evaluation and an execution plan. Dashed arrows represent possible update routes in the framework.",
+          "Panels b and c follow five retained policy versions: 21.80%, 38.03%, 41.99%, 44.56% and 46.01%. The total increase is 24.21 percentage points.",
+          "Final Score combines action-sequence similarity and parameter accuracy. Read 46.01% as a benchmark score, rather than the fraction of wet-lab experiments completed successfully.",
+          "The dashed 45.32% line is the Actor–Simulator–Selector reference. The last version is higher by 0.69 percentage points; model size alone does not control all resources in the compared systems.",
+          "The x-axis is development order with schematic spacing. It does not report equal training cost per version, and the plotted progression does not by itself measure a jointly improving predictor."
+        ],
+        "zh": [
+          "a 面板把实验规程、候选动作序列与参数选择，接到预测评估和执行计划。虚线表示框架中可能启用的更新路径。",
+          "b、c 面板跟踪五个保留的策略版本：21.80%、38.03%、41.99%、44.56%、46.01%，总共增加 24.21 个百分点。",
+          "Final Score 结合动作序列相似度与参数准确度。46.01% 是基准评分，不能理解为湿实验成功完成比例。",
+          "45.32% 虚线是 Actor–Simulator–Selector 参考系统。最终版本高出 0.69 个百分点；比较模型大小并不意味着其他资源全部受控。",
+          "横轴表示开发顺序，间距只是示意，不代表每个版本耗费相同训练成本；这条上升曲线本身也没有量化世界模型与策略共同进步。"
+        ]
+      },
+      "source": {
+        "label": "Paper v1 · Figure 5",
+        "url": "https://arxiv.org/html/2610.13912v1#S3.F5"
+      },
+      "page": 15
+    },
+    {
+      "id": 6,
+      "src": "media/originals/figure-6.png",
+      "title": {
+        "en": "Reaction search: match budgets within each screen",
+        "zh": "反应搜索：在各自筛选内匹配实验预算"
+      },
+      "caption": {
+        "en": "The two halves concern separate Suzuki–Miyaura screening protocols. Each endpoint compares methods at the same observation count within its own screen.",
+        "zh": "上下两部分是两个独立的 Suzuki–Miyaura 筛选协议。每个端点只在其所属筛选内部，用相同观察次数比较方法。"
+      },
+      "reading": {
+        "en": [
+          "Read panels a–c as the GC screen: after 20 observations, the best observed yield is 93.0% for RSI-Anything and 87.5% for Bayesian optimization, a difference of 5.5 percentage points.",
+          "Read panels d–f separately as the flow LC–MS screen: after 40 observations, mean best observed yield is 96.15% versus 82.16%, a difference of 13.99 percentage points.",
+          "A best-so-far curve cannot decrease: it remembers the highest measured yield seen so far. It is not a claim that every next experiment has a higher yield.",
+          "The chemical structures and arrows explain condition choice and feedback. They do not establish that every observation caused a neural-network weight update.",
+          "The official flow-screen release replays measured yields from a fixed pool of 321 conditions with eight initial observations included in the budget of 40. Its prediction table remains frozen while feedback changes expected-improvement selection.",
+          "These screen-specific results support efficient search in the reported pools and budgets; they do not establish transfer to arbitrary reactions, or the performance of an autonomous laboratory."
+        ],
+        "zh": [
+          "a–c 单独看作 GC 筛选：20 次观察后，RSI-Anything 的已观察最佳产率为 93.0%，贝叶斯优化为 87.5%，相差 5.5 个百分点。",
+          "d–f 单独看作流动 LC–MS 筛选：40 次观察后，平均已观察最佳产率为 96.15% 与 82.16%，相差 13.99 个百分点。",
+          "“至今最佳”曲线不会下降，因为它记录此前见过的最高实测产率；这并不表示每次后续实验的产率都更高。",
+          "化学结构和箭头解释条件选择与反馈，不足以证明每次观察都会引起神经网络权重更新。",
+          "官方流动筛选发布版本从 321 个条件的固定池中顺序回放实测产率，40 次预算包含初始 8 次观察。预测表保持冻结，反馈改变的是期望改进的选择。",
+          "这些结果支持在论文筛选池与预算内提高搜索效率，尚不能推出对任意反应的迁移能力，也不能等同于自主实验室的整体表现。"
+        ]
+      },
+      "source": {
+        "label": "Paper v1 · Figure 6",
+        "url": "https://arxiv.org/html/2610.13912v1#S3.F6"
+      },
+      "page": 17
+    },
+    {
+      "id": 7,
+      "src": "media/originals/figure-7.png",
+      "title": {
+        "en": "Immune science: construction and analysis are different stages",
+        "zh": "免疫科学：模型构建与下游分析分阶段"
+      },
+      "caption": {
+        "en": "The application joins scientific-workflow evolution, immune-world-model construction and downstream analysis. Its final therapeutic combination is a hypothesis awaiting experimental validation.",
+        "zh": "该应用把科学工作流演化、免疫世界模型构建和下游分析连接起来。最终治疗组合是等待实验验证的假设。"
+      },
+      "reading": {
+        "en": [
+          "Read panel A in stages. During construction, workflow search selects a persistent model-building workflow; that workflow produces the immune predictor.",
+          "During downstream analysis, the constructed predictor is frozen. The analysis state, tool use, intervention candidates and hypothesis ranking can still change through inference and self-correction.",
+          "Panel B makes the action-conditioned prediction concrete: cellular, tissue and individual contexts form the state, while an intervention supplies the action whose consequences are forecast.",
+          "Measured perturbations support development and withheld interventions or contexts assess forecasting. A predicted biological readout and a measured outcome retain different evidential roles.",
+          "The SIRPα inhibition plus IL-36γ-axis modulation nomination is prospective. Neither this framework diagram nor the paper establishes therapeutic efficacy in clinical use."
+        ],
+        "zh": [
+          "A 面板要分阶段读：构建阶段通过工作流搜索，选择持久的模型构建工作流，再由该工作流产出免疫预测器。",
+          "下游分析时预测器冻结。分析状态、工具调用、干预候选和假设排序，仍可通过推理与自我纠正发生变化。",
+          "B 面板具体解释动作条件预测：细胞、组织与个体上下文构成状态，干预是动作，模型预测其后果。",
+          "实测扰动数据支持模型开发，留出的干预或上下文检验预测。模型产生的生物读出与实测结果承担不同的证据角色。",
+          "SIRPα 抑制与 IL-36γ 轴调节的组合是前瞻性提名。本框架图和论文都没有建立其临床治疗有效性。"
+        ]
+      },
+      "source": {
+        "label": "Paper v1 · Figure 7",
+        "url": "https://arxiv.org/html/2610.13912v1#S3.F7"
+      },
+      "page": 18
+    }
+  ],
+  "tables": {
+    "code": [
+      {
+        "method": {
+          "en": "Random-K",
+          "zh": "随机选择 Random-K"
+        },
+        "success": 26.0,
+        "calls": 3.72
+      },
+      {
+        "method": {
+          "en": "Capacity-matched static verifier",
+          "zh": "容量匹配的静态验证器"
+        },
+        "success": 26.3,
+        "calls": 3.72
+      },
+      {
+        "method": {
+          "en": "RSI-Anything · fixed WM",
+          "zh": "RSI-Anything · 固定世界模型"
+        },
+        "success": 29.2,
+        "calls": 3.71
+      },
+      {
+        "method": {
+          "en": "RSI-Anything · adaptive WM",
+          "zh": "RSI-Anything · 适配世界模型"
+        },
+        "success": 31.2,
+        "calls": 3.72
+      }
+    ],
+    "lab": [
+      {
+        "version": "V1",
+        "score": 21.8
+      },
+      {
+        "version": "V2",
+        "score": 38.03
+      },
+      {
+        "version": "V3",
+        "score": 41.99
+      },
+      {
+        "version": "V4",
+        "score": 44.56
+      },
+      {
+        "version": "V5",
+        "score": 46.01
+      }
+    ],
+    "bindings": [
+      {
+        "domain": {
+          "en": "Code repair",
+          "zh": "代码修复"
+        },
+        "policy": {
+          "en": "ReasonFlux-Coder-7B is fixed; four revisions are proposed per round.",
+          "zh": "ReasonFlux-Coder-7B 固定，每轮生成四个修订。"
+        },
+        "worldModel": {
+          "en": "W1: JEPA-Anything-based Qwen2.5-Coder-3B-Instruct with LoRA; predicts five-class execution probabilities. Compare fixed W1 with feedback-adapted W1.",
+          "zh": "W1：基于 JEPA-Anything 设计、以 LoRA 适配 Qwen2.5-Coder-3B-Instruct，预测五类执行概率；比较固定 W1 与反馈适配 W1。"
+        },
+        "feedback": {
+          "en": "Online execution-test feedback; final hidden-suite success and online calls per task.",
+          "zh": "在线执行测试反馈；最终隐藏测试成功率与每题在线调用次数。"
+        },
+        "limit": {
+          "en": "Isolates selection and predictor adaptation with a fixed generator. Similar online calls do not establish equal total compute.",
+          "zh": "固定生成器，分离选择与预测器适配收益；在线调用相近不等于总计算量相同。"
+        }
+      },
+      {
+        "domain": {
+          "en": "GUI interaction",
+          "zh": "GUI 交互"
+        },
+        "policy": {
+          "en": "Action policy is updated from interaction; retained pairs are evaluated as baseline, adapted and final configurations.",
+          "zh": "通过交互更新动作策略；评估基线、适配与最终保留组合。"
+        },
+        "worldModel": {
+          "en": "GUI outcome predictor forecasts interface-action consequences and is updated with interaction feedback.",
+          "zh": "GUI 结果预测器预测界面动作后果，并根据交互反馈更新。"
+        },
+        "feedback": {
+          "en": "Task outcomes; strict completion and action/error diagnostics.",
+          "zh": "任务结果；严格任务完成率以及动作与错误诊断。"
+        },
+        "limit": {
+          "en": "MiniWoB++ checkbox results and OSWorld relative gains are separate evaluations. Repository selected-controller ranking and world-based control must be distinguished.",
+          "zh": "MiniWoB++ 复选框结果与 OSWorld 相对提升来自不同评估；仓库中的选定控制器排序需与世界模型排序控制组区分。"
+        }
+      },
+      {
+        "domain": {
+          "en": "Laboratory planning",
+          "zh": "实验室规划"
+        },
+        "policy": {
+          "en": "One 4B planning policy, followed through five consecutive retained versions.",
+          "zh": "跟踪同一个 4B 规划策略的五个连续保留版本。"
+        },
+        "worldModel": {
+          "en": "JEPA-Anything-based protocol predictor forecasts consequences of action sequences. The reported progression follows policy versions.",
+          "zh": "基于 JEPA-Anything 的规程预测器预测动作序列后果；所报告的上升过程跟踪策略版本。"
+        },
+        "feedback": {
+          "en": "Development feedback; Level-1 next-action accuracy and 200-task F200 Level-2 Final Score.",
+          "zh": "开发反馈；Level-1 下一动作准确度与 200 任务 F200 Level-2 Final Score。"
+        },
+        "limit": {
+          "en": "Protocol-aligned planning, not verified physical execution; no direct joint policy–model improvement curve.",
+          "zh": "衡量规程对齐规划，并非已验证的物理执行；没有直接给出策略与模型共同进步的曲线。"
+        }
+      },
+      {
+        "domain": {
+          "en": "Reaction optimization",
+          "zh": "反应优化"
+        },
+        "policy": {
+          "en": "Measured yields guide later condition choices; history and acquisition change across observations.",
+          "zh": "实测产率引导后续条件选择，历史记录与采集函数随观察变化。"
+        },
+        "worldModel": {
+          "en": "ReactionT5–JEPA-Anything predicts a yield distribution. The released flow-screen selector uses frozen calibrated predictions.",
+          "zh": "ReactionT5–JEPA-Anything 预测产率分布；发布的流动筛选选择器使用冻结的校准预测。"
+        },
+        "feedback": {
+          "en": "GC or LC–MS measured yields; best-so-far metrics at matched observation budgets within each screen.",
+          "zh": "GC 或 LC–MS 实测产率；在各筛选内部匹配观察预算比较至今最佳指标。"
+        },
+        "limit": {
+          "en": "Two different screens; the current flow release replays one measured condition pool. Feedback-guided search alone is not evidence of online weight adaptation.",
+          "zh": "两个不同筛选；当前流动发布版本回放一个实测条件池。反馈引导搜索本身不证明在线权重适配。"
+        }
+      },
+      {
+        "domain": {
+          "en": "Immune science",
+          "zh": "免疫科学"
+        },
+        "policy": {
+          "en": "Scientific workflow evolution selects a model-building workflow; downstream analysis revises interventions and hypotheses.",
+          "zh": "科学工作流演化选择模型构建工作流；下游分析修改干预与假设。"
+        },
+        "worldModel": {
+          "en": "Constructed immune world model predicts multiscale transitions and biological readouts; parameters are fixed during downstream analysis.",
+          "zh": "构建的免疫世界模型预测多尺度转移与生物读出；下游分析期间参数固定。"
+        },
+        "feedback": {
+          "en": "Measured perturbations for development; withheld interventions and contexts for forecasting assessment.",
+          "zh": "实测扰动用于开发；留出的干预与上下文用于预测评估。"
+        },
+        "limit": {
+          "en": "Construction and analysis have different update scopes. The proposed therapeutic combination awaits experiments.",
+          "zh": "构建与分析的更新范围不同；提出的治疗组合仍需实验验证。"
+        }
+      }
+    ]
+  },
+  "keyCaveats": {
+    "en": [
+      "Different applications evaluate different parts of the framework. Sustained mutual policy–world-model improvement in one task requires joint multiround evaluation (§5).",
+      "An update-and-acceptance cycle can leave both versions unchanged. Appending experience is not itself a policy or predictor revision (§2.1).",
+      "Insufficient observational coverage is not evidence of reliability and does not activate the model-adaptation trigger (§2.4).",
+      "Training data, gate data and any held-out final audit have different roles. Accepted performance on a gate does not establish unseen-task generalization (§2.5).",
+      "Similar external test calls and matched experiment counts control feedback use, not every source of computation or every possible experimental cost (§3, §6).",
+      "GUI relative gains, percentage-point differences, action reductions and planning scores have distinct units and denominators (§3.2–3.3).",
+      "The chemistry screens are separate protocols. The current flow-screen release uses a frozen prediction table and sequential replay of measured yields, rather than online retraining at each observation (official repository).",
+      "Laboratory planning needs equipment-level execution evaluation; the immune-science therapeutic nomination awaits experimental testing (§5).",
+      "All small numerical examples and interactive mechanisms on this learning site are educational syntheses unless explicitly labeled as paper measurements."
+    ],
+    "zh": [
+      "各应用验证的是框架的不同部分。要证明同一任务中策略与世界模型持续相互促进，仍需联合多轮评估（§5）。",
+      "一次更新与验收周期可以让两个版本都保持不变。追加经验本身不是策略或预测器修订（§2.1）。",
+      "观察覆盖不足不等于模型可靠，也不会触发模型适配（§2.4）。",
+      "训练数据、验收数据与最终留出审计承担不同角色。通过验收集不等于已建立对新任务的泛化能力（§2.5）。",
+      "在线测试调用相近、实验次数相同，控制的是外部反馈用量，不是全部计算量或所有实验成本（§3、§6）。",
+      "GUI 相对提升、百分点差、动作降幅与规划评分的单位及分母不同（§3.2–3.3）。",
+      "化学两个筛选使用不同协议。当前流动筛选发布版本使用冻结预测表并顺序回放实测产率，不是在每次观察后在线重训（官方仓库）。",
+      "实验室规划还需设备层面的执行验证；免疫科学中的治疗组合仍等待实验检验（§5）。",
+      "学习网站中的小型数值例子和交互机制，除非明确标为论文实测，否则均为教学综合示例。"
+    ]
+  }
+}

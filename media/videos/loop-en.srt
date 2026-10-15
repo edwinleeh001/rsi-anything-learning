@@ -1,0 +1,23 @@
+1
+00:00:00,400 --> 00:00:02,716
+Begin with a retained policy and world model.
+
+2
+00:00:02,986 --> 00:00:07,028
+The policy proposes actions. The model predicts their consequences.
+
+3
+00:00:07,298 --> 00:00:13,112
+A feasible candidate is selected for external feedback. Predictions and observations are recorded separately.
+
+4
+00:00:13,382 --> 00:00:20,664
+Feedback can support policy updates. Model adaptation also requires unreliability, sufficient data, and budget.
+
+5
+00:00:20,934 --> 00:00:26,066
+Component checks assess proposed versions. A pair check tests their combined decision behavior.
+
+6
+00:00:26,336 --> 00:00:28,687
+Only an accepted pair guides the next round.

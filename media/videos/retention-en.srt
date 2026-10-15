@@ -1,0 +1,23 @@
+1
+00:00:00,400 --> 00:00:04,681
+An update attempt produces a candidate version, not an automatic replacement.
+
+2
+00:00:04,951 --> 00:00:09,576
+Suppose its component checks pass: the pieces meet their own acceptance criteria.
+
+3
+00:00:09,846 --> 00:00:13,746
+The assembled pair must still be checked under matched evaluation conditions.
+
+4
+00:00:14,016 --> 00:00:18,332
+Here the pair check fails. The full previous pair is retained for the next cycle.
+
+5
+00:00:18,602 --> 00:00:23,807
+Separately, too little feedback coverage means insufficient evidence, not a reliable model.
+
+6
+00:00:24,077 --> 00:00:28,772
+Separate three decisions: select, attempt an update, and accept the system.

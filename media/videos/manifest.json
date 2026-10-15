@@ -1,0 +1,632 @@
+{
+  "videos": [
+    {
+      "id": "loop-en",
+      "clip": "loop",
+      "language": "en",
+      "title": "The retained improvement loop",
+      "duration": 29.375,
+      "width": 1920,
+      "height": 1080,
+      "fps": 24,
+      "src": "media/videos/loop-en.mp4",
+      "poster": "media/videos/loop-en.jpg",
+      "vtt": "media/videos/loop-en.vtt",
+      "srt": "media/videos/loop-en.srt",
+      "subtitlesBurnedIn": true,
+      "tts": {
+        "engine": "macOS say",
+        "voice": "Samantha",
+        "rate": 184,
+        "synthetic": true,
+        "timeCompression": false
+      },
+      "script": [
+        "Begin with a retained policy and world model.",
+        "The policy proposes actions. The model predicts their consequences.",
+        "A feasible candidate is selected for external feedback. Predictions and observations are recorded separately.",
+        "Feedback can support policy updates. Model adaptation also requires unreliability, sufficient data, and budget.",
+        "Component checks assess proposed versions. A pair check tests their combined decision behavior.",
+        "Only an accepted pair guides the next round."
+      ],
+      "cues": [
+        {
+          "scene": "loop-01",
+          "index": 0,
+          "start": 0.4,
+          "end": 2.71588,
+          "audioDuration": 2.315875,
+          "audioFile": "audio/loop-en/01.wav",
+          "narration": "Begin with a retained policy and world model.",
+          "subtitle": "Begin with a retained policy and world model.",
+          "action": "Show retained policy–model pair"
+        },
+        {
+          "scene": "loop-02",
+          "index": 1,
+          "start": 2.98588,
+          "end": 7.02783,
+          "audioDuration": 4.0419583333333335,
+          "audioFile": "audio/loop-en/02.wav",
+          "narration": "The policy proposes actions. The model predicts their consequences.",
+          "subtitle": "The policy proposes actions. The model predicts their consequences.",
+          "action": "Highlight proposal and prediction nodes"
+        },
+        {
+          "scene": "loop-03",
+          "index": 2,
+          "start": 7.29783,
+          "end": 13.11185,
+          "audioDuration": 5.814020833333333,
+          "audioFile": "audio/loop-en/03.wav",
+          "narration": "A feasible candidate is selected for external feedback. Predictions and observations are recorded separately.",
+          "subtitle": "A feasible candidate is selected for external feedback. Predictions and observations are recorded separately.",
+          "action": "Move a candidate to external selection and observed feedback"
+        },
+        {
+          "scene": "loop-04",
+          "index": 3,
+          "start": 13.38185,
+          "end": 20.66358,
+          "audioDuration": 7.281729166666667,
+          "audioFile": "audio/loop-en/04.wav",
+          "narration": "Feedback can support policy updates. Model adaptation also requires unreliability, sufficient data, and budget.",
+          "subtitle": "Feedback can support policy updates. Model adaptation also requires unreliability, sufficient data, and budget.",
+          "action": "Split feedback into conditional policy and model update routes"
+        },
+        {
+          "scene": "loop-05",
+          "index": 4,
+          "start": 20.93358,
+          "end": 26.06637,
+          "audioDuration": 5.132791666666667,
+          "audioFile": "audio/loop-en/05.wav",
+          "narration": "Component checks assess proposed versions. A pair check tests their combined decision behavior.",
+          "subtitle": "Component checks assess proposed versions. A pair check tests their combined decision behavior.",
+          "action": "Highlight component checks, followed by pair check"
+        },
+        {
+          "scene": "loop-06",
+          "index": 5,
+          "start": 26.33637,
+          "end": 28.68723,
+          "audioDuration": 2.3508541666666667,
+          "audioFile": "audio/loop-en/06.wav",
+          "narration": "Only an accepted pair guides the next round.",
+          "subtitle": "Only an accepted pair guides the next round.",
+          "action": "Trace the accepted pair back to the next cycle"
+        }
+      ],
+      "source": "https://arxiv.org/html/2610.13912v1",
+      "sourceSections": [
+        "2.3",
+        "2.4",
+        "2.5"
+      ],
+      "illustrative": true
+    },
+    {
+      "id": "loop-zh",
+      "clip": "loop",
+      "language": "zh",
+      "title": "完整闭环：什么进入下一轮？",
+      "duration": 24.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 24,
+      "src": "media/videos/loop-zh.mp4",
+      "poster": "media/videos/loop-zh.jpg",
+      "vtt": "media/videos/loop-zh.vtt",
+      "srt": "media/videos/loop-zh.srt",
+      "subtitlesBurnedIn": true,
+      "tts": {
+        "engine": "macOS say",
+        "voice": "Tingting",
+        "rate": 254,
+        "synthetic": true,
+        "timeCompression": false
+      },
+      "script": [
+        "从上一轮保留的策略与世界模型出发。",
+        "策略提出行动，世界模型预测后果。",
+        "选择可执行候选获取外部反馈。预测与观察分别记录。",
+        "反馈可支持策略更新；模型适配还需预测不可靠、数据充分和预算足够。",
+        "先检查组件，再检查组合后的决策行为。",
+        "只有被接受的系统，才进入下一轮。"
+      ],
+      "cues": [
+        {
+          "scene": "loop-01",
+          "index": 0,
+          "start": 0.4,
+          "end": 3.07048,
+          "audioDuration": 2.6704791666666665,
+          "audioFile": "audio/loop-zh/01.wav",
+          "narration": "从上一轮保留的策略与世界模型出发。",
+          "subtitle": "从上一轮保留的策略与世界模型出发。",
+          "action": "Show retained policy–model pair"
+        },
+        {
+          "scene": "loop-02",
+          "index": 1,
+          "start": 3.34048,
+          "end": 5.98775,
+          "audioDuration": 2.6472708333333332,
+          "audioFile": "audio/loop-zh/02.wav",
+          "narration": "策略提出行动，世界模型预测后果。",
+          "subtitle": "策略提出行动，世界模型预测后果。",
+          "action": "Highlight proposal and prediction nodes"
+        },
+        {
+          "scene": "loop-03",
+          "index": 2,
+          "start": 6.25775,
+          "end": 10.35496,
+          "audioDuration": 4.097208333333334,
+          "audioFile": "audio/loop-zh/03.wav",
+          "narration": "选择可执行候选获取外部反馈。预测与观察分别记录。",
+          "subtitle": "选择可执行候选获取外部反馈。预测与观察分别记录。",
+          "action": "Move a candidate to external selection and observed feedback"
+        },
+        {
+          "scene": "loop-04",
+          "index": 3,
+          "start": 10.62496,
+          "end": 16.22144,
+          "audioDuration": 5.596479166666667,
+          "audioFile": "audio/loop-zh/04.wav",
+          "narration": "反馈可支持策略更新；模型适配还需预测不可靠、数据充分和预算足够。",
+          "subtitle": "反馈可支持策略更新；模型适配还需预测不可靠、数据充分和预算足够。",
+          "action": "Split feedback into conditional policy and model update routes"
+        },
+        {
+          "scene": "loop-05",
+          "index": 4,
+          "start": 16.49144,
+          "end": 19.61135,
+          "audioDuration": 3.1199166666666667,
+          "audioFile": "audio/loop-zh/05.wav",
+          "narration": "先检查组件，再检查组合后的决策行为。",
+          "subtitle": "先检查组件，再检查组合后的决策行为。",
+          "action": "Highlight component checks, followed by pair check"
+        },
+        {
+          "scene": "loop-06",
+          "index": 5,
+          "start": 19.88135,
+          "end": 22.4055,
+          "audioDuration": 2.5241458333333333,
+          "audioFile": "audio/loop-zh/06.wav",
+          "narration": "只有被接受的系统，才进入下一轮。",
+          "subtitle": "只有被接受的系统，才进入下一轮。",
+          "action": "Trace the accepted pair back to the next cycle"
+        }
+      ],
+      "source": "https://arxiv.org/html/2610.13912v1",
+      "sourceSections": [
+        "2.3",
+        "2.4",
+        "2.5"
+      ],
+      "illustrative": true
+    },
+    {
+      "id": "repair-en",
+      "clip": "repair",
+      "language": "en",
+      "title": "Four candidates, one execution",
+      "duration": 29.0,
+      "width": 1920,
+      "height": 1080,
+      "fps": 24,
+      "src": "media/videos/repair-en.mp4",
+      "poster": "media/videos/repair-en.jpg",
+      "vtt": "media/videos/repair-en.vtt",
+      "srt": "media/videos/repair-en.srt",
+      "subtitlesBurnedIn": true,
+      "tts": {
+        "engine": "macOS say",
+        "voice": "Samantha",
+        "rate": 184,
+        "synthetic": true,
+        "timeCompression": false
+      },
+      "script": [
+        "This toy repair illustrates the paper's four-candidate, one-execution design.",
+        "The coder stays fixed. Four patches are proposed before one is selected.",
+        "The world model predicts execution outcomes and ranks the candidates.",
+        "Only the selected patch is executed. Other patches have predictions, not observed outcomes.",
+        "The result becomes feedback. In the adaptive setting, eligible feedback can revise the predictor.",
+        "The predictor can change later rankings while the coder stays fixed."
+      ],
+      "cues": [
+        {
+          "scene": "repair-01",
+          "index": 0,
+          "start": 0.4,
+          "end": 4.82246,
+          "audioDuration": 4.422458333333333,
+          "audioFile": "audio/repair-en/01.wav",
+          "narration": "This toy repair illustrates the paper's four-candidate, one-execution design.",
+          "subtitle": "This toy repair illustrates the paper's four-candidate, one-execution design.",
+          "action": "Introduce the fixed-coder toy experiment"
+        },
+        {
+          "scene": "repair-02",
+          "index": 1,
+          "start": 5.09246,
+          "end": 9.27373,
+          "audioDuration": 4.1812708333333335,
+          "audioFile": "audio/repair-en/02.wav",
+          "narration": "The coder stays fixed. Four patches are proposed before one is selected.",
+          "subtitle": "The coder stays fixed. Four patches are proposed before one is selected.",
+          "action": "Reveal four illustrative candidate cards"
+        },
+        {
+          "scene": "repair-03",
+          "index": 2,
+          "start": 9.54373,
+          "end": 13.12129,
+          "audioDuration": 3.5775625,
+          "audioFile": "audio/repair-en/03.wav",
+          "narration": "The world model predicts execution outcomes and ranks the candidates.",
+          "subtitle": "The world model predicts execution outcomes and ranks the candidates.",
+          "action": "Route four predictions through the world model without claiming numerical accuracy"
+        },
+        {
+          "scene": "repair-04",
+          "index": 3,
+          "start": 13.39129,
+          "end": 18.79556,
+          "audioDuration": 5.404270833333333,
+          "audioFile": "audio/repair-en/04.wav",
+          "narration": "Only the selected patch is executed. Other patches have predictions, not observed outcomes.",
+          "subtitle": "Only the selected patch is executed. Other patches have predictions, not observed outcomes.",
+          "action": "Route only candidate B to one external test; leave all other outcomes unobserved"
+        },
+        {
+          "scene": "repair-05",
+          "index": 4,
+          "start": 19.06556,
+          "end": 24.4891,
+          "audioDuration": 5.423541666666667,
+          "audioFile": "audio/repair-en/05.wav",
+          "narration": "The result becomes feedback. In the adaptive setting, eligible feedback can revise the predictor.",
+          "subtitle": "The result becomes feedback. In the adaptive setting, eligible feedback can revise the predictor.",
+          "action": "Store the selected observation separately and show a conditional predictor update"
+        },
+        {
+          "scene": "repair-06",
+          "index": 5,
+          "start": 24.7591,
+          "end": 28.32506,
+          "audioDuration": 3.565958333333333,
+          "audioFile": "audio/repair-en/06.wav",
+          "narration": "The predictor can change later rankings while the coder stays fixed.",
+          "subtitle": "The predictor can change later rankings while the coder stays fixed.",
+          "action": "Return the retained predictor to later selection, preserving the fixed coder"
+        }
+      ],
+      "source": "https://arxiv.org/html/2610.13912v1",
+      "sourceSections": [
+        "3.1",
+        "6.1"
+      ],
+      "illustrative": true
+    },
+    {
+      "id": "repair-zh",
+      "clip": "repair",
+      "language": "zh",
+      "title": "四个候选，一次执行",
+      "duration": 24.041666666666668,
+      "width": 1920,
+      "height": 1080,
+      "fps": 24,
+      "src": "media/videos/repair-zh.mp4",
+      "poster": "media/videos/repair-zh.jpg",
+      "vtt": "media/videos/repair-zh.vtt",
+      "srt": "media/videos/repair-zh.srt",
+      "subtitlesBurnedIn": true,
+      "tts": {
+        "engine": "macOS say",
+        "voice": "Tingting",
+        "rate": 254,
+        "synthetic": true,
+        "timeCompression": false
+      },
+      "script": [
+        "用一个示意修复案例，理解论文的四选一执行设计。",
+        "代码生成器固定。先提出四个补丁，再选择一个。",
+        "世界模型预测执行结果，并为候选排序。",
+        "只执行选中的补丁。其余补丁只有预测，没有实测结果。",
+        "执行结果形成反馈。适配配置可用合格反馈更新预测器。",
+        "生成器不变，预测器仍能改变下一轮排序。"
+      ],
+      "cues": [
+        {
+          "scene": "repair-01",
+          "index": 0,
+          "start": 0.4,
+          "end": 3.85706,
+          "audioDuration": 3.4570625,
+          "audioFile": "audio/repair-zh/01.wav",
+          "narration": "用一个示意修复案例，理解论文的四选一执行设计。",
+          "subtitle": "用一个示意修复案例，理解论文的四选一执行设计。",
+          "action": "Introduce the fixed-coder toy experiment"
+        },
+        {
+          "scene": "repair-02",
+          "index": 1,
+          "start": 4.12706,
+          "end": 7.70421,
+          "audioDuration": 3.5771458333333332,
+          "audioFile": "audio/repair-zh/02.wav",
+          "narration": "代码生成器固定。先提出四个补丁，再选择一个。",
+          "subtitle": "代码生成器固定。先提出四个补丁，再选择一个。",
+          "action": "Reveal four illustrative candidate cards"
+        },
+        {
+          "scene": "repair-03",
+          "index": 2,
+          "start": 7.97421,
+          "end": 11.01173,
+          "audioDuration": 3.0375208333333332,
+          "audioFile": "audio/repair-zh/03.wav",
+          "narration": "世界模型预测执行结果，并为候选排序。",
+          "subtitle": "世界模型预测执行结果，并为候选排序。",
+          "action": "Route four predictions through the world model without claiming numerical accuracy"
+        },
+        {
+          "scene": "repair-04",
+          "index": 3,
+          "start": 11.28173,
+          "end": 15.22229,
+          "audioDuration": 3.9405625,
+          "audioFile": "audio/repair-zh/04.wav",
+          "narration": "只执行选中的补丁。其余补丁只有预测，没有实测结果。",
+          "subtitle": "只执行选中的补丁。其余补丁只有预测，没有实测结果。",
+          "action": "Route only candidate B to one external test; leave all other outcomes unobserved"
+        },
+        {
+          "scene": "repair-05",
+          "index": 4,
+          "start": 15.49229,
+          "end": 19.81598,
+          "audioDuration": 4.3236875,
+          "audioFile": "audio/repair-zh/05.wav",
+          "narration": "执行结果形成反馈。适配配置可用合格反馈更新预测器。",
+          "subtitle": "执行结果形成反馈。适配配置可用合格反馈更新预测器。",
+          "action": "Store the selected observation separately and show a conditional predictor update"
+        },
+        {
+          "scene": "repair-06",
+          "index": 5,
+          "start": 20.08598,
+          "end": 23.37892,
+          "audioDuration": 3.2929375,
+          "audioFile": "audio/repair-zh/06.wav",
+          "narration": "生成器不变，预测器仍能改变下一轮排序。",
+          "subtitle": "生成器不变，预测器仍能改变下一轮排序。",
+          "action": "Return the retained predictor to later selection, preserving the fixed coder"
+        }
+      ],
+      "source": "https://arxiv.org/html/2610.13912v1",
+      "sourceSections": [
+        "3.1",
+        "6.1"
+      ],
+      "illustrative": true
+    },
+    {
+      "id": "retention-en",
+      "clip": "retention",
+      "language": "en",
+      "title": "An update is not acceptance",
+      "duration": 29.458333333333332,
+      "width": 1920,
+      "height": 1080,
+      "fps": 24,
+      "src": "media/videos/retention-en.mp4",
+      "poster": "media/videos/retention-en.jpg",
+      "vtt": "media/videos/retention-en.vtt",
+      "srt": "media/videos/retention-en.srt",
+      "subtitlesBurnedIn": true,
+      "tts": {
+        "engine": "macOS say",
+        "voice": "Samantha",
+        "rate": 184,
+        "synthetic": true,
+        "timeCompression": false
+      },
+      "script": [
+        "An update attempt produces a candidate version, not an automatic replacement.",
+        "Suppose its component checks pass: the pieces meet their own acceptance criteria.",
+        "The assembled pair must still be checked under matched evaluation conditions.",
+        "Here the pair check fails. The full previous pair is retained for the next cycle.",
+        "Separately, too little feedback coverage means insufficient evidence, not a reliable model.",
+        "Separate three decisions: select, attempt an update, and accept the system."
+      ],
+      "cues": [
+        {
+          "scene": "retention-01",
+          "index": 0,
+          "start": 0.4,
+          "end": 4.68146,
+          "audioDuration": 4.281458333333333,
+          "audioFile": "audio/retention-en/01.wav",
+          "narration": "An update attempt produces a candidate version, not an automatic replacement.",
+          "subtitle": "An update attempt produces a candidate version, not an automatic replacement.",
+          "action": "Show current pair and candidate pair as distinct version containers"
+        },
+        {
+          "scene": "retention-02",
+          "index": 1,
+          "start": 4.95146,
+          "end": 9.576,
+          "audioDuration": 4.6245416666666666,
+          "audioFile": "audio/retention-en/02.wav",
+          "narration": "Suppose its component checks pass: the pieces meet their own acceptance criteria.",
+          "subtitle": "Suppose its component checks pass: the pieces meet their own acceptance criteria.",
+          "action": "Mark both illustrative component checks as passing"
+        },
+        {
+          "scene": "retention-03",
+          "index": 2,
+          "start": 9.846,
+          "end": 13.74633,
+          "audioDuration": 3.900333333333333,
+          "audioFile": "audio/retention-en/03.wav",
+          "narration": "The assembled pair must still be checked under matched evaluation conditions.",
+          "subtitle": "The assembled pair must still be checked under matched evaluation conditions.",
+          "action": "Assemble a candidate pair and compare under matched conditions"
+        },
+        {
+          "scene": "retention-04",
+          "index": 3,
+          "start": 14.01633,
+          "end": 18.33227,
+          "audioDuration": 4.3159375,
+          "audioFile": "audio/retention-en/04.wav",
+          "narration": "Here the pair check fails. The full previous pair is retained for the next cycle.",
+          "subtitle": "Here the pair check fails. The full previous pair is retained for the next cycle.",
+          "action": "Fail the illustrative pair gate and return the entire old pair"
+        },
+        {
+          "scene": "retention-05",
+          "index": 4,
+          "start": 18.60227,
+          "end": 23.80731,
+          "audioDuration": 5.205041666666666,
+          "audioFile": "audio/retention-en/05.wav",
+          "narration": "Separately, too little feedback coverage means insufficient evidence, not a reliable model.",
+          "subtitle": "Separately, too little feedback coverage means insufficient evidence, not a reliable model.",
+          "action": "Show insufficient and reliable as distinct reliability states"
+        },
+        {
+          "scene": "retention-06",
+          "index": 5,
+          "start": 24.07731,
+          "end": 28.77152,
+          "audioDuration": 4.694208333333333,
+          "audioFile": "audio/retention-en/06.wav",
+          "narration": "Separate three decisions: select, attempt an update, and accept the system.",
+          "subtitle": "Separate three decisions: select, attempt an update, and accept the system.",
+          "action": "Review action selection, update attempt, and system acceptance as separate decisions"
+        }
+      ],
+      "source": "https://arxiv.org/html/2610.13912v1",
+      "sourceSections": [
+        "2.4",
+        "2.5"
+      ],
+      "illustrative": true
+    },
+    {
+      "id": "retention-zh",
+      "clip": "retention",
+      "language": "zh",
+      "title": "更新不等于接受",
+      "duration": 24.375,
+      "width": 1920,
+      "height": 1080,
+      "fps": 24,
+      "src": "media/videos/retention-zh.mp4",
+      "poster": "media/videos/retention-zh.jpg",
+      "vtt": "media/videos/retention-zh.vtt",
+      "srt": "media/videos/retention-zh.srt",
+      "subtitlesBurnedIn": true,
+      "tts": {
+        "engine": "macOS say",
+        "voice": "Tingting",
+        "rate": 254,
+        "synthetic": true,
+        "timeCompression": false
+      },
+      "script": [
+        "尝试更新，只得到候选版本，并不自动替换旧版本。",
+        "假设组件检查通过，各部分满足各自的验收标准。",
+        "组合后的系统，仍需在匹配条件下检查。",
+        "这里组合检查失败。下一轮保留整对旧版本。",
+        "另外，反馈覆盖不足只能判证据不足，不能判模型可靠。",
+        "记住三个不同决定：选行动、尝试更新、接受系统。"
+      ],
+      "cues": [
+        {
+          "scene": "retention-01",
+          "index": 0,
+          "start": 0.4,
+          "end": 4.31367,
+          "audioDuration": 3.913666666666667,
+          "audioFile": "audio/retention-zh/01.wav",
+          "narration": "尝试更新，只得到候选版本，并不自动替换旧版本。",
+          "subtitle": "尝试更新，只得到候选版本，并不自动替换旧版本。",
+          "action": "Show current pair and candidate pair as distinct version containers"
+        },
+        {
+          "scene": "retention-02",
+          "index": 1,
+          "start": 4.58367,
+          "end": 8.16998,
+          "audioDuration": 3.5863125,
+          "audioFile": "audio/retention-zh/02.wav",
+          "narration": "假设组件检查通过，各部分满足各自的验收标准。",
+          "subtitle": "假设组件检查通过，各部分满足各自的验收标准。",
+          "action": "Mark both illustrative component checks as passing"
+        },
+        {
+          "scene": "retention-03",
+          "index": 2,
+          "start": 8.43998,
+          "end": 11.45981,
+          "audioDuration": 3.019833333333333,
+          "audioFile": "audio/retention-zh/03.wav",
+          "narration": "组合后的系统，仍需在匹配条件下检查。",
+          "subtitle": "组合后的系统，仍需在匹配条件下检查。",
+          "action": "Assemble a candidate pair and compare under matched conditions"
+        },
+        {
+          "scene": "retention-04",
+          "index": 3,
+          "start": 11.72981,
+          "end": 14.90438,
+          "audioDuration": 3.1745625,
+          "audioFile": "audio/retention-zh/04.wav",
+          "narration": "这里组合检查失败。下一轮保留整对旧版本。",
+          "subtitle": "这里组合检查失败。下一轮保留整对旧版本。",
+          "action": "Fail the illustrative pair gate and return the entire old pair"
+        },
+        {
+          "scene": "retention-05",
+          "index": 4,
+          "start": 15.17438,
+          "end": 19.40954,
+          "audioDuration": 4.235166666666666,
+          "audioFile": "audio/retention-zh/05.wav",
+          "narration": "另外，反馈覆盖不足只能判证据不足，不能判模型可靠。",
+          "subtitle": "另外，反馈覆盖不足只能判证据不足，不能判模型可靠。",
+          "action": "Show insufficient and reliable as distinct reliability states"
+        },
+        {
+          "scene": "retention-06",
+          "index": 5,
+          "start": 19.67954,
+          "end": 23.68381,
+          "audioDuration": 4.004270833333333,
+          "audioFile": "audio/retention-zh/06.wav",
+          "narration": "记住三个不同决定：选行动、尝试更新、接受系统。",
+          "subtitle": "记住三个不同决定：选行动、尝试更新、接受系统。",
+          "action": "Review action selection, update attempt, and system acceptance as separate decisions"
+        }
+      ],
+      "source": "https://arxiv.org/html/2610.13912v1",
+      "sourceSections": [
+        "2.4",
+        "2.5"
+      ],
+      "illustrative": true
+    }
+  ],
+  "sourcePack": "media/videos/teaching-videos-source.zip",
+  "captionNote": "Captions are burned in. Optional VTT tracks are provided for accessibility and download; avoid displaying both simultaneously."
+}

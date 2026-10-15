@@ -1,0 +1,990 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>RSI-Anything — Speaker notes</title><style>@font-face{font-family:Inter;src:url('../fonts/inter-latin.woff2')}*{box-sizing:border-box}body{max-width:900px;margin:50px auto;padding:0 24px;color:#1a2b35;background:#f7fafb;font:16px/1.95 Inter,'PingFang SC',sans-serif}h1,h2,h3{line-height:1.35;margin-top:1.8em}h1{font-size:36px}h2{font-size:28px;border-top:1px solid #d4dfe6;padding-top:30px}p,li{max-width:800px}a{color:#314fbd;overflow-wrap:anywhere}img{max-width:100%;height:auto;background:white;border:1px solid #d4dfe6}table{width:100%;border-collapse:collapse;font-size:13px;display:block;overflow:auto}th,td{padding:12px;border:1px solid #d4dfe6;text-align:left;vertical-align:top}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#e8f0f8;padding:20px}code{overflow-wrap:anywhere}blockquote{border-left:3px solid #317777;padding-left:20px;color:#536775}.top{display:flex;justify-content:space-between;gap:20px;font-size:13px}.top button{padding:8px 15px;font:inherit;background:white;border:1px solid #d4dfe6;cursor:pointer}@media print{body{margin:0;color:black;background:white}.top{display:none}h2{break-before:page}a{color:inherit}pre{font-size:10px}img{max-height:80vh;object-fit:contain}}</style></head><body><div class="top"><a href="../index.html">Learning website / 返回学习网站</a><button onclick="window.print()">Print / Save PDF · 打印 / 保存 PDF</button></div><h1>RSI-Anything — Speaker notes and study guide</h1>
+<p>Based on arXiv:2610.13912v1. AI-assisted educational synthesis; no benchmark reproduction.</p>
+<p><a href="https://arxiv.org/abs/2610.13912">Original paper</a> · <a href="https://github.com/Gen-Verse/RSI-Anything">Authors’ repository</a></p>
+<h2>How to use this pack</h2>
+<p>Read each concise script aloud, then use the expanded explanation to resolve questions. The suggested 30-minute presentation combines speech, three short videos, interactive activities, figure inspection and transitions. The separate Q&amp;A target is 10 minutes. Timing is an estimate, not a verbatim-duration guarantee; rehearse the route.</p>
+<h2>1. Can one round make the next round better?</h2>
+<p><strong>What must change before we call a system self-improving?</strong></p>
+<p>RSI turns experience into accepted, persistent changes to the system that acts next.</p>
+<h3>Concise presentation script</h3>
+<p>Start with a debugging assistant. It fails, reads the error, and tries again. Feedback is useful, but what has the assistant itself learned? RSI-Anything asks how experience can change the system used next time. Its central components are a policy that proposes actions and a world model that predicts consequences. The key is to retain accepted changes, so later decisions and learning depend on them. We will follow that loop, then check which experiments support each link. That distinction will guide every experiment we read.</p>
+<h3>Expanded study explanation</h3>
+<p>Open with a familiar debugging story and ask what survives after the current attempt. Separate an error message, a revised program, and a revised assistant: they belong to different objects. The paper’s definition concerns the configuration making later decisions. Emphasize that a policy can be a persistent workflow, not only neural weights. Introduce the world model as a forecasting role rather than an all-knowing simulator. Explain how this lesson will judge the paper: first understand the protocol, then map each experiment to the pathway it actually enables, and finally discuss whether the evidence establishes sustained mutual improvement. Merely increasing the number of attempts is not sufficient evidence.</p>
+<h3>Read the mechanism</h3>
+<p>Imagine a repair assistant that fails a test, reads the error, and tries another patch. It has used feedback inside a task. Now imagine that it also improves its predictor or saves a better repair workflow, and uses that accepted version in later decisions. This second change is the persistent improvement studied here.</p>
+<p>The paper places the unit of improvement at the policy–world-model pair. The policy generates or selects actions; the world model forecasts their consequences. Their interaction matters: a changed policy may ask the predictor about unfamiliar actions, and a changed predictor may reorder the policy’s choices. Better components therefore need to work well together.</p>
+<p>The research question is practical: under limited external feedback, how can predictions help choose useful actions, how can observations support updates, and which updated versions should survive? The paper offers a protocol connecting prediction, execution, learning, and acceptance. Its experiments examine different parts of this protocol across computational and scientific domains.</p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>An observation is experience; an accepted revision changes the system.</li>
+<li>The retained pair shapes the next round.</li>
+<li>Each experiment supports a particular part of the framework.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Teaching example: saving “the last patch failed” extends the task record. Accepting a predictor that ranks future patches better changes the system. This is a conceptual example, not a reported benchmark run.</p>
+<h3>Understanding check</h3>
+<p>Which change is a system revision?</p>
+<ol>
+<li>Appending a test log</li>
+<li>Accepting a revised predictor for later selection</li>
+<li>Trying another patch</li>
+</ol>
+<p><strong>Answer: 2.</strong> The accepted predictor changes the decision system; the other actions change history or task state.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S1">§1 Introduction</a></p>
+<h2>2. Two clocks: actions and system revisions</h2>
+<p><strong>Why does another action not automatically create another system version?</strong></p>
+<p>t tracks interaction steps; k tracks update and acceptance cycles.</p>
+<h3>Concise presentation script</h3>
+<p>There are two clocks. One counts actions inside a task; the other counts decisions about system versions. Several tests can happen before one update decision, and that decision may retain the old pair. Meanwhile, objectives and evaluation rules stay fixed. This matters for code repair: changing the program is an action, while changing the coder is a policy update. Whenever we hear “improvement,” ask what changed and what will make the next decision.</p>
+<h3>Expanded study explanation</h3>
+<p>Draw two timelines. Put three action markers on the first and one update decision on the second. Ask what object changes at each marker. A repaired program belongs to task state; the code-generating model belongs to policy configuration. This distinction becomes essential in the fixed-coder experiment. Explain that rejected versions still consume resources: failed experiments and adaptation attempts are not free. The paper fixes acceptance rules within a run to keep comparisons meaningful. A no-change decision is legitimate, and preserving a functioning current pair can be preferable to accepting an unsupported revision. Avoid saying that every completed cycle necessarily improves performance or creates a new model.</p>
+<h3>Read the mechanism</h3>
+<p>The task clock advances when an action is taken: a patch is executed, a box is clicked, or an outcome is measured. These events change the task state or available information. The update clock advances when the system decides whether to propose and retain a policy or predictor revision. One cycle may aggregate several task steps.</p>
+<p>Within a run, objectives, interfaces, scoring criteria, constraints, acceptance rules, stopping rules, and total budget limits stay fixed. Task states, feedback records, remaining resources, and accepted component versions can change. Separating these categories prevents an apparent improvement obtained merely by changing the goal or making the evaluation easier.</p>
+<p>A cycle may end with exactly the same policy and world model. An update pathway might be disabled, evidence might be insufficient, or a proposed revision might fail a check. The index k still advances because an update-and-acceptance decision has occurred. Cycle count therefore does not equal the number of successful retained revisions.</p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>t and k count different events.</li>
+<li>History growth alone does not revise θ or φ.</li>
+<li>The task contract stays fixed while accepted versions evolve.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Teaching example: three test executions produce three records inside one cycle. A candidate predictor is then rejected. Cycle k+1 starts with the old pair and a longer history.</p>
+<h3>Understanding check</h3>
+<p>Can a cycle end without a new component version?</p>
+<ol>
+<li>Yes; current versions can be retained</li>
+<li>No; k counts successful improvements</li>
+<li>Only if no action happened</li>
+</ol>
+<p><strong>Answer: 1.</strong> A cycle records update and acceptance decisions, including retaining both current components.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS1">§2.1 · Table 1</a></p>
+<h2>3. Predict before paying for feedback</h2>
+<p><strong>If execution gives the answer, why build a predictor?</strong></p>
+<p>Forecasts can focus expensive evaluations, while executions supply observations.</p>
+<h3>Concise presentation script</h3>
+<p>Suppose we have four patches but can run only one expensive test. A world model helps decide which patch deserves it. If its ranking is useful, the same test budget can produce more successful repairs. But only the executed patch supplies an observation. Rejected patches remain unobserved, limiting reliability claims. We must also distinguish feedback cost from the computation needed for prediction, adaptation, and acceptance. Similar external usage is valuable, but it is one specific resource comparison.</p>
+<h3>Expanded study explanation</h3>
+<p>Give the class four candidate patches and one test token before introducing equations. They can immediately see why selection matters. After running the chosen patch, ask what remains unknown. This reveals selective observation and prepares chapter nine’s three-state reliability assessment. Distinguish uncertainty from low utility: an uncertain candidate can be worth evaluating for information if an explicit acquisition rule enables that behavior. Also separate external interaction from internal computation. When the repair experiment later reports similar online test usage, say exactly what resource is similar. This supports a useful efficiency interpretation without making the broader, unsupported claim that every computational expense has been matched.</p>
+<h3>Read the mechanism</h3>
+<p>A system can propose more candidates than it can afford to evaluate. Four patches may be cheap to generate while running large test suites takes time. A laboratory can list many conditions while only a few evaluations fit its budget. A predictor offers a forecast that can prioritize which candidates receive external feedback.</p>
+<p>This creates an opportunity and a risk. Better ranking can spend the same feedback budget more productively. Wrong predictions can repeatedly favor a narrow, misleading region. Because observations arrive mainly for selected actions, the system does not automatically learn how accurate it is on everything it rejected. Coverage becomes part of reliability.</p>
+<p>The paper treats external feedback and update computation as separate resources. Similar test counts establish one kind of efficiency; they do not establish equal training cost or wall-clock time. A careful comparison names the matched resource, the measured outcome, and the extra computation used for prediction, adaptation, historical re-evaluation, and acceptance.</p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>Forecasts allocate feedback; evaluations create observations.</li>
+<li>Selective feedback limits reliability claims.</li>
+<li>Matched test counts do not imply matched total compute.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Teaching example: only one of four patches can be tested. Ranking B first may save an evaluation, but executing B reveals only B’s observed outcome. A, C, and D still have forecasts.</p>
+<h3>Understanding check</h3>
+<p>After only B is tested, which observations exist?</p>
+<ol>
+<li>All four, because all were predicted</li>
+<li>Only B has a new observed outcome</li>
+<li>Only the highest-confidence candidate</li>
+</ol>
+<p><strong>Answer: 2.</strong> Unexecuted candidates do not acquire observed outcomes.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS3">§1 · §2.3–2.4</a></p>
+<h2>4. Predict useful representations</h2>
+<p><strong>How does JEPA-Anything provide a predictive foundation?</strong></p>
+<p>Encode the state, predict an action-conditioned latent target, and read out the needed consequence.</p>
+<h3>Concise presentation script</h3>
+<p>Read this pipeline as encode, predict, and read out. The encoder summarizes the state. The predictor asks what happens under a candidate action. The readout produces the consequence the task needs. JEPA-Anything supplies the representation-prediction foundation, including factor prediction and synthesis. RSI-Anything builds the improvement loop around it. Notice the interface: an outcome prediction is enough for ranking, but multistep planning also needs a way to propagate the next planning state. The predicted future remains a forecast until checked.</p>
+<h3>Expanded study explanation</h3>
+<p>Read the equation with three verbs: encode, predict, read out. Explain that z is a learned representation, not necessarily a human-interpretable list of facts. The action enters through a domain adapter; these symbols describe roles rather than a compulsory wiring diagram. Similar notation across domains does not imply identical weights. Explain OPF only to the extent established in this paper and direct detailed architectural questions to JEPA-Anything. Finally, check whether the interface supplies an outcome alone or also a next planning state. That determines whether imagined multistep rollouts are supported. A conceptual diagram should not silently grant transition capabilities to every predictor.</p>
+<h3>Read the mechanism</h3>
+<p>JEPA-style prediction operates in a representation space. An encoder turns the current state and domain context into a latent description. A predictor uses that description and a candidate action to forecast a target representation. A readout converts it into a usable consequence, such as execution-result probabilities or a distribution over reaction yield.</p>
+<p>RSI-Anything inherits JEPA-Anything’s model-construction foundation. Orthogonal predictive factorization organizes latent targets into complementary factors, learns dedicated predictors, and synthesizes a complete latent state. This is predictive infrastructure. The recursive contribution studied here concerns how predictions and observed feedback are connected to updates and acceptance around the instantiated domain model.</p>
+<p>Point and probabilistic readouts are alternative interfaces. One-step ranking only requires an outcome prediction. Multistep planning additionally requires an adapter that propagates a planning state. A yield predictor returning a scalar or distribution is therefore not automatically a simulator capable of rolling out every intermediate physical state or handling arbitrary actions.</p>
+<h3>Formula and symbols</h3>
+<pre><code class="language-text">zₜ = Eφ(sₜ,c_d); ẑₜ₊₁ = Fφ(zₜ,aₜ,c_d); ôₜ₊₁ = Rφ(ẑₜ₊₁,c_d)
+</code></pre>
+<p>This is the point-readout route from Equations 2–4. Equation 5 instead returns p(o | s,a,c). The domain defines utility conversion and comparison with observations.</p>
+<ul>
+<li><strong>s_t</strong>: current task state at action step t</li>
+<li><strong>c_d</strong>: domain context</li>
+<li><strong>a_t</strong>: candidate action</li>
+<li><strong>φ</strong>: current domain predictor configuration</li>
+<li><strong>z / ẑ</strong>: encoded state / predicted target representation</li>
+<li><strong>E / F / R</strong>: encoder / latent predictor / outcome readout</li>
+</ul>
+<h3>Original figure reading</h3>
+<p><img src="../media/originals/figure-1.png" alt="From predictive foundation to an improvement loop"></p>
+<p>The opening overview places a shared predictive design underneath domain-specific tasks and a feedback loop above them. This is a conceptual map, rather than a result plot.</p>
+<ul>
+<li>Start at JEPA-Anything: the inherited contribution is a way to construct latent predictive models across different data types. RSI-Anything adds rules for using predictions and retaining changes.</li>
+<li>Follow the outward path into different domains. Each domain still supplies its own states, actions, prediction targets, feedback and evaluation; a shared mechanism does not imply one universal trained predictor.</li>
+<li>Follow feedback back toward the system. An observed outcome can improve the policy or persistent workflow, and can justify an attempt to adapt the predictor.</li>
+<li>The closing arrow represents the retained policy–model pair shaping later experience. Saving more observations alone is not a change to either component.</li>
+</ul>
+<p><a href="https://arxiv.org/html/2610.13912v1#S0.F1">Paper v1 · Figure 1 · PDF p.2</a></p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>Latent prediction needs a task-specific readout.</li>
+<li>OPF is inherited predictive infrastructure.</li>
+<li>Multistep rollout requires a transition interface.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Teaching analogy: summarize the program state, forecast behavior under a patch, then read out likely test outcomes. A learned representation is not a mathematical guarantee that the patch is correct.</p>
+<h3>Understanding check</h3>
+<p>What extra capability supports multistep planning?</p>
+<ol>
+<li>A larger scalar utility</li>
+<li>An adapter that propagates planning states</li>
+<li>A deterministic readout only</li>
+</ol>
+<p><strong>Answer: 2.</strong> An outcome-only predictor may rank actions without supplying future states.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS2">§2.2 · Equations 2–6</a></p>
+<h2>5. The complete loop: propose to retain</h2>
+<p><strong>Where does feedback enter, and when does a new version become official?</strong></p>
+<p>Six operations connect today’s decision to the system making tomorrow’s decisions.</p>
+<h3>Concise presentation script</h3>
+<p>Here is our route map. Propose candidates, predict consequences, select within budget, and obtain feedback. Use that feedback to propose updates and decide what to retain. Two boundaries matter: evaluation turns a forecasted outcome into an observation, and acceptance turns a candidate update into the official version. Policy and model can change on different schedules. Follow the return arrow: the retained pair determines what the system proposes, selects, and learns about in the next cycle.</p>
+<h3>Expanded study explanation</h3>
+<p>Use the framework figure as a map for the next five chapters. Name each operation and pause between observed feedback and candidate updates. If only B ran, ask where A’s observation is stored: it is not, because no observation exists. Explain asynchronous updates: one component can stay fixed while the other changes. Show the component checks and pair check separately. Give their purpose now and leave the fallback details for chapter ten. Trace the return arrow carefully: accepted revisions change the next actual interaction, not merely the report of the previous attempt. The six operations are a shared protocol; individual domain experiments enable different pathways.</p>
+<h3>Read the mechanism</h3>
+<p>Start with an accepted policy–model pair and the task state. The policy proposes candidate actions. The model predicts consequences, while validity checks and operational constraints exclude infeasible options. A selection rule allocates the remaining feedback budget to a feasible candidate or batch. These operations decide what the system will obtain new evidence about.</p>
+<p>Execute or evaluate the selected action and store its observation beside the prediction that motivated selection. Feedback can construct a policy or workflow revision and support a conditional predictor-adaptation attempt. These are candidate versions. Finishing an update procedure or reducing a training loss does not automatically make them the system used next.</p>
+<p>Component checks compare proposed components with current versions. A compatibility check evaluates their assembled pair under declared conditions. An accepted pair enters the next cycle; a rejected pair leaves the previous pair in place. Retained revisions influence later proposals, rankings, feedback, and learning. This dependency closes the recursive mechanism.</p>
+<h3>Original figure reading</h3>
+<p><img src="../media/originals/figure-2.png" alt="The six operations and the three decisions"></p>
+<p>The central framework separates choosing an action, deciding whether to attempt an update, and accepting a proposed system version. Its domain panel shows different bindings of this common contract.</p>
+<ul>
+<li>Read panel a from candidate proposals to predictions and selection. Several candidates may be forecast, while only an executed candidate produces its paired external observation.</li>
+<li>Keep the prediction beside the observation, with the action, context and system version that generated it. Without that pairing, a failure cannot be attributed to the predictor used in the decision.</li>
+<li>The update branch has separate policy and model pathways. World-model adaptation requires an unreliable assessment, sufficient adaptation data and enough budget; insufficient coverage is a separate state.</li>
+<li>Acceptance is another decision. A proposed component must pass its own check, and the assembled policy–model pair must pass a compatibility check before being retained; pair failure preserves the previous pair.</li>
+<li>Panel b is a map of applications, not evidence that every application exercised all update pathways. Read it together with Table 4.</li>
+</ul>
+<p><a href="https://arxiv.org/html/2610.13912v1#S1.F2">Paper v1 · Figure 2 · PDF p.4</a></p>
+<p><a href="../media/videos/loop-en.mp4">Play the narrated animation</a> · <a href="../media/videos/loop-en.srt">SRT</a></p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>Action selection and system acceptance are separate decisions.</li>
+<li>Only evaluated candidates supply paired observations.</li>
+<li>An update remains provisional until acceptance.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Follow synthetic patch B through the figure: proposed → forecast → selected → tested → used to propose an update → accepted or rejected. Then trace the return arrow into the next cycle.</p>
+<h3>Understanding check</h3>
+<p>When does a candidate predictor become retained?</p>
+<ol>
+<li>When training finishes</li>
+<li>When it is newer</li>
+<li>After applicable component and pair checks</li>
+</ol>
+<p><strong>Answer: 3.</strong> Construction and retention are different stages.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2">§2 · Figure 2</a></p>
+<h2>6. Select an action: useful, feasible, affordable</h2>
+<p><strong>How do predicted consequences become a selection decision?</strong></p>
+<p>Exclude invalid candidates, apply the declared ranking rule, then check feedback cost.</p>
+<h3>Concise presentation script</h3>
+<p>Selection has three questions. Is the candidate valid? How useful does it look under the declared rule? Can we afford its evaluation? Our toy score subtracts an optional uncertainty penalty, so changing that weight can change the ranking. The paper’s code ranker uses predicted execution probabilities instead. Also remember that uncertain does not mean worthless: an information-seeking rule may test an uncertain action, even when its imagined trajectory should not be admitted for training.</p>
+<h3>Expanded study explanation</h3>
+<p>Run the candidate-selection demonstration in two passes. First remove an invalid high-scoring option to establish that constraints are not merely soft preferences. Then vary the uncertainty weight and calculate one score aloud. Stress that this arithmetic is a teaching instantiation, while the reported code ranker aggregates execution-class probabilities. Ask why the most uncertain candidate might still deserve a real test. The answer depends on whether an information-seeking acquisition rule is enabled. This prepares the crucial distinction between learning about a candidate and learning from its imagined trajectory. Do not imply that all uncertainty estimators are calibrated or that every application uses a penalty.</p>
+<h3>Read the mechanism</h3>
+<p>The policy produces a candidate set from the current state and goal. Each candidate receives an outcome forecast or, if supported, a bounded rollout. The verifier records validity, utility components, provenance, and any available uncertainty. Feasibility is checked before utility ranking: a promising forecast cannot override an invalid action or an operational constraint.</p>
+<p>For the framework’s utility-based route, weighted utility components are added and an optional uncertainty penalty is subtracted. The weights, uncertainty estimator, penalty strength, batch size, and feedback costs are domain choices. The code experiment uses its own instantiated rule: it aggregates execution-class probabilities to rank four revisions before selecting one to execute.</p>
+<p>Selecting the highest utility and selecting the most informative uncertain action are different objectives. An explicitly enabled acquisition rule may prioritize uncertainty for evaluation. The imagined-training admission filter is another decision again. A candidate can be useful to test precisely because it is uncertain, while still being unsuitable as an unverified training target.</p>
+<h3>Formula and symbols</h3>
+<pre><code class="language-text">R_d(τ̂) = Σⱼ w_d,j r_τ,j − Δ_d(τ̂); Δ_d = λ_d U(u_τ) when enabled, otherwise 0
+</code></pre>
+<p>Invalid candidates are removed before this score is used. If the penalty pathway is disabled, Δ=0. A declared acquisition rule can replace utility ranking; the framework does not force this formula on every domain.</p>
+<ul>
+<li><strong>τ̂</strong>: predicted candidate trajectory or supported outcome forecast</li>
+<li><strong>r_τ,j</strong>: utility component j</li>
+<li><strong>w_d,j</strong>: domain-specific utility weight</li>
+<li><strong>U(u_τ)</strong>: specified uncertainty estimate</li>
+<li><strong>λ_d / Δ_d</strong>: penalty strength / total optional penalty</li>
+</ul>
+<p><a href="../media/videos/repair-en.mp4">Play the narrated animation</a> · <a href="../media/videos/repair-en.srt">SRT</a></p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>Validity precedes utility ranking.</li>
+<li>An uncertainty penalty is optional and domain-defined.</li>
+<li>Evaluation selection and training admission have different purposes.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Synthetic arithmetic: utility 0.80, uncertainty 0.50, penalty weight 0.20 give score 0.80−0.20×0.50=0.70. A candidate with score 0.95 but failed validity is excluded. These numbers illustrate Equation 7, not the code benchmark’s exact ranker.</p>
+<h3>Understanding check</h3>
+<p>A candidate fails validity but has the highest utility. What happens?</p>
+<ol>
+<li>Execute it because utility is highest</li>
+<li>Exclude it before ranking</li>
+<li>Automatically train on it</li>
+</ol>
+<p><strong>Answer: 2.</strong> Validity and operational constraints determine executable candidates before utility-based selection.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS3">§2.3 · Equation 7</a></p>
+<h2>7. Keep predictions and observations separate</h2>
+<p><strong>When may an imagined trajectory enter training?</strong></p>
+<p>Evidence provenance describes origin; explicit admission criteria decide sufficiency.</p>
+<h3>Concise presentation script</h3>
+<p>Predictions are not observations. Keep them in separate fields, linked to the same action, context, and system version. Evidence labels E0 to E3 tell us where information came from, not whether it automatically qualifies for training. Imagined trajectories need their own admission checks: validity, utility, permitted evidence, and uncertainty when enabled. Failing training admission does not necessarily prevent a real evaluation. If imagined learning is disabled, the simulated training set simply stays empty. Keep that distinction visible in every animation.</p>
+<h3>Expanded study explanation</h3>
+<p>Make a two-column record on screen: prediction and observation. Put a timestamp, source, and version identifier underneath. This simple display often explains the evidence contract more clearly than the indicator formula. Introduce E0 through E3 as source categories, then explain why provenance alone cannot establish correctness or suitability. Walk through one rejected imagined trajectory, showing that any failed factor makes its admission indicator zero. If the uncertainty check is omitted its factor is one, rather than pretending uncertainty has been measured. The paper specifies this general filter but does not claim that every domain trains on imagined trajectories. Preserve that optionality throughout the lesson.</p>
+<h3>Read the mechanism</h3>
+<p>The framework distinguishes four origins: deterministic rule checks E0, learned predictions and rollouts E1, specialized simulators or higher-fidelity calculations E2, and external measurements or experiments E3. These labels record provenance and intended fidelity. They do not make every E3 measurement correct or every E1 forecast suitable for learning.</p>
+<p>An imagined trajectory enters a simulated learning set only when the application enables that route and its declared filters pass. These include validity, a utility threshold, an uncertainty check when enabled, and a permitted evidence source. Curating the accepted trajectories is separate from selecting real actions. If imagined learning is disabled, this set is empty.</p>
+<p>A feedback record should preserve the input context, action, original prediction, observed result, evidence source, and generating system version. Replacing a prediction with the observed answer would erase the information needed to evaluate prediction error. Linking both fields instead allows the same experience to support action evaluation, reliability assessment, and appropriately targeted updates.</p>
+<h3>Formula and symbols</h3>
+<pre><code class="language-text">e_τ = 1[v_τ=1] × 1[R_d(τ̂)≥r_d,min] × C_dᵁ(τ̂) × 1[ℓ_τ∈E_d,train]
+</code></pre>
+<p>All factors must pass. Cᵁ=1 when that check is omitted. D_sim is curated from admitted trajectories only when imagined learning is enabled.</p>
+<ul>
+<li><strong>e_τ</strong>: binary training-admission decision</li>
+<li><strong>v_τ</strong>: candidate validity</li>
+<li><strong>r_d^min</strong>: minimum admitted utility</li>
+<li><strong>C_d^U</strong>: optional uncertainty condition</li>
+<li><strong>ℓ_τ / E_d^train</strong>: supporting evidence label / permitted training sources</li>
+</ul>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>E0–E3 describe origins, not automatic training permission.</li>
+<li>Imagined-learning admission is separately gated.</li>
+<li>Keep original predictions beside observations and version identifiers.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Teaching example: a rollout passes rules and predicts high utility but exceeds the allowed uncertainty. It is rejected as imagined training data. The system may still choose to evaluate it externally if its declared evaluation rule permits.</p>
+<h3>Understanding check</h3>
+<p>Does E3 provenance automatically permit training?</p>
+<ol>
+<li>Yes, all external measurements are sufficient</li>
+<li>No, declared admission and quality criteria still apply</li>
+<li>Only if E1 agrees</li>
+</ol>
+<p><strong>Answer: 2.</strong> Provenance identifies origin; sufficiency is a separate assessment.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS3">§2.3 · Evidence and imagined training data · Equation 8</a></p>
+<h2>8. Improve the actor or the workflow</h2>
+<p><strong>What does a policy update change?</strong></p>
+<p>Feedback must become an appropriate learning signal for the object that is allowed to change.</p>
+<h3>Concise presentation script</h3>
+<p>A policy update can change neural parameters, but it can also change a persistent workflow. Feedback must be converted into a suitable signal: a demonstration, a preference, or a workflow score. Policy data and predictor-adaptation data need not be the same because they optimize different things. An enabled attempt produces a candidate θ′. Acceptance comes later. In a fixed-policy experiment, the update indicator is zero, even though the task state and generated candidates continue to change.</p>
+<h3>Expanded study explanation</h3>
+<p>Use the workflow example to prevent the audience equating every update with expensive fine-tuning. Ask what configuration persists into later tasks. Then distinguish the target of the two data sets: policy learning asks which behavior should be preferred; predictor adaptation asks what outcome should have been forecast. The same interaction can support both, but their filtering and labels need not be identical. Explain the prime on θ′ as “candidate,” not “next accepted version.” The fixed-policy route is a legitimate instantiation with uπ=0. This will stop the class from incorrectly describing code repair as training the coder just because the repaired program changes across rounds.</p>
+<h3>Read the mechanism</h3>
+<p>The symbol θ can denote trainable parameters or a persistent agent workflow. A policy revision changes how candidates are generated or selected. Possible routes include demonstrations, preferences based on evaluated alternatives, and workflow search using evaluation scores. The application declares which route is enabled and which parameters or configuration fields may change.</p>
+<p>Feedback used for policy improvement forms D_policy. Predictor adaptation uses D_adapt, which can contain different records because its target is prediction quality rather than action behavior. Imagined trajectories may supplement policy data only if that learning pathway is enabled and its admission checks have passed. One generic “feedback dataset” can hide these different objectives.</p>
+<p>A policy-update attempt also needs a declared schedule or trigger, appropriate evidence, and enough budget. If no attempt is enabled, θ stays unchanged. When an attempt is enabled, the result is θ′, a proposed configuration. It still needs component acceptance and compatibility evaluation before becoming the retained policy for subsequent interaction.</p>
+<h3>Formula and symbols</h3>
+<pre><code class="language-text">θ′ₖ₊₁ = Update(θₖ,D_policy,k,D_sim,k) if uₖπ=1; otherwise θₖ
+</code></pre>
+<p>The attempt flag includes the declared trigger, sufficient evidence, and budget. Imagined data may be empty. This constructs a candidate; it does not decide retention.</p>
+<ul>
+<li><strong>θ_k / θ′</strong>: current / proposed policy configuration</li>
+<li><strong>u_k^π</strong>: enabled policy-update attempt indicator</li>
+<li><strong>D_policy,k</strong>: records selected for policy improvement</li>
+<li><strong>D_sim,k</strong>: admitted imagined trajectories, if enabled</li>
+</ul>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>A policy can be model parameters or a persistent workflow.</li>
+<li>Policy and predictor datasets serve different targets.</li>
+<li>Proposed θ′ is distinct from retained θ.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Teaching example: feedback favors “inspect the failed assertion before proposing a patch.” Saving this as a validated workflow can revise θ even if no language-model weights change. This illustrates the framework, not a specific reported code update; the paper’s coder is fixed.</p>
+<h3>Understanding check</h3>
+<p>Can θ change without updating neural weights?</p>
+<ol>
+<li>Yes, if an accepted persistent workflow changes</li>
+<li>No, θ always means neural weights</li>
+<li>Yes, merely appending any log changes θ</li>
+</ol>
+<p><strong>Answer: 1.</strong> The framework allows trainable parameters or persistent workflow configurations as the policy object.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS4">§2.4 · Policy learning or workflow revision · Equation 9</a></p>
+<h2>9. Adapt only when the evidence warrants it</h2>
+<p><strong>Why is “insufficient evidence” different from “reliable”?</strong></p>
+<p>The adaptation trigger requires unreliability, sufficient adaptation data, and budget together.</p>
+<h3>Concise presentation script</h3>
+<p>The reliability verdict has three states. Reliable means the declared checks pass over covered candidates. Unreliable can justify adaptation. Insufficient means we lack enough coverage; it is not a certificate of reliability and it does not activate this trigger. An attempt additionally requires enough suitable data and budget. Use predictions attributable to the current model version when judging it. Even when all conditions pass, adaptation only proposes a new predictor. Retention is a separate decision.</p>
+<h3>Expanded study explanation</h3>
+<p>Demonstrate all three reliability states rather than reducing the check to a red/green switch. Start with insufficient coverage and show that adaptation remains off, even if budget is abundant. Next use an unreliable verdict but insufficient adaptation data. Finally satisfy all conditions. Explain the version rule using an old predictor and a revised one: old stored predictions can explain past decisions, but current reliability needs current-version predictions. The data threshold, loss, and trainable subset are application specifications, so the toy interface must label its settings synthetic. A triggered attempt does not guarantee improvement; the candidate predictor still faces component and compatibility checks.</p>
+<h3>Read the mechanism</h3>
+<p>Reliability is assessed for the current predictor version and the relevant candidate range. Historical records must use predictions attributable to that version: either predictions already made by it or new predictions on stored inputs. Mixing old-version prediction errors directly into the current-version estimate would confuse past decision quality with present predictor quality.</p>
+<p>The assessment has three outcomes: reliable, unreliable, or insufficient. Selected actions provide limited coverage, so a small error on a narrow observed subset is not evidence of broad reliability. Insufficient coverage yields “insufficient.” Under the formal trigger, this does not activate adaptation. Subsequent selection still follows the declared evaluation rule and remaining budget.</p>
+<p>An adaptation attempt occurs only when reliability is classified as unreliable, the adaptation dataset is sufficient, and the available update budget covers estimated cost. The application specifies targets, predictive loss, and trainable parameters. A scalar yield supplies an outcome target, not a fully observed next state, though its loss may update trainable upstream parameters.</p>
+<h3>Formula and symbols</h3>
+<pre><code class="language-text">uₖᵂ = 1[ρₖᵂ=unreliable] × 1[D_adapt,k sufficient] × 1[B_update,k≥ĉ_adapt,k]
+</code></pre>
+<p>The reliability assessment can also return reliable or insufficient; both leave this attempt flag at zero. A disabled adaptation pathway also sets uᵂ=0.</p>
+<ul>
+<li><strong>u_k^W</strong>: world-model adaptation attempt indicator</li>
+<li><strong>ρ_k^W</strong>: current-version reliability verdict</li>
+<li><strong>D_adapt,k</strong>: selected adaptation records</li>
+<li><strong>B_update,k</strong>: remaining budget for the proposed attempt</li>
+<li><strong>ĉ_adapt,k</strong>: estimated adaptation cost in matching units</li>
+</ul>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>Use current-version predictions for current reliability.</li>
+<li>Insufficient coverage is neither reliability nor an adaptation trigger.</li>
+<li>Adaptation needs all three conditions and remains provisional.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Synthetic gate: unreliable + 12 usable records + enough budget may enable an attempt under a teaching rule. Changing the verdict to insufficient turns the attempt off. The number 12 is illustrative; the paper does not specify a universal minimum.</p>
+<h3>Understanding check</h3>
+<p>Coverage is insufficient, but data and budget look plentiful. Does Equation 11 trigger?</p>
+<ol>
+<li>Yes, plentiful budget is sufficient</li>
+<li>No, the reliability verdict must be unreliable</li>
+<li>Yes, insufficient means unreliable</li>
+</ol>
+<p><strong>Answer: 2.</strong> Insufficient is a distinct state and does not satisfy the unreliability indicator.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS4">§2.4 · Equations 10–12</a></p>
+<h2>10. A better component can make a worse pair</h2>
+<p><strong>Why check compatibility after checking each component?</strong></p>
+<p>Accept revisions at the level of the assembled decision system, with explicit fallback rules.</p>
+<h3>Concise presentation script</h3>
+<p>A component can improve in isolation yet damage joint behavior. The new policy might propose unfamiliar actions; the new model might rank them poorly. Component checks first decide which proposed versions enter the candidate pair. The pair check then compares that assembled system with the current pair. If it fails, the whole old pair stays. If neither component changes, no new pair comparison is needed. Keep update data, gate data, and final audit data conceptually separate. Acceptance criteria must be declared before inspecting the outcome.</p>
+<h3>Expanded study explanation</h3>
+<p>Work through two cases on the diagram. In the first, the policy component fails but the model passes: the assembled pair is old policy plus proposed model, and that pair must pass compatibility. In the second, both components pass but their pair fails: Equation 18 retains the entire old pair. Do not invent an automatic search through every possible mixture after pair failure. Explain why improving average prediction error is insufficient if error concentrates on candidates favored by the new policy. Then distinguish training, gate selection, and held-out reporting. These roles control what each performance number can legitimately establish and help students recognize repeated-selection bias.</p>
+<h3>Read the mechanism</h3>
+<p>A policy component check measures its declared task utility and constraints against the current policy. A model component check measures relevant predictive quality against the current model. Passed, attempted components enter an assembled candidate pair; a failed or unattempted component contributes its old version. This determines exactly which pair will face compatibility evaluation.</p>
+<p>The pair check addresses interaction: a policy can propose unfamiliar candidates, and a predictor can alter selection or learning signals. Evaluate the assembled system against the current pair under prescribed matched conditions. Matched task conditions do not require identical generated candidates. The check concerns joint decision behavior and prediction suitability on the selected policy’s candidate range.</p>
+<p>If the pair check fails, the entire old pair is retained. If neither component changes, the current pair carries forward without a new pair comparison. Update data construct candidates; gate data choose retained versions; a designated held-out audit set supports final reporting. Reusing a gate for many choices can still motivate an independent final audit.</p>
+<h3>Formula and symbols</h3>
+<pre><code class="language-text">(θₖ₊₁,φ_d,k+1) = (θ̄ₖ₊₁,φ̄_d,k+1) if G_pair=1; otherwise (θₖ,φ_d,k)
+</code></pre>
+<p>Bars identify the candidate components after component checks. Each attempted component enters only if its own gate passes; otherwise its current version is used. Equation 18 then makes the pair-level decision.</p>
+<ul>
+<li><strong>θ_k / φ_d,k</strong>: current policy / current predictor</li>
+<li><strong>θ̄ / φ̄</strong>: assembled components after component acceptance</li>
+<li><strong>G_k^pair</strong>: compatibility acceptance decision</li>
+<li><strong>k+1</strong>: next cycle’s retained version, possibly unchanged</li>
+</ul>
+<p><a href="../media/videos/retention-en.mp4">Play the narrated animation</a> · <a href="../media/videos/retention-en.srt">SRT</a></p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>Component checks compare each proposal with its current version.</li>
+<li>Compatibility evaluates the assembled pair.</li>
+<li>Pair failure retains the entire old pair.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Synthetic example: a new predictor lowers average error, but ranks patches from the new policy poorly. Both may pass separate checks, yet fail the pair check. The retained system is the old pair, not an untested mixture chosen after failure.</p>
+<h3>Understanding check</h3>
+<p>Both proposed components pass, but their pair fails. What is retained?</p>
+<ol>
+<li>Both new components</li>
+<li>The entire old pair</li>
+<li>An arbitrary old/new mixture</li>
+</ol>
+<p><strong>Answer: 2.</strong> Equation 18 falls back to the entire current pair when pair acceptance fails.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS5">§2.5 · Equations 13–18</a></p>
+<h2>11. Code repair: hold the coder fixed</h2>
+<p><strong>What does this comparison isolate?</strong></p>
+<p>A shared coder and candidate budget separate the value of selection from the value of predictor adaptation.</p>
+<h3>Concise presentation script</h3>
+<p>Code repair gives us a relatively controlled comparison. The same fixed coder proposes four revisions, then a selector chooses one to execute. Online tests guide repair; hidden tests measure final success. Compare a static verifier, a fixed predictor, and an adapted predictor. One implementation detail matters: the official reproduction guide trains adaptation on recorded transitions, and final evaluation does not run optimizer updates. Our small interactive loop explains the protocol, rather than reproducing that benchmark training procedure.</p>
+<h3>Expanded study explanation</h3>
+<p>Begin by circling the fixed coder label. Students often hear “repair improves” and assume the code generator was trained. Here the program changes, but the coder remains fixed. Explain the four-candidate, one-execution protocol and the separation of online and hidden tests. Then explicitly distinguish the paper’s general adaptation pathway from the released reproduction procedure: recorded-transition training produces the adapted checkpoint, and final evaluation does not optimize it online. This is a repository-backed detail, not a newly inferred experimental result. The synthetic laboratory may visualize an update within a cycle for teaching, but must not be described as a timing-faithful reproduction of those benchmark episodes.</p>
+<h3>Read the mechanism</h3>
+<p>The policy is ReasonFlux-Coder-7B and remains fixed. In each repair round it proposes four revisions, and one is chosen for execution. W1, a 3B execution-outcome predictor adapted from Qwen2.5-Coder-3B-Instruct with LoRA and the JEPA-Anything design, returns five-class probabilities for each candidate–test pair. These probabilities are aggregated to rank revisions.</p>
+<p>The core comparison uses 200 CodeContests tasks, three seeds, and at most three feedback rounds. Random selection, a capacity-matched static verifier, a fixed world model, and a feedback-adapted world model share the coder and candidate budget. Online tests provide repair feedback; hidden tests determine final all-pass success. These are different evaluation roles.</p>
+<p>The official repository adds an important implementation detail beyond the paper’s high-level feedback loop. Its reproduction guide documents a four-stage adaptation training chain on recorded transitions. The final benchmark evaluation performs no optimizer updates. Comparing fixed and adapted checkpoints therefore does not mean that the released final evaluation performs online gradient descent during each of the 600 episodes.</p>
+<p>The classroom repair laboratory illustrates prediction, feedback, conditional adaptation, and retention with small synthetic examples. It does not load ReasonFlux, W1, or the benchmark checkpoints, and it is not a literal replay of the released training chain. Its purpose is to reveal decision logic while keeping reported research results in a separate evidence panel.</p>
+<h3>Original figure reading</h3>
+<p><img src="../media/originals/figure-3.png" alt="Code repair: isolate selection and predictor adaptation"></p>
+<p>The code study keeps the code-generating policy fixed, making it useful for separating predictive candidate selection from further improvement of the predictor.</p>
+<ul>
+<li>Panel a is an illustrative program repair. It draws three example patches for readability, but the benchmark actually proposes four revisions per round and allows at most three feedback rounds.</li>
+<li>Read panel b together with Table 2: static verification gives 26.3% hidden-test success, fixed world-model selection 29.2%, and world-model adaptation 31.2%. The generator remains ReasonFlux-Coder-7B.</li>
+<li>Panel c checks the link from prediction to decisions. In the static-verifier versus fixed-WM comparison, ranking accuracy rises from 66.5% to 72.8% and Brier score falls from 0.488 to 0.358; the adaptive arm is not the arm in this diagnostic.</li>
+<li>Panel d checks feedback usage: online test-suite calls per task remain about 3.7. This supports similar external test usage, rather than equal total training or inference computation.</li>
+<li>Panels e and f extend selection evaluation to APPS Introductory and LiveCodeBench v6. Their 46.37% and 33.05% metrics are mean complete-suite success across three seeds; do not substitute public-test success.</li>
+</ul>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.F3">Paper v1 · Figure 3 · PDF p.12</a></p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>The coder stays fixed while the predictor configuration differs.</li>
+<li>Online feedback and hidden final evaluation have distinct roles.</li>
+<li>Repository final evaluation uses fixed checkpoints without optimizer updates.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Teaching example: the same generator offers A–D to two selectors. If their choices differ, this can demonstrate a selector effect. If their generators also differ, candidate quality becomes another possible explanation.</p>
+<h3>Understanding check</h3>
+<p>Which object is fixed in the central repair comparison?</p>
+<ol>
+<li>The repaired program</li>
+<li>ReasonFlux-Coder-7B</li>
+<li>Every world-model checkpoint</li>
+</ol>
+<p><strong>Answer: 2.</strong> Programs and feedback evolve, but the coder is held fixed while selection and predictor settings are compared.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.SS1">§3.1 · §6.1 · Table 4; repository reproduction guide</a></p>
+<h2>12. Read the repair gains carefully</h2>
+<p><strong>Do better forecasts translate into more successful repairs?</strong></p>
+<p>The results show successive gains from predictive selection and predictor adaptation at similar online test usage.</p>
+<h3>Concise presentation script</h3>
+<p>Read these as two successive comparisons. Predictive selection raises hidden success from 26.3 to 29.2%, and predictor adaptation reaches 31.2%, with similar online test usage. Better ranking and lower Brier error are reported for the fixed model versus the static verifier. The exact paired gain is 2.83 percentage points, with its reported interval; rounded table subtraction gives 2.9. These results support selection and adaptation, while the fixed coder limits claims about joint policy–model improvement.</p>
+<h3>Expanded study explanation</h3>
+<p>Read the table in two comparisons. First compare static verifier with fixed world model; then compare fixed with adapted world model. Keep the fixed coder and candidate budget visible. Explain why hidden success, ranking accuracy, and Brier score answer different questions. Identify precisely which systems have reported predictive diagnostics. When discussing uncertainty, use the paper’s paired estimate and interval rather than creating an interval for the adaptive gain. Tasks recur across seeds, so the paper uses task-level resampling for clustered inference. Finally separate matched online test use from total computational cost. We have transcribed the results and inspected the evidence; we have not independently run these models or re-estimated their statistics.</p>
+<h3>Read the mechanism</h3>
+<p>Table 2 reports hidden all-pass rates of 26.0% for Random-K, 26.3% for the static verifier, 29.2% for the fixed world model, and 31.2% for the adapted world model. Their mean online suite calls per task are 3.72, 3.72, 3.71, and 3.72. The comparison concerns similar external test usage, not identical overall computation.</p>
+<p>For the fixed-world-model versus static-verifier comparison, ranking accuracy increases from 66.5% to 72.8% and five-class Brier score falls from 0.488 to 0.358. Ranking accuracy asks whether candidates are ordered well. Brier score measures probabilistic prediction error. These diagnostics connect forecasting quality with final repair success, but are different metrics.</p>
+<p>The paper gives a paired gain of +2.83 percentage points for fixed world model versus static verifier, with a 95% interval of [+0.17,+5.50]. Subtracting rounded displayed rates gives 2.9 points; that rounded subtraction is not the same numerical quantity as the reported paired estimate. An adaptive-model Brier score is not supplied in Figure 3c.</p>
+<p>Additional evaluations report 46.37% on APPS Introductory and 33.05% on LiveCodeBench v6 for JEPA-Anything-guided selection, averaged across three seeds. These extend evidence about selection across coding benchmarks. They do not establish that both policy and predictor continuously improve together, because the coder remains fixed in these reported comparisons.</p>
+<h3>Formula and symbols</h3>
+<pre><code class="language-text">Brier = (1/N) Σᵢ₌₁ᴺ Σ_c₌₁⁵ (pᵢc − yᵢc)²
+</code></pre>
+<p>This is the standard explanatory definition of the five-class Brier metric, not a numbered equation introduced by the paper. Lower is better. The site does not recompute the reported values.</p>
+<ul>
+<li><strong>N</strong>: number of evaluated predictions</li>
+<li><strong>p_ic</strong>: predicted probability of class c for example i</li>
+<li><strong>y_ic</strong>: 1 for the observed class, otherwise 0</li>
+<li><strong>c=1…5</strong>: the five execution-result classes</li>
+</ul>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>26.3 → 29.2 → 31.2% supports two successive comparisons.</li>
+<li>Brier and ranking diagnostics compare static verifier with fixed WM.</li>
+<li>Keep exact paired estimates separate from rounded rate subtraction.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Metric illustration: forecasting five classes as probabilities incurs Brier loss against the observed one-hot class. A confident wrong forecast is penalized more than a mildly uncertain wrong one. This illustrates the standard metric, not a recomputation of the paper’s results.</p>
+<h3>Understanding check</h3>
+<p>What does similar online suite usage establish?</p>
+<ol>
+<li>Identical training cost</li>
+<li>Similar external test usage in this comparison</li>
+<li>Identical latency and hardware</li>
+</ol>
+<p><strong>Answer: 2.</strong> Prediction, adaptation, and acceptance computation are additional resource dimensions.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.SS1">§3.1 · Table 2 · §6.2</a></p>
+<h2>13. GUI: success, errors, and relative gains</h2>
+<p><strong>Do fewer actions always mean a better agent?</strong></p>
+<p>Task completion and error diagnostics must be read together; controller attribution needs implementation context.</p>
+<h3>Concise presentation script</h3>
+<p>The checkbox task shows why action count is not enough. The middle configuration takes only 2.93 actions but has more incorrect submissions; the final one takes 3.21 and reaches 99% success. The repository says this selected controller follows policy ranking, so 99% does not isolate world-model ranking. On OSWorld, the gains are relative percentages. An 18.4% relative gain multiplies the baseline by 1.184; it does not add 18.4 percentage points.</p>
+<h3>Expanded study explanation</h3>
+<p>Ask students to choose between the middle and final checkbox configurations using actions alone, then reveal the incorrect submissions. This makes multi-metric evaluation concrete. Clarify that diagnostics are not interchangeable: repeated clicks, incorrect episodes, and task success count different things. Introduce the official repository controller detail as additional implementation evidence. It narrows attribution without erasing the reported performance. Explain alpha=0 in plain language as following policy ranking; no internal blending derivation is needed. For OSWorld, calculate one hypothetical relative gain and label the starting value synthetic. Never convert +18.4% into +18.4 percentage points or invent an absolute success endpoint. Ask students to name the comparator before interpreting any gain.</p>
+<h3>Read the mechanism</h3>
+<p>On MiniWoB++ click-checkboxes, the reported RSI-Anything configurations reach 51%, 79%, and 99% success. Average actions change from 5.30 to 2.93 to 3.21. The middle configuration uses the fewest actions but has 21 incorrect-submission episodes, compared with 9 initially and 1 finally. Minimizing actions alone would select the wrong trade-off.</p>
+<p>Repeated clicks fall from 237 initially to 0 finally. The final configuration combines high success with fewer actions than baseline and fewer submission errors. The paper reports policy and world-model updates through interaction feedback. It also reports a world-based control with success of 49%, 96%, and 98% across the corresponding configurations.</p>
+<p>The official GUI results guide adds an attribution caveat: the development-selected controller uses alpha=0 and follows policy ranking, while pure world-based control ranks the same policy candidates by world-model values. The 99% endpoint therefore does not isolate a causal contribution from world-model ranking. Framework-level descriptions and this particular selected controller should be distinguished.</p>
+<p>OSWorld uses relative improvement: RSI-Anything is +18.4% versus the initial agent and +5.5% versus RLAnything; RLAnything is +12.3% versus the initial agent. These are relative percentages, not percentage points. The absolute initial success rate is not supplied here, so the absolute endpoint cannot be recovered from these figures alone.</p>
+<h3>Formula and symbols</h3>
+<pre><code class="language-text">Relative gain = 100 × (s_method / s_reference − 1)%
+</code></pre>
+<p>A percentage-point difference instead subtracts success rates expressed in percent. These answer different questions.</p>
+<ul>
+<li><strong>s_method</strong>: method success rate</li>
+<li><strong>s_reference</strong>: reference success rate</li>
+</ul>
+<h3>Original figure reading</h3>
+<p><img src="../media/originals/figure-4.png" alt="GUI results: read success, actions and errors together"></p>
+<p>The GUI figure combines two environments and several diagnostics. Relative improvements on OSWorld use a different unit from the percentage-point changes between MiniWoB++ success rates.</p>
+<ul>
+<li>Panels a and b illustrate a checkbox task and a spreadsheet task. They explain what an action and an observable target state mean, rather than reporting a single shared benchmark.</li>
+<li>Panel c shows MiniWoB++ selected-controller success of 51%, 79% and 99% across three evaluated configurations. The world-based control follows a separate 49%, 96%, 98% sequence.</li>
+<li>Read panels e–g jointly: the intermediate configuration uses only 2.93 actions on average but has 21 incorrect-submission episodes. The final configuration uses 3.21 actions and has only one such episode.</li>
+<li>The 39.4% action reduction compares 5.30 baseline actions with 3.21 final actions. It is a relative reduction in actions, not a 39.4-percentage-point success gain.</li>
+<li>OSWorld gains are relative: RSI-Anything is +18.4% versus the initial agent and +5.5% versus RLAnything. The figure does not supply an absolute success rate from which to claim an 18.4-point gain.</li>
+<li>The official repository further separates development-selected policy ranking from pure world-based ranking. The 99% selected-controller endpoint should not be treated as an isolated ablation of world-model ranking.</li>
+</ul>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.F4">Paper v1 · Figure 4 · PDF p.14</a></p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>Fewer actions can coexist with more incorrect submissions.</li>
+<li>99% selected-controller success does not isolate WM ranking.</li>
+<li>OSWorld gains are relative percentages.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Synthetic unit example: if initial success were 40%, an 18.4% relative improvement would be 40%×1.184=47.36%, a 7.36-percentage-point gain. The 40% starting value is invented for teaching, not the OSWorld baseline.</p>
+<h3>Understanding check</h3>
+<p>Does +18.4% relative improvement mean +18.4 percentage points?</p>
+<ol>
+<li>Yes</li>
+<li>No; it multiplies the baseline by 1.184</li>
+<li>Only for OSWorld</li>
+</ol>
+<p><strong>Answer: 2.</strong> An absolute baseline is needed to compute the percentage-point difference.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.SS2">§3.2 · Figure 4 · §6.1; official GUI RESULTS.md</a></p>
+<h2>14. Five planning versions, one benchmark</h2>
+<p><strong>What does the laboratory progression demonstrate?</strong></p>
+<p>Successive retained policies improve protocol-aligned planning; physical execution is a separate evaluation.</p>
+<h3>Concise presentation script</h3>
+<p>The lab result follows five versions of one 4B policy on the same 200-task planning benchmark. Final Score rises from 21.80 to 46.01%, a 24.21-point gain. The final score is 0.69 points above the reference, without a supplied interval for that difference. Remember the metric: it combines action-sequence and parameter alignment. This supports successive planning improvement, while real equipment execution and sustained joint policy–model improvement require further evidence. Planning alignment and execution success answer different questions.</p>
+<h3>Expanded study explanation</h3>
+<p>Read the five points as versions of one policy, not five independent model families. State the benchmark and metric before quoting the improvement. Ask what Final Score measures and what observation would be needed to establish physical execution. Explain the diminishing increments without inferring a general learning law from only five selected points. The 4B label describes the planning policy, while the reference is a multi-component Actor–Simulator–Selector system; avoid turning that into an unsupported total-cost ratio. Finally, distinguish the 24.21-point within-process progression from the 0.69-point reference comparison. They answer different questions and have different evidence strength. Ask students to name the comparator before interpreting any gain.</p>
+<h3>Read the mechanism</h3>
+<p>LabHorizon examines laboratory planning under reagent, instrument, and ordering constraints. Level 1 measures visually grounded next-action accuracy. Level 2 measures protocol-aligned action sequences, with a Final Score combining action-sequence similarity and parameter accuracy. The reported F200 setting contains 200 tasks. This score is not a rate of successful physical experiments.</p>
+<p>The paper follows five consecutive versions of the same 4B policy in one development sequence. Their Level-2 scores are 21.80%, 38.03%, 41.99%, 44.56%, and 46.01%. The final-minus-initial difference is 24.21 percentage points. The plot’s horizontal spacing is schematic development order, not elapsed training time or equal update cost.</p>
+<p>The final version scores 46.01% versus 45.32% for the Actor–Simulator–Selector reference, a difference of 0.69 percentage points. Level-1 accuracy is 0.700 versus 0.665. These are reported benchmark means; the paper supplies no uncertainty interval establishing statistical significance for that 0.69-point difference. Model size alone also does not determine total system cost.</p>
+<p>This experiment provides evidence for successive retained policy improvement in planning. It does not by itself establish continuous reciprocal improvement of policy and world model. The framework diagram includes broader update routes, while the quantitative series follows policy versions. Reliable execution on real equipment, with its interfaces and failure modes, remains an additional validation requirement.</p>
+<h3>Original figure reading</h3>
+<p><img src="../media/originals/figure-5.png" alt="Lab planning: follow retained policy versions"></p>
+<p>This figure follows five versions of one 4B policy in development order on the same 200-task F200 Level-2 benchmark. The score measures plan alignment, not successful robot execution.</p>
+<ul>
+<li>Panel a connects a protocol, proposed action sequences and parameter choices to predictive evaluation and an execution plan. Dashed arrows represent possible update routes in the framework.</li>
+<li>Panels b and c follow five retained policy versions: 21.80%, 38.03%, 41.99%, 44.56% and 46.01%. The total increase is 24.21 percentage points.</li>
+<li>Final Score combines action-sequence similarity and parameter accuracy. Read 46.01% as a benchmark score, rather than the fraction of wet-lab experiments completed successfully.</li>
+<li>The dashed 45.32% line is the Actor–Simulator–Selector reference. The last version is higher by 0.69 percentage points; model size alone does not control all resources in the compared systems.</li>
+<li>The x-axis is development order with schematic spacing. It does not report equal training cost per version, and the plotted progression does not by itself measure a jointly improving predictor.</li>
+</ul>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.F5">Paper v1 · Figure 5 · PDF p.15</a></p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>F200 Final Score measures planning alignment.</li>
+<li>Five policy versions improve from 21.80 to 46.01%.</li>
+<li>A 0.69-point mean advantage has no supplied significance interval.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Teaching example: a plan may list the right steps but use an incorrect duration or reagent amount. A score combining sequence and parameter quality can reflect both. It still cannot prove that a robot executed the plan safely or successfully.</p>
+<h3>Understanding check</h3>
+<p>What does 46.01% describe?</p>
+<ol>
+<li>Physical laboratory execution success</li>
+<li>Mean F200 Level-2 protocol-aligned planning score</li>
+<li>World-model calibration accuracy</li>
+</ol>
+<p><strong>Answer: 2.</strong> Final Score combines sequence similarity and parameter accuracy.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.SS3">§3.3 · Figure 5 · Table 3</a></p>
+<h2>15. Chemistry: compare within each screen</h2>
+<p><strong>How much can feedback-guided search achieve within a fixed observation budget?</strong></p>
+<p>Two separate measured-yield screens support budgeted selection; the released flow evaluation is frozen-model pool replay.</p>
+<h3>Concise presentation script</h3>
+<p>There are two chemistry screens. At twenty observations, the GC screen reaches 93.0 versus 87.5%. At forty, the separate flow screen reaches 96.15 versus 82.16%. Both measure best-so-far yield. The released flow evaluation replays a fixed pool of measured conditions with frozen predictions; feedback changes the next selection. This supports budgeted sequential search, while it does not show a new physical experiment or neural weight update at every step of that released loop.</p>
+<h3>Expanded study explanation</h3>
+<p>Start by separating the two screens on the page. Read each endpoint together with its method and budget. Explain a running maximum using three invented yields, because monotonic curves can otherwise look like guaranteed improvement at every step. Then introduce the repository-backed implementation scope: 321 measured candidates, eight initial observations inside forty, one hundred runs, frozen predictions, and history-dependent expected-improvement selection. Feedback can change decisions without changing model weights. These details prevent conflating replay with a continuously adapting physical laboratory. The paper’s broad selection contract remains useful, while the released evaluation supports a narrower, precisely describable empirical claim. Ask students to name the comparator before interpreting any gain.</p>
+<h3>Read the mechanism</h3>
+<p>The paper studies two Suzuki–Miyaura screens, comparing RSI-Anything with Bayesian optimization inside each protocol. In the GC-analyzed Pd–NHC–DMS screen, the best observed yield after 20 evaluations is 93.0% versus 87.5%, a 5.5-percentage-point difference. This is one screen with its own reaction, choices, and measurement method.</p>
+<p>In the separate flow LC–MS screen using Pd(OAc)2, mean best observed yield after 40 evaluations is 96.15% versus 82.16%, a 13.99-point difference. Do not splice the two screens into a single trajectory or average their endpoints. “Best observed” is a running maximum, so its curve cannot decrease even when the newest observation is worse.</p>
+<p>The official reaction-optimization guide describes the released flow evaluation as sequential replay over a fixed pool of 321 measured conditions, with 100 runs and eight initial observations included within the total budget of 40. Predictions remain frozen. Feedback changes expected-improvement selection and removes already observed candidates rather than updating neural weights at every observation.</p>
+<p>This implementation detail narrows the claim: it is a reproducible feedback-guided selection experiment over measured data. It is not evidence that the released inference loop performs a fresh wet-lab experiment after every choice. More general physical deployment or transfer to different chemistry would need evaluation beyond the reported pools, protocols, and budgets.</p>
+<h3>Original figure reading</h3>
+<p><img src="../media/originals/figure-6.png" alt="Reaction search: match budgets within each screen"></p>
+<p>The two halves concern separate Suzuki–Miyaura screening protocols. Each endpoint compares methods at the same observation count within its own screen.</p>
+<ul>
+<li>Read panels a–c as the GC screen: after 20 observations, the best observed yield is 93.0% for RSI-Anything and 87.5% for Bayesian optimization, a difference of 5.5 percentage points.</li>
+<li>Read panels d–f separately as the flow LC–MS screen: after 40 observations, mean best observed yield is 96.15% versus 82.16%, a difference of 13.99 percentage points.</li>
+<li>A best-so-far curve cannot decrease: it remembers the highest measured yield seen so far. It is not a claim that every next experiment has a higher yield.</li>
+<li>The chemical structures and arrows explain condition choice and feedback. They do not establish that every observation caused a neural-network weight update.</li>
+<li>The official flow-screen release replays measured yields from a fixed pool of 321 conditions with eight initial observations included in the budget of 40. Its prediction table remains frozen while feedback changes expected-improvement selection.</li>
+<li>These screen-specific results support efficient search in the reported pools and budgets; they do not establish transfer to arbitrary reactions, or the performance of an autonomous laboratory.</li>
+</ul>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.F6">Paper v1 · Figure 6 · PDF p.17</a></p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>GC: 20 observations, 93.0 vs 87.5%.</li>
+<li>Flow: 40 observations, 96.15 vs 82.16%.</li>
+<li>Released flow replay uses frozen predictions over a measured pool.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Teaching example: yields 40, 80, 55 give best-so-far values 40, 80, 80. The flat final segment does not mean the third condition achieved 80; it means the best previously observed condition remains 80.</p>
+<h3>Understanding check</h3>
+<p>Why can a best-so-far curve stay flat after a poor observation?</p>
+<ol>
+<li>The poor result is secretly improved</li>
+<li>The metric retains the largest earlier observation</li>
+<li>Every condition has the same yield</li>
+</ol>
+<p><strong>Answer: 2.</strong> The running maximum records the best value seen, not the latest yield.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.SS4">§3.4 · Figure 6 · §6.1; official reaction guide</a></p>
+<h2>16. Immune science: construction versus analysis</h2>
+<p><strong>Which parts improve, and which predictor stays frozen?</strong></p>
+<p>Workflow evolution constructs a model; downstream self-correcting analysis uses its fixed parameters.</p>
+<h3>Concise presentation script</h3>
+<p>Separate construction from analysis. First, workflow search selects and retains a model-building workflow that produces the immune world model. Then an analysis agent uses that model with frozen parameters, revising interventions and hypotheses through evidence and self-correction. The final SIRPα and IL-36γ combination is a prospective nomination for testing. It is a useful concrete output, while the evidence does not establish a validated therapy or continual predictor retraining during downstream analysis.</p>
+<h3>Expanded study explanation</h3>
+<p>Draw a vertical boundary between construction and downstream analysis. On the left, a retained model-building workflow produces the immune predictor. On the right, candidate interventions and hypotheses change while the predictor is frozen. Ask which object each arrow modifies. Explain the three biological scales as input and prediction contexts, without implying a fully mechanistic simulator of every immune process. Read the therapeutic endpoint using prospective language. The paper cites a separate immune-world-model study for detailed development and evaluation. Our lesson summarizes this application’s role in RSI-Anything; it neither independently validates that model nor turns the nomination into a treatment recommendation.</p>
+<h3>Read the mechanism</h3>
+<p>The construction stage uses Agent Genesis to search scientific-agent workflows and model configurations. The selected model-building workflow is retained and produces an action-conditioned immune world model. This establishes a persistent workflow and a resulting predictor. It should be distinguished from the later analysis stage, which uses the constructed model rather than continually retraining it.</p>
+<p>The model represents cellular states, tissue immune context, and individual context. Explicit actions include cytokines, genetic perturbations, or candidate therapies. Its readouts support forecasting and interpretation across these scales. Measured perturbation evidence supports development; withheld interventions and biological contexts assess forecasting and action composition. These are predictive evaluations, not direct proof of therapeutic benefit.</p>
+<p>During downstream analysis, world-model parameters are frozen while analysis state, candidate interventions, tool use, and hypothesis ranking can evolve. The analysis agent coordinates inference, evaluation, and self-correction. Revising a hypothesis is therefore not the same as adapting the underlying world model. The stage distinction is essential when mapping this application onto the general framework.</p>
+<p>The paper reports that self-correction removed screened cytokine-pair candidates, and integrated evidence led to a prospective nomination combining SIRPα inhibition with IL-36γ-axis modulation. This is a concrete hypothesis for subsequent experimental testing. Its appearance at the end of an end-to-end workflow does not establish validated efficacy, clinical suitability, or completed therapeutic experimentation.</p>
+<h3>Original figure reading</h3>
+<p><img src="../media/originals/figure-7.png" alt="Immune science: construction and analysis are different stages"></p>
+<p>The application joins scientific-workflow evolution, immune-world-model construction and downstream analysis. Its final therapeutic combination is a hypothesis awaiting experimental validation.</p>
+<ul>
+<li>Read panel A in stages. During construction, workflow search selects a persistent model-building workflow; that workflow produces the immune predictor.</li>
+<li>During downstream analysis, the constructed predictor is frozen. The analysis state, tool use, intervention candidates and hypothesis ranking can still change through inference and self-correction.</li>
+<li>Panel B makes the action-conditioned prediction concrete: cellular, tissue and individual contexts form the state, while an intervention supplies the action whose consequences are forecast.</li>
+<li>Measured perturbations support development and withheld interventions or contexts assess forecasting. A predicted biological readout and a measured outcome retain different evidential roles.</li>
+<li>The SIRPα inhibition plus IL-36γ-axis modulation nomination is prospective. Neither this framework diagram nor the paper establishes therapeutic efficacy in clinical use.</li>
+</ul>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.F7">Paper v1 · Figure 7 · PDF p.18</a></p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>Construction retains a workflow and its resulting model.</li>
+<li>Downstream predictor parameters stay frozen.</li>
+<li>The therapeutic nomination awaits experimental testing.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Teaching distinction: deleting a poorly supported candidate from the hypothesis list changes analysis state. Updating model weights to better predict a held-out intervention would change the predictor. The reported downstream analysis does the former while keeping predictor parameters fixed.</p>
+<h3>Understanding check</h3>
+<p>What stays fixed in downstream immune analysis?</p>
+<ol>
+<li>All hypotheses</li>
+<li>World-model parameters</li>
+<li>The analysis state</li>
+</ol>
+<p><strong>Answer: 2.</strong> Hypotheses and analysis can change while the constructed predictor’s parameters remain frozen.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.SS5">§3.5 · Figure 7 · §6.1</a></p>
+<h2>17. One framework, several evidence scopes</h2>
+<p><strong>What has the paper established, and what remains open?</strong></p>
+<p>Cross-domain reuse of a mechanism is different from sustained mutual improvement within one task.</p>
+<h3>Concise presentation script</h3>
+<p>The evidence is strongest when we match each claim to its experiment. Code supports selection and predictor adaptation; lab results support policy progression; chemistry supports budgeted search. These do not combine automatically into proof of sustained mutual improvement inside one task. The authors explicitly call for joint multiround evaluation. Keep the useful contribution and the open question together: a reusable improvement protocol has empirical support, while its strongest long-term coupled claim still needs a dedicated test.</p>
+<h3>Expanded study explanation</h3>
+<p>Show the update-scope matrix and ask students to name the changed object in each row. This consolidates the entire lesson. Read the discussion’s coupled-evaluation limitation in your own words and distinguish absence of evidence from evidence of impossibility. The paper offers useful mechanisms and results; the missing joint longitudinal study is a research opportunity, not a reason to discard all findings. Emphasize two levels of qualification: empirical scope across applications and local reliability scope over covered candidates. Both matter because a model can look good on selected observations while a new policy moves into unmeasured regions. Preserve the difference between author claims, implementation details, and our proposed follow-up tests.</p>
+<h3>Read the mechanism</h3>
+<p>Read Table 4 before making a broad claim. Code repair fixes the coder and compares selection plus predictor adaptation. Laboratory planning follows successive policy versions. GUI reports updates to both components, with controller-specific attribution caveats. Chemistry evaluates feedback-guided choices; the released flow replay freezes predictions. Immune science separates construction from frozen-model downstream analysis.</p>
+<p>These are complementary demonstrations of a common mechanism, not interchangeable proofs of every pathway. The discussion explicitly says joint multiround evaluation is needed to establish sustained mutual improvement of policy and world model within a single task. No number of different domains automatically supplies that missing longitudinal comparison or proves unrestricted recursive improvement.</p>
+<p>Other limits are domain-specific. Planning alignment needs equipment-level execution validation; chemistry is bounded by the reported screens and budgets; a therapeutic nomination awaits experimentation. Reliability conclusions are also bounded by observed candidate coverage. A strong reading preserves these boundaries while recognizing evidence for predictive selection, predictor adaptation, policy progression, and measured-feedback search.</p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>Domain generality is reuse of the improvement procedure.</li>
+<li>Sustained coupled improvement needs joint multiround evidence.</li>
+<li>Evaluate each claim against its actual update scope.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Evidence exercise: “A fixed coder plus an improved predictor raises repair success” is supported in its reported setting. “Every domain updates both components every round” is not. “Any future policy remains covered by the current reliability test” is also not supported.</p>
+<h3>Understanding check</h3>
+<p>Which conclusion requires further joint multiround evaluation?</p>
+<ol>
+<li>Predictive selection can help reported code repair</li>
+<li>Sustained mutual policy–model improvement within one task</li>
+<li>Five reported lab versions have increasing scores</li>
+</ol>
+<p><strong>Answer: 2.</strong> The paper explicitly identifies this longitudinal coupled claim as requiring further evidence.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S5">§5 Discussion · Table 4</a></p>
+<h2>18. Where does this sit among learning methods?</h2>
+<p><strong>How is the loop different from reflection, planning, or self-training alone?</strong></p>
+<p>The distinction is a combination of predictive choice, feedback-driven revision, and accepted policy–model retention.</p>
+<h3>Concise presentation script</h3>
+<p>Reflection, learning, and planning contribute different capabilities. Reflection can revise the current answer. Policy learning can persist a behavioral change. A world model can forecast consequences before execution. RSI-Anything organizes these around feedback records and acceptance rules for a policy–model pair. Its contribution is the connection, not the invention of every component. To compare methods fairly, ask what changes, which evidence justifies the change, and what configuration survives into later decisions.</p>
+<h3>Expanded study explanation</h3>
+<p>Keep this comparison conceptual rather than building a leaderboard of unrelated methods. Use three columns: object changed, evidence used, and retained artifact. Place within-task reflection, persistent policy learning, fixed world-model planning, and the complete RSI-Anything protocol in those columns. Methods can overlap, so avoid absolute claims that one family never uses a component. The paper’s related-work section provides examples, but our teaching distinction is functional. Ask the audience to identify the extra machinery needed to turn a planner into a retained improvement loop. Their answer should include prediction–observation records, update rules, version-aware reliability, component checks, and pair acceptance. Ask students to name the comparator before interpreting any gain.</p>
+<h3>Read the mechanism</h3>
+<p>Within-task reflection uses feedback to revise an answer or action. It can help immediately, but it is not necessarily a persistent policy revision. Self-training and preference learning can make persistent updates, yet they do not automatically provide a world model that forecasts action consequences or an explicit test of policy–predictor compatibility.</p>
+<p>World-model planning evaluates possible futures before acting. That supplies the prospective selection capability. A fixed planning system, however, need not revise or retain either component from new evidence. RSI-Anything’s protocol explicitly connects forecasts to observations, observations to candidate revisions, and revisions to acceptance decisions that determine the next round’s system.</p>
+<p>The paper builds on existing work rather than claiming to invent prediction, verification, or feedback learning individually. Its organizing emphasis is the coupled policy–model system, version-aware reliability, conditional adaptation, and compatibility-aware retention. The instantiated algorithms remain domain-specific. A fair comparison asks which object changes, what evidence drives it, and what is retained.</p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>Reflection can change an answer without changing the actor.</li>
+<li>Planning can use a predictor without adapting it.</li>
+<li>The protocol organizes the connection and acceptance of these capabilities.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Comparison exercise: take a planner that always uses the same policy and model. Adding a longer search horizon changes inference. Adding a validated new policy version changes the retained system. These are different experimental interventions.</p>
+<h3>Understanding check</h3>
+<p>A fixed planner searches deeper with the same policy and model. What changes?</p>
+<ol>
+<li>Inference effort, without necessarily revising the retained system</li>
+<li>Automatically both neural models</li>
+<li>The acceptance thresholds must change</li>
+</ol>
+<p><strong>Answer: 1.</strong> More inference and accepted system revision are distinct interventions.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S4">§4 Related Work · §5</a></p>
+<h2>19. Design the missing coupled experiment</h2>
+<p><strong>What experiment would test sustained mutual improvement?</strong></p>
+<p>A proposed study should follow both components over repeated cycles, under matched resources and independent audits.</p>
+<h3>Concise presentation script</h3>
+<p>Here is a proposed next study. In one task family, compare no updates, policy-only updates, model-only updates, and joint updates across repeated cycles. Track predictive quality on the candidates the current policy actually proposes, alongside joint task performance. Match clearly defined resources and include checking costs. Keep a protected audit stream and log rejected updates too. This would test when coupling produces sustained benefits, rather than assuming that separate component improvements must combine successfully. Our proposal is a study design, not a paper result.</p>
+<h3>Expanded study explanation</h3>
+<p>Signal the change in evidence status before discussing this chapter: these are our research proposals inspired by the paper’s stated limitations. Walk through the four routes and ask what confound each controls. Joint updates may consume more computation, so measuring only external observations can be insufficient for one question while still appropriate for another. Decide the comparison question first. Explain why independent audits matter when gate data repeatedly select versions. Also log no-change cycles and rejected revisions; otherwise a smooth selected-version curve can hide expensive failures. The goal is to determine when coupling helps and where it breaks, not to assume improvement in advance.</p>
+<h3>Read the mechanism</h3>
+<p>Proposed follow-up, not a reported result: choose one task family and run four controlled routes—neither component updates, policy only, model only, and both. Keep objectives, interfaces, candidate allowances, acceptance rules, and resource definitions fixed. Follow accepted versions across multiple cycles and evaluate on later tasks, rather than comparing only an initial and final checkpoint.</p>
+<p>Add ablations of conditional adaptation and compatibility retention while measuring the cost of their checks. Record current-version prediction quality on the current policy’s candidate distribution, observed coverage, selected actions, rejected updates, and resource usage. Component performance and joint decision performance should both be reported. A failed proposed update is informative and should not disappear from the log.</p>
+<p>Use update data for candidate construction, gate data for selection, and a protected audit stream for final conclusions. Account for repeated choices and recurring tasks when estimating uncertainty. Examine novel candidate regions and distribution shifts explicitly. If joint gains disappear when observations or computation are matched, that result would constrain the mechanism’s claimed advantage rather than merely lowering a headline score.</p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>This chapter proposes tests; it does not add paper results.</li>
+<li>Track both component trajectories and joint behavior.</li>
+<li>Include failed updates, coverage, and all relevant costs.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Proposed diagnostic: a policy improves on familiar actions but moves into a new action region. Audit prediction quality in that region before crediting the joint system with reliable improvement. No universal audit threshold is assumed here.</p>
+<h3>Understanding check</h3>
+<p>Which design best tests the coupled claim?</p>
+<ol>
+<li>One final score from unrelated domains</li>
+<li>Joint multicycle tracking with controlled update routes and independent audits</li>
+<li>A larger framework illustration</li>
+</ol>
+<p><strong>Answer: 2.</strong> The claim concerns interaction and persistence over time, so the design must observe both.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S5">Motivated by §5 Discussion; proposed study</a></p>
+<h2>20. Teach the loop back in six verbs</h2>
+<p><strong>Can you explain the mechanism, evidence, and limits without the diagram?</strong></p>
+<p>Propose, predict, select, observe, revise, retain—and keep the evidence status of every statement clear.</p>
+<h3>Concise presentation script</h3>
+<p>Explain the loop in six verbs: propose, predict, select, observe, revise, retain. Always say which object changes and which evidence supports the change. Then state the evidence carefully: predictive selection and adapted predictors help reported repair tasks, successive policies improve planning, and measured-feedback search improves screen-specific endpoints. Sustained mutual policy–model improvement remains a dedicated evaluation question. Finally, distinguish the paper’s findings from repository details, our synthetic demonstrations, and proposed follow-up experiments. That evidence discipline is part of understanding the method.</p>
+<h3>Expanded study explanation</h3>
+<p>Use the final chapter for retrieval practice rather than reading another summary. Hide the framework and ask the audience to name the six operations. Then reveal the figure and ask where an observation is created, where adaptation is triggered, and where a proposed version is accepted. Replay one clip only if it resolves a missed dependency. Invite a final evidence classification: benchmark result, repository implementation detail, synthetic example, or proposed study. The thirty-minute schedule includes explanation, pauses, figure inspection, interactions, and questions; it is not a claim that the short script takes thirty minutes when read verbatim. Encourage independent source checking through the per-chapter references and evidence audit.</p>
+<h3>Read the mechanism</h3>
+<p>Reconstruct one cycle aloud. Start with an accepted pair, propose feasible actions, predict consequences, and allocate the feedback budget. Observe only what is actually evaluated. Use feedback to construct appropriate candidate updates, with conditional model adaptation. Apply component checks and pair acceptance, then carry the retained pair and linked history into the next cycle.</p>
+<p>Explain the paper with three evidence distinctions. Reported results are the authors’ benchmark observations. The site’s toy patches, arithmetic, and animated gate choices are educational synthesis. The coupled evaluation design is a proposed follow-up. The official repository supplies additional implementation details, including recorded-transition adaptation, frozen measured-pool replay, and selected-controller attribution.</p>
+<p>For a roughly 30-minute presentation, allow about five minutes for foundations, eleven for the method including interaction, nine for evidence, and five for limits and discussion. The concise talk track is a scaffold; detailed notes support preparation and questions. Three short clips revisit the loop, feedback selection, and acceptance. Pause or step the interactive demonstration when explaining a decision.</p>
+<h3>Keep these distinctions</h3>
+<ul>
+<li>Explain what changes, what is observed, and what is retained.</li>
+<li>Tie every empirical claim to the correct experiment.</li>
+<li>Separate paper findings, repository detail, teaching examples, and proposals.</li>
+</ul>
+<h3>A concrete example</h3>
+<p>Teach-back task: explain why a lower-error predictor might be rejected, why an untested patch has no observed outcome, and why 96.15% best yield is not a success rate for unrestricted chemistry. Give one sentence for each.</p>
+<h3>Understanding check</h3>
+<p>Which statement correctly labels its evidence?</p>
+<ol>
+<li>Our toy arithmetic reproduces the authors’ model training</li>
+<li>The four-route coupled study is a proposed follow-up</li>
+<li>The therapeutic nomination is an experimentally validated treatment</li>
+</ol>
+<p><strong>Answer: 2.</strong> The proposed study is not a reported experiment; demos and hypotheses also have distinct evidence status.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S5">§2–§6 · synthesis and teaching route</a></p>
+<h2>Presentation timing plan</h2>
+<table>
+<thead>
+<tr>
+<th>Chapter</th>
+<th>Topic</th>
+<th align="right">Speech estimate at 110 wpm</th>
+<th align="right">Suggested activity time</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>Can one round make the next round better?</td>
+<td align="right">46 s</td>
+<td align="right">15 s</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Two clocks: actions and system revisions</td>
+<td align="right">40 s</td>
+<td align="right">15 s</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Predict before paying for feedback</td>
+<td align="right">42 s</td>
+<td align="right">15 s</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Predict useful representations</td>
+<td align="right">43 s</td>
+<td align="right">45 s</td>
+</tr>
+<tr>
+<td>5</td>
+<td>The complete loop: propose to retain</td>
+<td align="right">41 s</td>
+<td align="right">45 s</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Select an action: useful, feasible, affordable</td>
+<td align="right">40 s</td>
+<td align="right">110 s</td>
+</tr>
+<tr>
+<td>7</td>
+<td>Keep predictions and observations separate</td>
+<td align="right">44 s</td>
+<td align="right">15 s</td>
+</tr>
+<tr>
+<td>8</td>
+<td>Improve the actor or the workflow</td>
+<td align="right">41 s</td>
+<td align="right">10 s</td>
+</tr>
+<tr>
+<td>9</td>
+<td>Adapt only when the evidence warrants it</td>
+<td align="right">41 s</td>
+<td align="right">50 s</td>
+</tr>
+<tr>
+<td>10</td>
+<td>A better component can make a worse pair</td>
+<td align="right">46 s</td>
+<td align="right">75 s</td>
+</tr>
+<tr>
+<td>11</td>
+<td>Code repair: hold the coder fixed</td>
+<td align="right">42 s</td>
+<td align="right">20 s</td>
+</tr>
+<tr>
+<td>12</td>
+<td>Read the repair gains carefully</td>
+<td align="right">40 s</td>
+<td align="right">45 s</td>
+</tr>
+<tr>
+<td>13</td>
+<td>GUI: success, errors, and relative gains</td>
+<td align="right">38 s</td>
+<td align="right">30 s</td>
+</tr>
+<tr>
+<td>14</td>
+<td>Five planning versions, one benchmark</td>
+<td align="right">41 s</td>
+<td align="right">35 s</td>
+</tr>
+<tr>
+<td>15</td>
+<td>Chemistry: compare within each screen</td>
+<td align="right">40 s</td>
+<td align="right">30 s</td>
+</tr>
+<tr>
+<td>16</td>
+<td>Immune science: construction versus analysis</td>
+<td align="right">39 s</td>
+<td align="right">25 s</td>
+</tr>
+<tr>
+<td>17</td>
+<td>One framework, several evidence scopes</td>
+<td align="right">41 s</td>
+<td align="right">35 s</td>
+</tr>
+<tr>
+<td>18</td>
+<td>Where does this sit among learning methods?</td>
+<td align="right">39 s</td>
+<td align="right">15 s</td>
+</tr>
+<tr>
+<td>19</td>
+<td>Design the missing coupled experiment</td>
+<td align="right">46 s</td>
+<td align="right">30 s</td>
+</tr>
+<tr>
+<td>20</td>
+<td>Teach the loop back in six verbs</td>
+<td align="right">44 s</td>
+<td align="right">10 s</td>
+</tr>
+</tbody></table>
+<p>The concise English script is 835 seconds at 110 words/minute; suggested activities total 665 seconds; the three English videos total 87.8 seconds. Add 90 seconds for setup/transitions and a 120-second reserve: approximately 30 minutes. Adapt depth to the audience and rehearse. Recorded narration is counted only as video time.</p>
+<h2>Questions and answers</h2>
+<h3>1. Why is accumulating experience not enough for RSI?</h3>
+<p>A longer history can change available information without revising the decision system. RSI-Anything distinguishes task state and records from accepted policy or world-model configurations. Recursiveness arises when retained revisions change later proposals, selections, and learning experience.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS1">https://arxiv.org/html/2610.13912v1#S2.SS1</a></p>
+<h3>2. Must θ always be neural-network weights?</h3>
+<p>No. The policy configuration can be trainable parameters or a persistent agent workflow. The implementation must state what fields can change, what feedback scores or training targets justify a candidate, and how the resulting version is accepted.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS4">https://arxiv.org/html/2610.13912v1#S2.SS4</a></p>
+<h3>3. Does every domain use one shared world model?</h3>
+<p>The shared object is the improvement procedure and interface contract. Domains bind their own states, actions, predictors, targets, and feedback sources. Reusing notation and the JEPA-Anything foundation does not establish shared parameters or a single model trained across all reported applications.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S6">https://arxiv.org/html/2610.13912v1#S6</a></p>
+<h3>4. Why does one-step prediction not guarantee multistep planning?</h3>
+<p>Ranking can use an outcome readout alone. A rollout additionally needs an adapter that propagates a future planning state, so another action can be evaluated from it. Predicted states remain unobserved until checked. A final-yield distribution alone does not supply every intermediate state.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS2">https://arxiv.org/html/2610.13912v1#S2.SS2</a></p>
+<h3>5. Are uncertain candidates always excluded?</h3>
+<p>No. Invalid candidates are excluded, but uncertainty handling depends on the declared selection rule. Utility ranking may penalize uncertainty; an explicitly enabled information-seeking acquisition rule may prioritize it. Training admission is separate, so a candidate can deserve evaluation without qualifying as imagined training data.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS3">https://arxiv.org/html/2610.13912v1#S2.SS3</a></p>
+<h3>6. Do E0–E3 form automatic truth levels?</h3>
+<p>They describe evidence origin and intended fidelity. Suitability depends on quality and admission criteria. External measurement can have error; a learned forecast can be useful without becoming an observation. Preserve provenance rather than collapsing all sources into a single undifferentiated feedback value.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS3">https://arxiv.org/html/2610.13912v1#S2.SS3</a></p>
+<h3>7. Why not overwrite a forecast after seeing the answer?</h3>
+<p>The original prediction explains the past selection and enables an error comparison. The observation supplies a distinct target. Overwriting erases that diagnostic information. Link them to the input, action, source, and generating version; current reliability must use attributable current-version predictions.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS4">https://arxiv.org/html/2610.13912v1#S2.SS4</a></p>
+<h3>8. Does insufficient reliability evidence trigger adaptation?</h3>
+<p>No. Equation 11 requires an unreliable verdict plus sufficient adaptation data and budget. Insufficient is a separate state, often reflecting coverage limits, and is not evidence of reliability. Subsequent evaluation follows the declared selection rule rather than an invented automatic trigger.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS4">https://arxiv.org/html/2610.13912v1#S2.SS4</a></p>
+<h3>9. Can scalar feedback train the entire next-state representation?</h3>
+<p>A scalar result supplies an outcome target, not a fully observed target state. Its loss can update upstream parameters when those parameters are trainable, but that does not make the scalar a complete state observation. Target type, loss, and trainable subset must be specified.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS4">https://arxiv.org/html/2610.13912v1#S2.SS4</a></p>
+<h3>10. If both components pass separately, is pair acceptance guaranteed?</h3>
+<p>No. A new policy can shift the candidate distribution, and a new model can change rankings. The pair check evaluates joint decisions and prediction suitability under the assembled policy. Pair failure retains the entire current pair, not an arbitrary untested mixture.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S2.SS5">https://arxiv.org/html/2610.13912v1#S2.SS5</a></p>
+<h3>11. Was the code generator trained during the repair comparison?</h3>
+<p>ReasonFlux-Coder-7B is fixed. Programs and feedback change, while the comparison varies selection and W1 predictor settings. This helps distinguish predictive selection from predictor adaptation. It does not demonstrate joint training of coder and world model.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.SS1">https://arxiv.org/html/2610.13912v1#S3.SS1</a></p>
+<h3>12. Does the released final code evaluation adapt W1 online every episode?</h3>
+<p>The official reproduction guide says final evaluation performs no optimizer updates. Adaptation is a four-stage training chain on recorded transitions, followed by checkpoint evaluation. Our within-cycle adaptation animation is synthetic pedagogy, not a literal replay of optimizer timing in the 600 reported episodes.</p>
+<p><a href="https://github.com/Gen-Verse/RSI-Anything/blob/main/docs/reproduction.en.md">https://github.com/Gen-Verse/RSI-Anything/blob/main/docs/reproduction.en.md</a></p>
+<h3>13. Why report both ranking accuracy and Brier score?</h3>
+<p>Ranking accuracy assesses candidate ordering; Brier assesses class-probability error. Either can change without an identical change in the other. Figure 3c reports both for the static verifier versus fixed world model; it does not report an adaptive-model Brier value.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.SS1">https://arxiv.org/html/2610.13912v1#S3.SS1</a></p>
+<h3>14. Does 99% checkbox success isolate world-model ranking?</h3>
+<p>No. The official GUI results guide says the development-selected controller has alpha=0 and follows policy ranking. Pure world-based control ranks the same policy candidates using model values. The endpoint is reported performance, but it is not an isolated causal estimate of model-based ranking.</p>
+<p><a href="https://github.com/Gen-Verse/RSI-Anything/blob/main/tasks/gui/docs/RESULTS.md">https://github.com/Gen-Verse/RSI-Anything/blob/main/tasks/gui/docs/RESULTS.md</a></p>
+<h3>15. Can we recover OSWorld’s absolute endpoint from +18.4%?</h3>
+<p>Not without the absolute reference rate. The figure gives relative improvement, meaning the endpoint is 1.184 times the initial rate. It is not an 18.4-point addition. The reported +5.5% versus RLAnything uses a different denominator.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.SS2">https://arxiv.org/html/2610.13912v1#S3.SS2</a></p>
+<h3>16. Does the lab score prove reliable physical execution?</h3>
+<p>No. F200 Level-2 Final Score combines action-sequence similarity and parameter accuracy. The five-version progression supports planning improvement. Real equipment introduces execution interfaces and failure modes requiring evaluation on the relevant apparatus and workflow.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.SS3">https://arxiv.org/html/2610.13912v1#S3.SS3</a></p>
+<h3>17. Does the released chemistry loop run fresh wet-lab experiments each step?</h3>
+<p>The released flow guide describes replay of a 321-condition measured pool across 100 runs, with eight initial observations counted inside forty. Predictions are frozen and feedback changes expected-improvement selection. This is measured-data sequential selection, not proof of new live experiments at each inference step.</p>
+<p><a href="https://github.com/Gen-Verse/RSI-Anything/blob/main/tasks/reaction_optimization/README.md">https://github.com/Gen-Verse/RSI-Anything/blob/main/tasks/reaction_optimization/README.md</a></p>
+<h3>18. Why can’t we merge the chemistry endpoints?</h3>
+<p>The GC and flow LC–MS screens differ in reaction setup, condition space, analysis, and observation budget. Their gains are within-screen comparisons. Best observed and mean best observed are also stated separately. Combining them would obscure what was controlled and measured.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.SS4">https://arxiv.org/html/2610.13912v1#S3.SS4</a></p>
+<h3>19. Is the immune nomination a validated therapy?</h3>
+<p>It is a prospective hypothesis combining SIRPα inhibition and IL-36γ-axis modulation for later experimental testing. The construction stage retains a workflow and predictor; downstream analysis revises hypotheses with predictor parameters frozen. Neither distinction establishes therapeutic efficacy.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S3.SS5">https://arxiv.org/html/2610.13912v1#S3.SS5</a></p>
+<h3>20. What is the strongest missing evaluation?</h3>
+<p>The paper calls for joint multiround evaluation of sustained mutual policy–world-model improvement within one task. A useful proposed study compares update routes over time, audits current-distribution reliability, matches clearly defined resources, and protects final evaluation from repeated version selection.</p>
+<p><a href="https://arxiv.org/html/2610.13912v1#S5">https://arxiv.org/html/2610.13912v1#S5</a></p>
+<h2>Glossary</h2>
+<h3>Recursive self-improvement (RSI)</h3>
+<p>Experience produces accepted system revisions that persist and shape later interaction and learning.</p>
+<h3>Policy configuration θ</h3>
+<p>The parameters or persistent workflow that determines candidate generation or selection.</p>
+<h3>World model φ</h3>
+<p>A domain predictor of consequences under candidate actions; its supported output interface must be specified.</p>
+<h3>Task state s</h3>
+<p>The current task object and information, such as a program with tests and feedback.</p>
+<h3>Domain adapter</h3>
+<p>The interface binding domain states, actions, predictions, and feedback to the common protocol.</p>
+<h3>Action step t</h3>
+<p>An interaction step inside a task, distinct from a system update cycle.</p>
+<h3>Update cycle k</h3>
+<p>A cycle ending in update and acceptance decisions, even if no new version is retained.</p>
+<h3>JEPA</h3>
+<p>Joint-embedding predictive architecture: predict target representations from context rather than reconstructing every detail.</p>
+<h3>Latent representation z</h3>
+<p>A learned internal representation used for prediction, not necessarily directly interpretable.</p>
+<h3>Orthogonal predictive factorization (OPF)</h3>
+<p>JEPA-Anything’s factor organization, dedicated prediction, and synthesis foundation; exact factor independence is not independently established here.</p>
+<h3>Outcome readout R</h3>
+<p>Converts a predicted latent target into the outcome value or distribution needed by the domain.</p>
+<h3>Rollout / imagined trajectory</h3>
+<p>A predicted action sequence whose future states remain predictions until externally checked.</p>
+<h3>Verifier</h3>
+<p>Records candidate validity, utility, evidence provenance, and available uncertainty.</p>
+<h3>Utility</h3>
+<p>A declared task-value measure used by a ranking or acquisition rule.</p>
+<h3>Uncertainty</h3>
+<p>A specified estimate of predictive ambiguity; it is not automatically equivalent to observed reliability.</p>
+<h3>Acquisition rule</h3>
+<p>A declared rule selecting candidates for feedback, potentially including information-seeking evaluation.</p>
+<h3>Evidence provenance</h3>
+<p>The recorded origin of a claim or observation, kept separate from its sufficiency for a use.</p>
+<h3>E0 / E1 / E2 / E3</h3>
+<p>Rule checks / learned predictions / specialized simulation or higher-fidelity calculation / external measurement.</p>
+<h3>Prediction–observation pair</h3>
+<p>Linked but separate forecast and observed outcome, with action, context, source, and generating version.</p>
+<h3>Training admission</h3>
+<p>A separate filter deciding whether imagined evidence may be used for learning.</p>
+<h3>Reliability / coverage</h3>
+<p>Agreement with observed outcomes over the candidate range covered by attributable evidence.</p>
+<h3>Insufficient</h3>
+<p>A distinct reliability verdict indicating inadequate evidence or coverage; it does not trigger Equation 11.</p>
+<h3>Conditional adaptation</h3>
+<p>A model-update attempt requiring unreliability, sufficient adaptation data, and budget.</p>
+<h3>Component gate</h3>
+<p>A predeclared check comparing one proposed component against its current version.</p>
+<h3>Compatibility / pair gate</h3>
+<p>An acceptance check on assembled policy–model behavior and predictor suitability.</p>
+<h3>Retained pair</h3>
+<p>The accepted policy and predictor used for subsequent interaction; pair failure preserves the old pair.</p>
+<h3>Brier score</h3>
+<p>Squared error of class probabilities against observed one-hot outcomes; lower is better.</p>
+<h3>Percentage point / relative percent</h3>
+<p>A direct difference between percentage rates / a proportional change relative to a reference rate.</p>
+<h3>Best-so-far yield</h3>
+<p>The maximum yield observed up to a budget count; it is monotonic by definition.</p>
+<h3>Held-out audit</h3>
+<p>Protected evaluation data reserved for reporting, distinct from training and version-selection data.</p>
+</body></html>

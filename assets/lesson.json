@@ -1,0 +1,2321 @@
+{
+  "title": {
+    "en": "RSI-Anything: Learning to improve with world models",
+    "zh": "RSI-Anything：借助世界模型，学习如何持续改进"
+  },
+  "parts": [
+    {
+      "id": 1,
+      "title": {
+        "en": "Build the intuition",
+        "zh": "建立直觉"
+      },
+      "chapters": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "id": 2,
+      "title": {
+        "en": "Follow one complete cycle",
+        "zh": "走完一次完整闭环"
+      },
+      "chapters": [
+        5,
+        6,
+        7,
+        8,
+        9,
+        10
+      ]
+    },
+    {
+      "id": 3,
+      "title": {
+        "en": "Read the evidence",
+        "zh": "读懂实验与证据"
+      },
+      "chapters": [
+        11,
+        12,
+        13,
+        14,
+        15,
+        16
+      ]
+    },
+    {
+      "id": 4,
+      "title": {
+        "en": "Judge the contribution",
+        "zh": "判断贡献与边界"
+      },
+      "chapters": [
+        17,
+        18,
+        19,
+        20
+      ]
+    }
+  ],
+  "chapters": [
+    {
+      "id": 1,
+      "slug": "why-recursive",
+      "part": 1,
+      "title": {
+        "en": "Can one round make the next round better?",
+        "zh": "这一轮，怎样让下一轮更好？"
+      },
+      "question": {
+        "en": "What must change before we call a system self-improving?",
+        "zh": "怎样的变化，才算系统能力发生了改进？"
+      },
+      "summary": {
+        "en": "RSI turns experience into accepted, persistent changes to the system that acts next.",
+        "zh": "RSI 把经验转化为被验收、被保留、能够影响后续决策的系统变化。"
+      },
+      "paragraphs": {
+        "en": [
+          "Imagine a repair assistant that fails a test, reads the error, and tries another patch. It has used feedback inside a task. Now imagine that it also improves its predictor or saves a better repair workflow, and uses that accepted version in later decisions. This second change is the persistent improvement studied here.",
+          "The paper places the unit of improvement at the policy–world-model pair. The policy generates or selects actions; the world model forecasts their consequences. Their interaction matters: a changed policy may ask the predictor about unfamiliar actions, and a changed predictor may reorder the policy’s choices. Better components therefore need to work well together.",
+          "The research question is practical: under limited external feedback, how can predictions help choose useful actions, how can observations support updates, and which updated versions should survive? The paper offers a protocol connecting prediction, execution, learning, and acceptance. Its experiments examine different parts of this protocol across computational and scientific domains."
+        ],
+        "zh": [
+          "先想象一个修复程序的助手：测试失败后，它阅读错误信息，再尝试一个补丁。这是在任务内部利用反馈。如果它还改好了预测器，或保存了更有效的修复流程，并在后续决策中使用验收后的版本，就发生了本文关心的持久改进。",
+          "本文把“策略与世界模型组成的系统”作为改进单位。策略负责提出或选择行动，世界模型负责预测后果。两者的配合很重要：新策略可能提出预测器不熟悉的行动，新预测器可能改变最终采用的候选。因此，组件各自变好，还需要验证组合是否好用。",
+          "研究问题很具体：外部反馈有限时，预测怎样帮助选择值得尝试的行动？观察怎样支持更新？更新后应保留哪个版本？本文给出连接预测、执行、学习与验收的流程，并在计算任务和科学领域分别检验其中的不同环节。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "An observation is experience; an accepted revision changes the system.",
+          "The retained pair shapes the next round.",
+          "Each experiment supports a particular part of the framework."
+        ],
+        "zh": [
+          "观察提供经验；验收修订改变系统。",
+          "下一轮由保留下来的组合继续决策。",
+          "每项实验支撑框架中的特定环节。"
+        ]
+      },
+      "example": {
+        "en": "Teaching example: saving “the last patch failed” extends the task record. Accepting a predictor that ranks future patches better changes the system. This is a conceptual example, not a reported benchmark run.",
+        "zh": "教学例子：保存“上次补丁失败”扩展的是任务记录；验收一个能更好排序后续补丁的预测器，改变的是系统。此例用于说明概念，不是论文中的实测运行。"
+      },
+      "notes": {
+        "en": "Open with a familiar debugging story and ask what survives after the current attempt. Separate an error message, a revised program, and a revised assistant: they belong to different objects. The paper’s definition concerns the configuration making later decisions. Emphasize that a policy can be a persistent workflow, not only neural weights. Introduce the world model as a forecasting role rather than an all-knowing simulator. Explain how this lesson will judge the paper: first understand the protocol, then map each experiment to the pathway it actually enables, and finally discuss whether the evidence establishes sustained mutual improvement. Merely increasing the number of attempts is not sufficient evidence.",
+        "zh": "先用熟悉的调试故事开场，追问本次尝试结束后究竟留下什么。区分错误消息、修改后的程序和修改后的助手，它们属于不同对象。本文关注负责后续决策的配置。策略可以是持久工作流，不一定只有神经网络权重；世界模型承担预测职责，也并非知道一切。交代学习路线：先理解协议，再把实验对应到实际启用的路径，最后判断证据能否建立持续相互促进的结论。单纯增加尝试次数，还不能充分证明系统本身变得更好。"
+      },
+      "talk": {
+        "en": "Start with a debugging assistant. It fails, reads the error, and tries again. Feedback is useful, but what has the assistant itself learned? RSI-Anything asks how experience can change the system used next time. Its central components are a policy that proposes actions and a world model that predicts consequences. The key is to retain accepted changes, so later decisions and learning depend on them. We will follow that loop, then check which experiments support each link. That distinction will guide every experiment we read.",
+        "zh": "从调试助手开始：它失败、读取错误，再试一次。反馈很有用，但助手本身究竟学到了什么？RSI-Anything 关注经验怎样改变下一次使用的系统。两个核心组件是提出行动的策略和预测后果的世界模型。关键是验收并保留系统变化，让后续决策和学习受到影响。我们先走完闭环，再检查每组实验证据支持了哪个环节。 这一点将贯穿后面的实验解读。"
+      },
+      "source": {
+        "label": "§1 Introduction",
+        "url": "https://arxiv.org/html/2610.13912v1#S1"
+      },
+      "figure": 1,
+      "check": {
+        "question": {
+          "en": "Which change is a system revision?",
+          "zh": "哪一种变化属于系统修订？"
+        },
+        "options": {
+          "en": [
+            "Appending a test log",
+            "Accepting a revised predictor for later selection",
+            "Trying another patch"
+          ],
+          "zh": [
+            "追加测试日志",
+            "验收用于后续选择的新预测器",
+            "再尝试一个补丁"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "The accepted predictor changes the decision system; the other actions change history or task state.",
+          "zh": "验收预测器会改变决策系统；其他行动改变历史或任务状态。"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "slug": "two-clocks",
+      "part": 1,
+      "title": {
+        "en": "Two clocks: actions and system revisions",
+        "zh": "两只时钟：行动步骤与系统修订"
+      },
+      "question": {
+        "en": "Why does another action not automatically create another system version?",
+        "zh": "为什么多做一步行动，不等于产生一个新系统版本？"
+      },
+      "summary": {
+        "en": "t tracks interaction steps; k tracks update and acceptance cycles.",
+        "zh": "t 记录交互步骤；k 记录更新与验收周期。"
+      },
+      "paragraphs": {
+        "en": [
+          "The task clock advances when an action is taken: a patch is executed, a box is clicked, or an outcome is measured. These events change the task state or available information. The update clock advances when the system decides whether to propose and retain a policy or predictor revision. One cycle may aggregate several task steps.",
+          "Within a run, objectives, interfaces, scoring criteria, constraints, acceptance rules, stopping rules, and total budget limits stay fixed. Task states, feedback records, remaining resources, and accepted component versions can change. Separating these categories prevents an apparent improvement obtained merely by changing the goal or making the evaluation easier.",
+          "A cycle may end with exactly the same policy and world model. An update pathway might be disabled, evidence might be insufficient, or a proposed revision might fail a check. The index k still advances because an update-and-acceptance decision has occurred. Cycle count therefore does not equal the number of successful retained revisions."
+        ],
+        "zh": [
+          "执行行动时，任务时钟向前一步：运行补丁、点击复选框或测量结果，都会改变任务状态或可用信息。系统判断是否提出并保留策略或预测器修订时，更新时钟推进。一个更新周期可以汇总多个行动步骤、轨迹或任务的反馈。",
+          "一次运行中，目标、接口、评分、约束、验收规则、停止规则和总预算上限保持固定；任务状态、反馈记录、剩余资源和已接受版本可以变化。区分这些对象，才能避免把改变目标或降低评估难度造成的表面进步，当成系统能力提高。",
+          "周期结束后，策略和模型可能都没变化：更新路径可能没启用，证据可能不足，候选修订也可能没通过检查。此时 k 仍会增加，因为系统完成了一次更新与验收决策。因此，周期数量不等于成功保留的修订数量。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "t and k count different events.",
+          "History growth alone does not revise θ or φ.",
+          "The task contract stays fixed while accepted versions evolve."
+        ],
+        "zh": [
+          "t 与 k 统计不同事件。",
+          "历史增长本身不等于修订 θ 或 φ。",
+          "任务契约固定，已接受的系统版本可以演化。"
+        ]
+      },
+      "example": {
+        "en": "Teaching example: three test executions produce three records inside one cycle. A candidate predictor is then rejected. Cycle k+1 starts with the old pair and a longer history.",
+        "zh": "教学例子：一个周期运行三次测试，得到三条记录。随后候选预测器被拒绝，k+1 周期继续使用旧组合，但拥有更长的反馈历史。"
+      },
+      "notes": {
+        "en": "Draw two timelines. Put three action markers on the first and one update decision on the second. Ask what object changes at each marker. A repaired program belongs to task state; the code-generating model belongs to policy configuration. This distinction becomes essential in the fixed-coder experiment. Explain that rejected versions still consume resources: failed experiments and adaptation attempts are not free. The paper fixes acceptance rules within a run to keep comparisons meaningful. A no-change decision is legitimate, and preserving a functioning current pair can be preferable to accepting an unsupported revision. Avoid saying that every completed cycle necessarily improves performance or creates a new model.",
+        "zh": "画两条时间线，上面放三次行动，下面放一次更新决策。逐个询问发生变化的对象：被修好的程序属于任务状态，生成代码的模型属于策略配置。这是理解固定代码生成器实验的关键。被拒绝的版本同样消耗资源，失败实验和适配尝试并不免费。论文要求一次运行中验收规则保持固定，使比较有意义。不改变版本是合法决定；继续保留可用组合，有时比接受证据不足的修订更合理。不要把每完成一个周期说成性能一定提高，或必然产生新模型。"
+      },
+      "talk": {
+        "en": "There are two clocks. One counts actions inside a task; the other counts decisions about system versions. Several tests can happen before one update decision, and that decision may retain the old pair. Meanwhile, objectives and evaluation rules stay fixed. This matters for code repair: changing the program is an action, while changing the coder is a policy update. Whenever we hear “improvement,” ask what changed and what will make the next decision.",
+        "zh": "这里有两只时钟：一只统计任务内部的行动，一只统计系统版本决策。可以先做几次测试，再进行更新判断；结果也可能是保留旧组合。目标和评估规则则保持固定。对代码修复来说，改程序是行动，改编码模型才是策略更新。每遇到“改进”，我们都追问：究竟改变了什么，下一步由谁负责决策？"
+      },
+      "source": {
+        "label": "§2.1 · Table 1",
+        "url": "https://arxiv.org/html/2610.13912v1#S2.SS1"
+      },
+      "check": {
+        "question": {
+          "en": "Can a cycle end without a new component version?",
+          "zh": "一个周期能否没有新组件版本？"
+        },
+        "options": {
+          "en": [
+            "Yes; current versions can be retained",
+            "No; k counts successful improvements",
+            "Only if no action happened"
+          ],
+          "zh": [
+            "能，可以保留当前版本",
+            "不能，k 统计成功改进",
+            "只有没有行动时才可以"
+          ]
+        },
+        "answer": 0,
+        "explanation": {
+          "en": "A cycle records update and acceptance decisions, including retaining both current components.",
+          "zh": "周期统计更新与验收决策，也包括保留两个当前组件。"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "slug": "feedback-is-scarce",
+      "part": 1,
+      "title": {
+        "en": "Predict before paying for feedback",
+        "zh": "先预测，再付出反馈成本"
+      },
+      "question": {
+        "en": "If execution gives the answer, why build a predictor?",
+        "zh": "执行后就知道答案，为什么还要预测器？"
+      },
+      "summary": {
+        "en": "Forecasts can focus expensive evaluations, while executions supply observations.",
+        "zh": "预测可以集中昂贵的评估机会，执行才产生观察。"
+      },
+      "paragraphs": {
+        "en": [
+          "A system can propose more candidates than it can afford to evaluate. Four patches may be cheap to generate while running large test suites takes time. A laboratory can list many conditions while only a few evaluations fit its budget. A predictor offers a forecast that can prioritize which candidates receive external feedback.",
+          "This creates an opportunity and a risk. Better ranking can spend the same feedback budget more productively. Wrong predictions can repeatedly favor a narrow, misleading region. Because observations arrive mainly for selected actions, the system does not automatically learn how accurate it is on everything it rejected. Coverage becomes part of reliability.",
+          "The paper treats external feedback and update computation as separate resources. Similar test counts establish one kind of efficiency; they do not establish equal training cost or wall-clock time. A careful comparison names the matched resource, the measured outcome, and the extra computation used for prediction, adaptation, historical re-evaluation, and acceptance."
+        ],
+        "zh": [
+          "系统经常能提出比实际评估能力更多的候选。生成四个补丁可能便宜，运行大规模测试却需要时间；实验室可以列出很多条件，但预算只允许少量评估。预测器提供前瞻判断，帮助安排哪些候选值得获得外部反馈。",
+          "机会与风险并存。排序准确时，同样预算可能更有效；预测错误时，系统可能反复偏爱狭窄而误导性的区域。观察主要来自被选行动，因此系统并不会自动知道被拒绝候选上的准确程度。可靠性判断必须考虑覆盖范围。",
+          "论文把外部反馈与更新计算分别讨论。测试次数相近，只能说明这一类资源使用相近，不能直接推出训练成本或实际耗时相同。严谨比较应说明匹配的资源、测量的结果，以及预测、适配、历史重评估和验收还需要多少计算。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "Forecasts allocate feedback; evaluations create observations.",
+          "Selective feedback limits reliability claims.",
+          "Matched test counts do not imply matched total compute."
+        ],
+        "zh": [
+          "预测用于分配反馈，评估产生观察。",
+          "选择性反馈限制可靠性结论。",
+          "测试次数匹配，不等于总计算量匹配。"
+        ]
+      },
+      "example": {
+        "en": "Teaching example: only one of four patches can be tested. Ranking B first may save an evaluation, but executing B reveals only B’s observed outcome. A, C, and D still have forecasts.",
+        "zh": "教学例子：四个补丁只能测试一个。把 B 排第一可能节省评估，但执行 B 只揭示 B 的真实结果，A、C、D 仍只有预测。"
+      },
+      "notes": {
+        "en": "Give the class four candidate patches and one test token before introducing equations. They can immediately see why selection matters. After running the chosen patch, ask what remains unknown. This reveals selective observation and prepares chapter nine’s three-state reliability assessment. Distinguish uncertainty from low utility: an uncertain candidate can be worth evaluating for information if an explicit acquisition rule enables that behavior. Also separate external interaction from internal computation. When the repair experiment later reports similar online test usage, say exactly what resource is similar. This supports a useful efficiency interpretation without making the broader, unsupported claim that every computational expense has been matched.",
+        "zh": "先给全班四个补丁和一个测试名额，再引入公式，排序价值就很直观。运行所选补丁后，追问还有什么不知道，由此引出选择性观察，为第九章的三态可靠性判断做准备。区分不确定性和低效用：若明确启用了信息获取规则，不确定候选可能值得专门评估。也要区分外部交互和内部计算。后面说在线测试次数相近时，准确指出相近的是哪种资源。这支持明确的效率解释，但并未声称每项计算成本都已匹配。"
+      },
+      "talk": {
+        "en": "Suppose we have four patches but can run only one expensive test. A world model helps decide which patch deserves it. If its ranking is useful, the same test budget can produce more successful repairs. But only the executed patch supplies an observation. Rejected patches remain unobserved, limiting reliability claims. We must also distinguish feedback cost from the computation needed for prediction, adaptation, and acceptance. Similar external usage is valuable, but it is one specific resource comparison.",
+        "zh": "假设有四个补丁，却只能承担一次昂贵测试。世界模型帮助决定把机会给谁。排序有效时，同样预算可以修好更多程序。但只有被执行的补丁提供观察，未选补丁仍然未知，可靠性结论因此受到限制。还要区分外部反馈成本，与预测、适配、验收的内部计算成本。外部资源使用相近很有价值，但它是一个具体维度的比较。"
+      },
+      "source": {
+        "label": "§1 · §2.3–2.4",
+        "url": "https://arxiv.org/html/2610.13912v1#S2.SS3"
+      },
+      "check": {
+        "question": {
+          "en": "After only B is tested, which observations exist?",
+          "zh": "只测试 B 以后，哪些观察真实存在？"
+        },
+        "options": {
+          "en": [
+            "All four, because all were predicted",
+            "Only B has a new observed outcome",
+            "Only the highest-confidence candidate"
+          ],
+          "zh": [
+            "四个都有，因为都预测过",
+            "只有 B 有新的观察结果",
+            "只有置信度最高的候选"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "Unexecuted candidates do not acquire observed outcomes.",
+          "zh": "未执行候选不会凭空获得观察结果。"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "slug": "jepa-foundation",
+      "part": 1,
+      "title": {
+        "en": "Predict useful representations",
+        "zh": "预测有用的表征"
+      },
+      "question": {
+        "en": "How does JEPA-Anything provide a predictive foundation?",
+        "zh": "JEPA-Anything 怎样提供预测基础？"
+      },
+      "summary": {
+        "en": "Encode the state, predict an action-conditioned latent target, and read out the needed consequence.",
+        "zh": "编码状态，预测由行动条件化的潜在目标，再读出需要的后果。"
+      },
+      "paragraphs": {
+        "en": [
+          "JEPA-style prediction operates in a representation space. An encoder turns the current state and domain context into a latent description. A predictor uses that description and a candidate action to forecast a target representation. A readout converts it into a usable consequence, such as execution-result probabilities or a distribution over reaction yield.",
+          "RSI-Anything inherits JEPA-Anything’s model-construction foundation. Orthogonal predictive factorization organizes latent targets into complementary factors, learns dedicated predictors, and synthesizes a complete latent state. This is predictive infrastructure. The recursive contribution studied here concerns how predictions and observed feedback are connected to updates and acceptance around the instantiated domain model.",
+          "Point and probabilistic readouts are alternative interfaces. One-step ranking only requires an outcome prediction. Multistep planning additionally requires an adapter that propagates a planning state. A yield predictor returning a scalar or distribution is therefore not automatically a simulator capable of rolling out every intermediate physical state or handling arbitrary actions."
+        ],
+        "zh": [
+          "JEPA 式预测在表征空间中进行。编码器把状态与领域上下文变成潜在描述；预测器根据描述和候选行动，预测目标表征；读出器再把它转成可用后果，例如执行结果概率或反应产率分布。",
+          "RSI-Anything 继承 JEPA-Anything 的模型构建基础。正交预测分解把潜在目标组织为互补因素，学习专门预测器，再合成为完整潜在状态。这属于预测基础设施。本文递归机制的重点，是围绕具体领域模型，把预测与观察反馈连接到更新和验收。",
+          "点预测与概率预测是不同的输出接口。单步排序只需要结果预测，多步规划还需要能推进规划状态的适配器。因此，输出产率数值或分布的预测器，并不会自动具备逐步模拟所有中间物理状态或处理任意行动的能力。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "Latent prediction needs a task-specific readout.",
+          "OPF is inherited predictive infrastructure.",
+          "Multistep rollout requires a transition interface."
+        ],
+        "zh": [
+          "潜在预测需要面向任务的读出。",
+          "OPF 是继承的预测基础。",
+          "多步展开需要状态转移接口。"
+        ]
+      },
+      "example": {
+        "en": "Teaching analogy: summarize the program state, forecast behavior under a patch, then read out likely test outcomes. A learned representation is not a mathematical guarantee that the patch is correct.",
+        "zh": "教学类比：先概括程序状态，再预测补丁下的行为，最后读出可能的测试结果。学到的表征并不等于补丁正确性的数学保证。"
+      },
+      "notes": {
+        "en": "Read the equation with three verbs: encode, predict, read out. Explain that z is a learned representation, not necessarily a human-interpretable list of facts. The action enters through a domain adapter; these symbols describe roles rather than a compulsory wiring diagram. Similar notation across domains does not imply identical weights. Explain OPF only to the extent established in this paper and direct detailed architectural questions to JEPA-Anything. Finally, check whether the interface supplies an outcome alone or also a next planning state. That determines whether imagined multistep rollouts are supported. A conceptual diagram should not silently grant transition capabilities to every predictor.",
+        "zh": "用“编码—预测—读出”三个动词讲公式。z 是学习表征，不一定是可逐项解释的事实清单。行动通过领域适配器进入预测，符号描述功能角色，并不强制同一种网络连线。跨领域使用相同符号也不代表共享权重。OPF 只讲到本文明确给出的层次，更具体的架构问题指向 JEPA-Anything。最后检查接口只给出结果，还是也能给出下一规划状态；这决定能否做多步想象展开。概念图不应悄悄替所有预测器添加状态转移能力。"
+      },
+      "talk": {
+        "en": "Read this pipeline as encode, predict, and read out. The encoder summarizes the state. The predictor asks what happens under a candidate action. The readout produces the consequence the task needs. JEPA-Anything supplies the representation-prediction foundation, including factor prediction and synthesis. RSI-Anything builds the improvement loop around it. Notice the interface: an outcome prediction is enough for ranking, but multistep planning also needs a way to propagate the next planning state. The predicted future remains a forecast until checked.",
+        "zh": "把这条流水线读成编码、预测、读出。编码器概括状态，预测器回答候选行动可能带来什么，读出器给出任务需要的结果。JEPA-Anything 提供包含因素预测和合成的表征预测基础，RSI-Anything 在它周围建立改进闭环。注意接口：结果预测足以排序，但多步规划还需要推进下一规划状态的能力。 预测未来在核查前仍然只是预测。"
+      },
+      "source": {
+        "label": "§2.2 · Equations 2–6",
+        "url": "https://arxiv.org/html/2610.13912v1#S2.SS2"
+      },
+      "formula": {
+        "tex": "z_t=E_{\\phi}(s_t,c_d),\\quad \\widehat z_{t+1}=F_{\\phi}(z_t,a_t,c_d),\\quad \\widehat o_{t+1}=R_{\\phi}(\\widehat z_{t+1},c_d)",
+        "plain": "zₜ = Eφ(sₜ,c_d); ẑₜ₊₁ = Fφ(zₜ,aₜ,c_d); ôₜ₊₁ = Rφ(ẑₜ₊₁,c_d)",
+        "explanation": {
+          "en": "This is the point-readout route from Equations 2–4. Equation 5 instead returns p(o | s,a,c). The domain defines utility conversion and comparison with observations.",
+          "zh": "这里是公式 2–4 的点读出路径；公式 5 则返回 p(o | s,a,c)。领域实现定义效用换算及与观察的比较。"
+        },
+        "symbols": [
+          {
+            "symbol": "s_t",
+            "en": "current task state at action step t",
+            "zh": "行动步骤 t 的当前任务状态"
+          },
+          {
+            "symbol": "c_d",
+            "en": "domain context",
+            "zh": "领域上下文"
+          },
+          {
+            "symbol": "a_t",
+            "en": "candidate action",
+            "zh": "候选行动"
+          },
+          {
+            "symbol": "φ",
+            "en": "current domain predictor configuration",
+            "zh": "当前领域预测器配置"
+          },
+          {
+            "symbol": "z / ẑ",
+            "en": "encoded state / predicted target representation",
+            "zh": "编码状态／预测目标表征"
+          },
+          {
+            "symbol": "E / F / R",
+            "en": "encoder / latent predictor / outcome readout",
+            "zh": "编码器／潜在预测器／结果读出器"
+          }
+        ]
+      },
+      "check": {
+        "question": {
+          "en": "What extra capability supports multistep planning?",
+          "zh": "什么额外能力支持多步规划？"
+        },
+        "options": {
+          "en": [
+            "A larger scalar utility",
+            "An adapter that propagates planning states",
+            "A deterministic readout only"
+          ],
+          "zh": [
+            "更大的标量效用",
+            "能推进规划状态的适配器",
+            "仅有确定性读出"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "An outcome-only predictor may rank actions without supplying future states.",
+          "zh": "只有结果输出的预测器可以排序，却未必能提供未来状态。"
+        }
+      }
+    },
+    {
+      "id": 5,
+      "slug": "complete-loop",
+      "part": 2,
+      "title": {
+        "en": "The complete loop: propose to retain",
+        "zh": "完整闭环：从候选到保留"
+      },
+      "question": {
+        "en": "Where does feedback enter, and when does a new version become official?",
+        "zh": "反馈从哪里进入，新版本何时正式生效？"
+      },
+      "summary": {
+        "en": "Six operations connect today’s decision to the system making tomorrow’s decisions.",
+        "zh": "六个操作，把当前决策与负责未来决策的系统连接起来。"
+      },
+      "paragraphs": {
+        "en": [
+          "Start with an accepted policy–model pair and the task state. The policy proposes candidate actions. The model predicts consequences, while validity checks and operational constraints exclude infeasible options. A selection rule allocates the remaining feedback budget to a feasible candidate or batch. These operations decide what the system will obtain new evidence about.",
+          "Execute or evaluate the selected action and store its observation beside the prediction that motivated selection. Feedback can construct a policy or workflow revision and support a conditional predictor-adaptation attempt. These are candidate versions. Finishing an update procedure or reducing a training loss does not automatically make them the system used next.",
+          "Component checks compare proposed components with current versions. A compatibility check evaluates their assembled pair under declared conditions. An accepted pair enters the next cycle; a rejected pair leaves the previous pair in place. Retained revisions influence later proposals, rankings, feedback, and learning. This dependency closes the recursive mechanism."
+        ],
+        "zh": [
+          "从已接受的策略—模型组合和任务状态出发。策略提出候选，模型预测后果，有效性和操作约束剔除不可行选项。选择规则把剩余反馈预算分配给一个可行候选或候选批次。这些操作决定系统接下来获得关于什么的新证据。",
+          "执行或评估所选行动，把观察与当初用于选择的预测并排保存。反馈可用于构建策略或工作流修订，也可支持有条件的预测器适配。它们仍是候选版本，更新程序运行结束或训练损失下降，并不会让它们自动成为下一轮使用的系统。",
+          "组件检查把候选组件与当前版本比较，兼容性检查在声明条件下评估组装后的组合。通过的组合进入下一周期，被拒绝时继续保留原组合。保留修订影响后续提案、排序、反馈和学习，这种依赖闭合了递归机制。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "Action selection and system acceptance are separate decisions.",
+          "Only evaluated candidates supply paired observations.",
+          "An update remains provisional until acceptance."
+        ],
+        "zh": [
+          "行动选择和系统验收是不同决策。",
+          "只有被评估的候选提供成对观察。",
+          "更新版本通过验收前仍是候选。"
+        ]
+      },
+      "example": {
+        "en": "Follow synthetic patch B through the figure: proposed → forecast → selected → tested → used to propose an update → accepted or rejected. Then trace the return arrow into the next cycle.",
+        "zh": "沿图跟踪合成补丁 B：提出→预测→选择→测试→用于提出更新→接受或拒绝。再沿返回箭头进入下一周期。"
+      },
+      "notes": {
+        "en": "Use the framework figure as a map for the next five chapters. Name each operation and pause between observed feedback and candidate updates. If only B ran, ask where A’s observation is stored: it is not, because no observation exists. Explain asynchronous updates: one component can stay fixed while the other changes. Show the component checks and pair check separately. Give their purpose now and leave the fallback details for chapter ten. Trace the return arrow carefully: accepted revisions change the next actual interaction, not merely the report of the previous attempt. The six operations are a shared protocol; individual domain experiments enable different pathways.",
+        "zh": "把框架图当作后五章的地图。依次指出操作，并在观察反馈与候选更新之间停一下。如果只运行 B，A 的观察在哪里？没有，因为 A 未被观察。解释异步更新：一个组件可以固定，另一个改变。组件检查与组合检查应分别显示，这里先讲作用，第十章再讲回退细节。沿返回箭头强调：验收修订改变下一次真实交互，而不只是改变对上次尝试的总结。六个操作是共用协议，各领域实验实际启用的路径可能不同。"
+      },
+      "talk": {
+        "en": "Here is our route map. Propose candidates, predict consequences, select within budget, and obtain feedback. Use that feedback to propose updates and decide what to retain. Two boundaries matter: evaluation turns a forecasted outcome into an observation, and acceptance turns a candidate update into the official version. Policy and model can change on different schedules. Follow the return arrow: the retained pair determines what the system proposes, selects, and learns about in the next cycle.",
+        "zh": "这是路线图：提出候选、预测后果、在预算内选择、获得反馈，再提出更新并决定保留哪个版本。注意两条边界：评估后才有观察，验收后候选更新才成为正式版本。策略和模型可以按不同节奏变化。沿返回箭头看，保留组合决定下一轮提出什么、选择什么，以及获得哪些新经验。"
+      },
+      "source": {
+        "label": "§2 · Figure 2",
+        "url": "https://arxiv.org/html/2610.13912v1#S2"
+      },
+      "figure": 2,
+      "widget": "framework",
+      "check": {
+        "question": {
+          "en": "When does a candidate predictor become retained?",
+          "zh": "候选预测器何时成为保留版本？"
+        },
+        "options": {
+          "en": [
+            "When training finishes",
+            "When it is newer",
+            "After applicable component and pair checks"
+          ],
+          "zh": [
+            "训练完成时",
+            "版本更新时",
+            "通过适用的组件和组合检查后"
+          ]
+        },
+        "answer": 2,
+        "explanation": {
+          "en": "Construction and retention are different stages.",
+          "zh": "构建更新和保留更新是不同阶段。"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "slug": "select-a-candidate",
+      "part": 2,
+      "title": {
+        "en": "Select an action: useful, feasible, affordable",
+        "zh": "选择行动：有用、可行、付得起"
+      },
+      "question": {
+        "en": "How do predicted consequences become a selection decision?",
+        "zh": "预测后果怎样变成选择决策？"
+      },
+      "summary": {
+        "en": "Exclude invalid candidates, apply the declared ranking rule, then check feedback cost.",
+        "zh": "先排除无效候选，再按声明规则排序，并检查反馈成本。"
+      },
+      "paragraphs": {
+        "en": [
+          "The policy produces a candidate set from the current state and goal. Each candidate receives an outcome forecast or, if supported, a bounded rollout. The verifier records validity, utility components, provenance, and any available uncertainty. Feasibility is checked before utility ranking: a promising forecast cannot override an invalid action or an operational constraint.",
+          "For the framework’s utility-based route, weighted utility components are added and an optional uncertainty penalty is subtracted. The weights, uncertainty estimator, penalty strength, batch size, and feedback costs are domain choices. The code experiment uses its own instantiated rule: it aggregates execution-class probabilities to rank four revisions before selecting one to execute.",
+          "Selecting the highest utility and selecting the most informative uncertain action are different objectives. An explicitly enabled acquisition rule may prioritize uncertainty for evaluation. The imagined-training admission filter is another decision again. A candidate can be useful to test precisely because it is uncertain, while still being unsuitable as an unverified training target."
+        ],
+        "zh": [
+          "策略根据当前状态和目标生成候选集合。每个候选得到结果预测，或在接口支持时得到有限步展开。验证器记录有效性、效用分项、证据来源和可用的不确定性。可行性在效用排序之前检查：预测很有前景，也不能绕过无效行动或操作约束。",
+          "框架的效用排序路径把加权效用相加，再减去可选的不确定性惩罚。权重、不确定性估计器、惩罚强度、批量大小和反馈成本都由领域规定。代码实验采用具体规则：汇总执行类别概率，给四个修订排序，再选择一个执行。",
+          "选最高效用与选最有信息价值的不确定行动，目标并不相同。只有明确启用信息获取规则时，系统才可能优先评估不确定候选。想象训练数据的准入又是另一项决策：候选可能因为不确定而值得测试，却不适合直接作为未经验证的训练目标。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "Validity precedes utility ranking.",
+          "An uncertainty penalty is optional and domain-defined.",
+          "Evaluation selection and training admission have different purposes."
+        ],
+        "zh": [
+          "有效性先于效用排序。",
+          "不确定性惩罚可选，由领域定义。",
+          "外部评估选择与训练准入用途不同。"
+        ]
+      },
+      "example": {
+        "en": "Synthetic arithmetic: utility 0.80, uncertainty 0.50, penalty weight 0.20 give score 0.80−0.20×0.50=0.70. A candidate with score 0.95 but failed validity is excluded. These numbers illustrate Equation 7, not the code benchmark’s exact ranker.",
+        "zh": "合成计算：效用 0.80、不确定性 0.50、惩罚权重 0.20，得分为 0.80−0.20×0.50=0.70。即使另一个候选得分 0.95，只要有效性未通过就被排除。这些数字演示公式 7，并非代码基准的实际排序器。"
+      },
+      "notes": {
+        "en": "Run the candidate-selection demonstration in two passes. First remove an invalid high-scoring option to establish that constraints are not merely soft preferences. Then vary the uncertainty weight and calculate one score aloud. Stress that this arithmetic is a teaching instantiation, while the reported code ranker aggregates execution-class probabilities. Ask why the most uncertain candidate might still deserve a real test. The answer depends on whether an information-seeking acquisition rule is enabled. This prepares the crucial distinction between learning about a candidate and learning from its imagined trajectory. Do not imply that all uncertainty estimators are calibrated or that every application uses a penalty.",
+        "zh": "演示分两遍：先剔除一个高分但无效的候选，说明约束不是软性偏好；再改变不确定性权重，现场算出一个得分。强调这只是教学实例，论文代码排序器汇总的是执行类别概率。接着问最不确定的候选为何仍可能值得真实测试：这取决于是否启用了信息获取规则。由此引出“了解一个候选”与“把它的想象轨迹拿来学习”的区别。不要暗示所有不确定性估计都经过校准，也不要说每个领域都使用惩罚项。"
+      },
+      "talk": {
+        "en": "Selection has three questions. Is the candidate valid? How useful does it look under the declared rule? Can we afford its evaluation? Our toy score subtracts an optional uncertainty penalty, so changing that weight can change the ranking. The paper’s code ranker uses predicted execution probabilities instead. Also remember that uncertain does not mean worthless: an information-seeking rule may test an uncertain action, even when its imagined trajectory should not be admitted for training.",
+        "zh": "选择分三问：候选是否有效，按声明规则看有多有用，是否付得起评估成本？教学得分会减去可选的不确定性惩罚，改变权重就可能改变排序；论文代码排序器则使用执行概率。还要记住，不确定不等于没有价值。信息获取规则可能专门测试不确定行动，即使它的想象轨迹并不适合进入训练。"
+      },
+      "source": {
+        "label": "§2.3 · Equation 7",
+        "url": "https://arxiv.org/html/2610.13912v1#S2.SS3"
+      },
+      "widget": "lab",
+      "formula": {
+        "tex": "R_d(\\widehat\\tau)=\\sum_j w_{d,j}r_{\\tau,j}-\\Delta_d(\\widehat\\tau),\\quad \\Delta_d=\\lambda_d U(\\mathbf u_\\tau)\\ \\text{if enabled}",
+        "plain": "R_d(τ̂) = Σⱼ w_d,j r_τ,j − Δ_d(τ̂); Δ_d = λ_d U(u_τ) when enabled, otherwise 0",
+        "explanation": {
+          "en": "Invalid candidates are removed before this score is used. If the penalty pathway is disabled, Δ=0. A declared acquisition rule can replace utility ranking; the framework does not force this formula on every domain.",
+          "zh": "无效候选先被排除。惩罚路径未启用时 Δ=0；声明的信息获取规则也可替代效用排序，框架并不强制每个领域使用此公式。"
+        },
+        "symbols": [
+          {
+            "symbol": "τ̂",
+            "en": "predicted candidate trajectory or supported outcome forecast",
+            "zh": "候选预测轨迹或所支持的结果预测"
+          },
+          {
+            "symbol": "r_τ,j",
+            "en": "utility component j",
+            "zh": "第 j 项效用"
+          },
+          {
+            "symbol": "w_d,j",
+            "en": "domain-specific utility weight",
+            "zh": "领域效用权重"
+          },
+          {
+            "symbol": "U(u_τ)",
+            "en": "specified uncertainty estimate",
+            "zh": "指定的不确定性估计"
+          },
+          {
+            "symbol": "λ_d / Δ_d",
+            "en": "penalty strength / total optional penalty",
+            "zh": "惩罚强度／可选总惩罚"
+          }
+        ]
+      },
+      "check": {
+        "question": {
+          "en": "A candidate fails validity but has the highest utility. What happens?",
+          "zh": "候选有效性失败，但效用最高，应怎样处理？"
+        },
+        "options": {
+          "en": [
+            "Execute it because utility is highest",
+            "Exclude it before ranking",
+            "Automatically train on it"
+          ],
+          "zh": [
+            "因效用最高而执行",
+            "在排序前排除",
+            "自动拿来训练"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "Validity and operational constraints determine executable candidates before utility-based selection.",
+          "zh": "有效性和操作约束先决定哪些候选可以执行。"
+        }
+      }
+    },
+    {
+      "id": 7,
+      "slug": "evidence-and-imagination",
+      "part": 2,
+      "title": {
+        "en": "Keep predictions and observations separate",
+        "zh": "把预测与观察分开保存"
+      },
+      "question": {
+        "en": "When may an imagined trajectory enter training?",
+        "zh": "想象轨迹什么时候可以进入训练？"
+      },
+      "summary": {
+        "en": "Evidence provenance describes origin; explicit admission criteria decide sufficiency.",
+        "zh": "证据来源说明从何而来，明确准入条件才决定是否足够。"
+      },
+      "paragraphs": {
+        "en": [
+          "The framework distinguishes four origins: deterministic rule checks E0, learned predictions and rollouts E1, specialized simulators or higher-fidelity calculations E2, and external measurements or experiments E3. These labels record provenance and intended fidelity. They do not make every E3 measurement correct or every E1 forecast suitable for learning.",
+          "An imagined trajectory enters a simulated learning set only when the application enables that route and its declared filters pass. These include validity, a utility threshold, an uncertainty check when enabled, and a permitted evidence source. Curating the accepted trajectories is separate from selecting real actions. If imagined learning is disabled, this set is empty.",
+          "A feedback record should preserve the input context, action, original prediction, observed result, evidence source, and generating system version. Replacing a prediction with the observed answer would erase the information needed to evaluate prediction error. Linking both fields instead allows the same experience to support action evaluation, reliability assessment, and appropriately targeted updates."
+        ],
+        "zh": [
+          "框架区分四类来源：E0 为确定性规则检查，E1 为学习模型预测与展开，E2 为专门模拟器或更高保真计算，E3 为外部测量或实验。这些标签描述来源和预期保真度，并不保证每个 E3 测量都正确，也不意味着所有 E1 预测都可用于学习。",
+          "应用启用想象学习路径，而且声明的过滤条件全部通过时，想象轨迹才进入模拟学习集。条件包括有效性、效用阈值、启用时的不确定性检查，以及允许的证据来源。整理这些轨迹与选择真实行动是不同决定；未启用想象学习时，该数据集为空。",
+          "反馈记录应保留输入上下文、行动、原始预测、观察结果、证据来源及生成系统版本。若用真实答案覆盖预测，就会丢失评估预测误差所需的信息。把两者关联并分开保存，同一经验才能用于行动评估、可靠性判断和适当的更新。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "E0–E3 describe origins, not automatic training permission.",
+          "Imagined-learning admission is separately gated.",
+          "Keep original predictions beside observations and version identifiers."
+        ],
+        "zh": [
+          "E0–E3 描述来源，不是自动训练许可。",
+          "想象学习有独立准入检查。",
+          "保留原始预测、观察及版本标识。"
+        ]
+      },
+      "example": {
+        "en": "Teaching example: a rollout passes rules and predicts high utility but exceeds the allowed uncertainty. It is rejected as imagined training data. The system may still choose to evaluate it externally if its declared evaluation rule permits.",
+        "zh": "教学例子：一条展开通过规则且预测效用很高，但不确定性超过准入上限，因此不能进入想象训练集。若外部评估规则允许，系统仍可实际评估它。"
+      },
+      "notes": {
+        "en": "Make a two-column record on screen: prediction and observation. Put a timestamp, source, and version identifier underneath. This simple display often explains the evidence contract more clearly than the indicator formula. Introduce E0 through E3 as source categories, then explain why provenance alone cannot establish correctness or suitability. Walk through one rejected imagined trajectory, showing that any failed factor makes its admission indicator zero. If the uncertainty check is omitted its factor is one, rather than pretending uncertainty has been measured. The paper specifies this general filter but does not claim that every domain trains on imagined trajectories. Preserve that optionality throughout the lesson.",
+        "zh": "在屏幕上画预测、观察两列，下方标时间、来源和版本。这通常比指示函数更容易解释证据契约。介绍 E0 到 E3 后，说明来源本身不能保证正确性或训练适用性。逐项检查一条被拒绝的想象轨迹：任一因子为零，准入结果就是零。如果没启用不确定性检查，该因子按定义取一，而不是假装已经测量不确定性。论文给出通用过滤规则，并没有说所有领域都用想象轨迹训练。教学全程都应保留这种可选性。"
+      },
+      "talk": {
+        "en": "Predictions are not observations. Keep them in separate fields, linked to the same action, context, and system version. Evidence labels E0 to E3 tell us where information came from, not whether it automatically qualifies for training. Imagined trajectories need their own admission checks: validity, utility, permitted evidence, and uncertainty when enabled. Failing training admission does not necessarily prevent a real evaluation. If imagined learning is disabled, the simulated training set simply stays empty. Keep that distinction visible in every animation.",
+        "zh": "预测不是观察。应把它们分开保存，并关联同一行动、上下文与系统版本。E0 到 E3 说明信息来源，不会自动赋予训练资格。想象轨迹需要独立检查有效性、效用、允许证据及启用时的不确定性。不能进入训练，并不一定禁止真实评估。如果没有启用想象学习，模拟训练集就保持为空。 每段动画也都要清楚保留这个区别。"
+      },
+      "source": {
+        "label": "§2.3 · Evidence and imagined training data · Equation 8",
+        "url": "https://arxiv.org/html/2610.13912v1#S2.SS3"
+      },
+      "formula": {
+        "tex": "e_\\tau=\\mathbf1\\{v_\\tau=1\\}\\mathbf1\\{R_d(\\widehat\\tau)\\ge r_d^{\\min}\\}C_d^U(\\widehat\\tau)\\mathbf1\\{\\ell_\\tau\\in\\mathcal E_d^{train}\\}",
+        "plain": "e_τ = 1[v_τ=1] × 1[R_d(τ̂)≥r_d,min] × C_dᵁ(τ̂) × 1[ℓ_τ∈E_d,train]",
+        "explanation": {
+          "en": "All factors must pass. Cᵁ=1 when that check is omitted. D_sim is curated from admitted trajectories only when imagined learning is enabled.",
+          "zh": "所有因子都必须通过。省略不确定性检查时 Cᵁ=1。仅在启用想象学习时，由通过的轨迹整理 D_sim。"
+        },
+        "symbols": [
+          {
+            "symbol": "e_τ",
+            "en": "binary training-admission decision",
+            "zh": "二值训练准入结果"
+          },
+          {
+            "symbol": "v_τ",
+            "en": "candidate validity",
+            "zh": "候选有效性"
+          },
+          {
+            "symbol": "r_d^min",
+            "en": "minimum admitted utility",
+            "zh": "准入所需最低效用"
+          },
+          {
+            "symbol": "C_d^U",
+            "en": "optional uncertainty condition",
+            "zh": "可选不确定性条件"
+          },
+          {
+            "symbol": "ℓ_τ / E_d^train",
+            "en": "supporting evidence label / permitted training sources",
+            "zh": "支持证据标签／允许的训练来源"
+          }
+        ]
+      },
+      "check": {
+        "question": {
+          "en": "Does E3 provenance automatically permit training?",
+          "zh": "E3 来源是否自动允许进入训练？"
+        },
+        "options": {
+          "en": [
+            "Yes, all external measurements are sufficient",
+            "No, declared admission and quality criteria still apply",
+            "Only if E1 agrees"
+          ],
+          "zh": [
+            "是，所有外部测量都充分",
+            "否，仍需满足声明的准入和质量条件",
+            "只有 E1 同意时才可以"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "Provenance identifies origin; sufficiency is a separate assessment.",
+          "zh": "来源标明出处，充分性需要另行判断。"
+        }
+      }
+    },
+    {
+      "id": 8,
+      "slug": "policy-or-workflow",
+      "part": 2,
+      "title": {
+        "en": "Improve the actor or the workflow",
+        "zh": "改进策略，或改进工作流程"
+      },
+      "question": {
+        "en": "What does a policy update change?",
+        "zh": "策略更新究竟改变什么？"
+      },
+      "summary": {
+        "en": "Feedback must become an appropriate learning signal for the object that is allowed to change.",
+        "zh": "反馈必须转化为适合被更新对象的学习信号。"
+      },
+      "paragraphs": {
+        "en": [
+          "The symbol θ can denote trainable parameters or a persistent agent workflow. A policy revision changes how candidates are generated or selected. Possible routes include demonstrations, preferences based on evaluated alternatives, and workflow search using evaluation scores. The application declares which route is enabled and which parameters or configuration fields may change.",
+          "Feedback used for policy improvement forms D_policy. Predictor adaptation uses D_adapt, which can contain different records because its target is prediction quality rather than action behavior. Imagined trajectories may supplement policy data only if that learning pathway is enabled and its admission checks have passed. One generic “feedback dataset” can hide these different objectives.",
+          "A policy-update attempt also needs a declared schedule or trigger, appropriate evidence, and enough budget. If no attempt is enabled, θ stays unchanged. When an attempt is enabled, the result is θ′, a proposed configuration. It still needs component acceptance and compatibility evaluation before becoming the retained policy for subsequent interaction."
+        ],
+        "zh": [
+          "θ 可以代表可训练参数，也可以代表持久的智能体工作流。策略修订改变候选生成或选择方式。更新路线可以是示范学习、根据评估结果做偏好学习，或用评估分数搜索工作流。具体启用哪条路线、允许哪些参数或配置字段变化，必须由应用声明。",
+          "用于策略改进的记录组成 D_policy，用于预测器适配的记录组成 D_adapt。两者可能不同，因为一个面向行动行为，另一个面向预测质量。只有启用想象学习且轨迹通过准入时，它们才可补充策略数据。笼统地说“反馈数据集”，容易掩盖目标差别。",
+          "策略更新尝试还需要声明的计划或触发条件、合适的证据和足够预算。没启用尝试时 θ 不变；启用时得到 θ′，它仍只是候选配置。通过组件验收和兼容性评估后，才能成为后续交互使用的保留策略。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "A policy can be model parameters or a persistent workflow.",
+          "Policy and predictor datasets serve different targets.",
+          "Proposed θ′ is distinct from retained θ."
+        ],
+        "zh": [
+          "策略可以是模型参数或持久工作流。",
+          "策略数据和预测器数据面向不同目标。",
+          "候选 θ′ 与保留 θ 不同。"
+        ]
+      },
+      "example": {
+        "en": "Teaching example: feedback favors “inspect the failed assertion before proposing a patch.” Saving this as a validated workflow can revise θ even if no language-model weights change. This illustrates the framework, not a specific reported code update; the paper’s coder is fixed.",
+        "zh": "教学例子：反馈表明“先检查失败断言，再提出补丁”更有效。把它保存为通过验证的工作流，即使不改语言模型权重，也可以修订 θ。这用于说明框架，并非代码实验的具体更新；该实验代码生成器固定。"
+      },
+      "notes": {
+        "en": "Use the workflow example to prevent the audience equating every update with expensive fine-tuning. Ask what configuration persists into later tasks. Then distinguish the target of the two data sets: policy learning asks which behavior should be preferred; predictor adaptation asks what outcome should have been forecast. The same interaction can support both, but their filtering and labels need not be identical. Explain the prime on θ′ as “candidate,” not “next accepted version.” The fixed-policy route is a legitimate instantiation with uπ=0. This will stop the class from incorrectly describing code repair as training the coder just because the repaired program changes across rounds.",
+        "zh": "用工作流例子避免把所有更新都等同于昂贵微调。追问什么配置会持续进入后续任务。随后区分两个数据集的目标：策略学习问应该偏好什么行为，预测器适配问本应预测出什么结果。同一交互可支持两者，但筛选和标签未必相同。θ′ 上的撇号表示候选，并不等于下一已接受版本。uπ=0 的固定策略是合法实现。这样能避免听众因为程序在多轮中变化，就误说代码修复实验训练了代码生成器。"
+      },
+      "talk": {
+        "en": "A policy update can change neural parameters, but it can also change a persistent workflow. Feedback must be converted into a suitable signal: a demonstration, a preference, or a workflow score. Policy data and predictor-adaptation data need not be the same because they optimize different things. An enabled attempt produces a candidate θ′. Acceptance comes later. In a fixed-policy experiment, the update indicator is zero, even though the task state and generated candidates continue to change.",
+        "zh": "策略更新可以改神经网络参数，也可以改持久工作流。反馈要转成适当信号，例如示范、偏好或工作流分数。策略数据与预测器适配数据优化不同对象，因此不必相同。启用更新后得到的是候选 θ′，验收还在后面。固定策略实验中，更新指示为零，即使任务状态和生成候选仍在变化。"
+      },
+      "source": {
+        "label": "§2.4 · Policy learning or workflow revision · Equation 9",
+        "url": "https://arxiv.org/html/2610.13912v1#S2.SS4"
+      },
+      "formula": {
+        "tex": "\\theta'_{k+1}=\\begin{cases}\\operatorname{Update}(\\theta_k,\\mathcal D_{policy,k},\\mathcal D_{sim,k}),&u_k^\\pi=1\\\\ \\theta_k,&u_k^\\pi=0\\end{cases}",
+        "plain": "θ′ₖ₊₁ = Update(θₖ,D_policy,k,D_sim,k) if uₖπ=1; otherwise θₖ",
+        "explanation": {
+          "en": "The attempt flag includes the declared trigger, sufficient evidence, and budget. Imagined data may be empty. This constructs a candidate; it does not decide retention.",
+          "zh": "尝试标志包含声明触发条件、充分证据和预算。想象数据可以为空。本式构建候选，不决定保留。"
+        },
+        "symbols": [
+          {
+            "symbol": "θ_k / θ′",
+            "en": "current / proposed policy configuration",
+            "zh": "当前／候选策略配置"
+          },
+          {
+            "symbol": "u_k^π",
+            "en": "enabled policy-update attempt indicator",
+            "zh": "是否启用策略更新尝试"
+          },
+          {
+            "symbol": "D_policy,k",
+            "en": "records selected for policy improvement",
+            "zh": "策略改进所选记录"
+          },
+          {
+            "symbol": "D_sim,k",
+            "en": "admitted imagined trajectories, if enabled",
+            "zh": "启用时通过准入的想象轨迹"
+          }
+        ]
+      },
+      "check": {
+        "question": {
+          "en": "Can θ change without updating neural weights?",
+          "zh": "不更新神经网络权重，θ 能改变吗？"
+        },
+        "options": {
+          "en": [
+            "Yes, if an accepted persistent workflow changes",
+            "No, θ always means neural weights",
+            "Yes, merely appending any log changes θ"
+          ],
+          "zh": [
+            "可以，验收持久工作流修订即可",
+            "不行，θ 永远表示网络权重",
+            "可以，随便追加日志就改变 θ"
+          ]
+        },
+        "answer": 0,
+        "explanation": {
+          "en": "The framework allows trainable parameters or persistent workflow configurations as the policy object.",
+          "zh": "框架允许把可训练参数或持久工作流配置作为策略对象。"
+        }
+      }
+    },
+    {
+      "id": 9,
+      "slug": "conditional-adaptation",
+      "part": 2,
+      "title": {
+        "en": "Adapt only when the evidence warrants it",
+        "zh": "证据支持时，才尝试模型适配"
+      },
+      "question": {
+        "en": "Why is “insufficient evidence” different from “reliable”?",
+        "zh": "为什么“证据不足”不等于“可靠”？"
+      },
+      "summary": {
+        "en": "The adaptation trigger requires unreliability, sufficient adaptation data, and budget together.",
+        "zh": "适配触发要求：不可靠、适配数据充分、预算足够，三者同时满足。"
+      },
+      "paragraphs": {
+        "en": [
+          "Reliability is assessed for the current predictor version and the relevant candidate range. Historical records must use predictions attributable to that version: either predictions already made by it or new predictions on stored inputs. Mixing old-version prediction errors directly into the current-version estimate would confuse past decision quality with present predictor quality.",
+          "The assessment has three outcomes: reliable, unreliable, or insufficient. Selected actions provide limited coverage, so a small error on a narrow observed subset is not evidence of broad reliability. Insufficient coverage yields “insufficient.” Under the formal trigger, this does not activate adaptation. Subsequent selection still follows the declared evaluation rule and remaining budget.",
+          "An adaptation attempt occurs only when reliability is classified as unreliable, the adaptation dataset is sufficient, and the available update budget covers estimated cost. The application specifies targets, predictive loss, and trainable parameters. A scalar yield supplies an outcome target, not a fully observed next state, though its loss may update trainable upstream parameters."
+        ],
+        "zh": [
+          "可靠性针对当前预测器版本和相关候选范围评估。历史记录必须使用可归属于该版本的预测：要么是它当时生成的预测，要么是它对保存输入重新计算的预测。把旧版本误差直接混入当前估计，会混淆历史决策质量与当前预测器质量。",
+          "判断有三种结果：可靠、不可靠、证据不足。被选行动只能提供有限覆盖，因此一个狭窄观察子集上的小误差，不足以证明广泛可靠。覆盖不足应判为证据不足，按正式触发式不会启动适配；后续选择仍按声明规则及剩余预算进行。",
+          "只有判定不可靠、适配数据充分且预算能覆盖估计成本时，才尝试适配。应用还需规定监督目标、预测损失和可训练参数。单个产率数值提供的是结果目标，并非完整下一状态；若上游参数可训练，结果损失也可能更新它们。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "Use current-version predictions for current reliability.",
+          "Insufficient coverage is neither reliability nor an adaptation trigger.",
+          "Adaptation needs all three conditions and remains provisional."
+        ],
+        "zh": [
+          "当前可靠性要使用当前版本预测。",
+          "覆盖不足既不是可靠，也不触发适配。",
+          "适配须满足三个条件，结果仍待验收。"
+        ]
+      },
+      "example": {
+        "en": "Synthetic gate: unreliable + 12 usable records + enough budget may enable an attempt under a teaching rule. Changing the verdict to insufficient turns the attempt off. The number 12 is illustrative; the paper does not specify a universal minimum.",
+        "zh": "合成门控：在教学规则下，不可靠、12 条可用记录、预算足够，可能允许尝试；把判断改为证据不足，就不触发。12 仅是示例，论文没有规定通用最少样本数。"
+      },
+      "notes": {
+        "en": "Demonstrate all three reliability states rather than reducing the check to a red/green switch. Start with insufficient coverage and show that adaptation remains off, even if budget is abundant. Next use an unreliable verdict but insufficient adaptation data. Finally satisfy all conditions. Explain the version rule using an old predictor and a revised one: old stored predictions can explain past decisions, but current reliability needs current-version predictions. The data threshold, loss, and trainable subset are application specifications, so the toy interface must label its settings synthetic. A triggered attempt does not guarantee improvement; the candidate predictor still faces component and compatibility checks.",
+        "zh": "演示三态判断，不要简化成红绿二选一。先设覆盖不足，即使预算充足也不启动；再设不可靠但适配数据不足；最后让三个条件同时满足。用旧预测器和修订预测器说明版本规则：旧预测可以解释历史决策，当前可靠性却需要当前版本预测。数据阈值、损失和可训练范围由应用规定，教学界面的设置必须标成合成。触发尝试也不保证提高，候选预测器后面仍需通过组件与兼容性检查。"
+      },
+      "talk": {
+        "en": "The reliability verdict has three states. Reliable means the declared checks pass over covered candidates. Unreliable can justify adaptation. Insufficient means we lack enough coverage; it is not a certificate of reliability and it does not activate this trigger. An attempt additionally requires enough suitable data and budget. Use predictions attributable to the current model version when judging it. Even when all conditions pass, adaptation only proposes a new predictor. Retention is a separate decision.",
+        "zh": "可靠性有三种状态。可靠表示在覆盖范围内通过声明检查；不可靠可以支持适配；证据不足说明覆盖不够，既不是可靠证明，也不激活这个触发器。适配还要有足够合适数据和预算。评估当前模型时，要用属于当前版本的预测。即使条件全部通过，适配也只是提出新预测器，能否保留仍是另一项决策。"
+      },
+      "source": {
+        "label": "§2.4 · Equations 10–12",
+        "url": "https://arxiv.org/html/2610.13912v1#S2.SS4"
+      },
+      "widget": "lab",
+      "formula": {
+        "tex": "u_k^W=\\mathbf1\\{\\rho_k^W=\\mathrm{unreliable}\\}\\mathbf1\\{\\mathcal D_{adapt,k}\\ \\mathrm{sufficient}\\}\\mathbf1\\{B_{update,k}\\ge\\widehat c_{adapt,k}\\}",
+        "plain": "uₖᵂ = 1[ρₖᵂ=unreliable] × 1[D_adapt,k sufficient] × 1[B_update,k≥ĉ_adapt,k]",
+        "explanation": {
+          "en": "The reliability assessment can also return reliable or insufficient; both leave this attempt flag at zero. A disabled adaptation pathway also sets uᵂ=0.",
+          "zh": "可靠性也可返回可靠或证据不足，这两种情况均令尝试标志为零。适配路径未启用时同样 uᵂ=0。"
+        },
+        "symbols": [
+          {
+            "symbol": "u_k^W",
+            "en": "world-model adaptation attempt indicator",
+            "zh": "世界模型适配尝试指示"
+          },
+          {
+            "symbol": "ρ_k^W",
+            "en": "current-version reliability verdict",
+            "zh": "当前版本可靠性判断"
+          },
+          {
+            "symbol": "D_adapt,k",
+            "en": "selected adaptation records",
+            "zh": "所选适配记录"
+          },
+          {
+            "symbol": "B_update,k",
+            "en": "remaining budget for the proposed attempt",
+            "zh": "本次尝试可用剩余预算"
+          },
+          {
+            "symbol": "ĉ_adapt,k",
+            "en": "estimated adaptation cost in matching units",
+            "zh": "相同单位的适配成本估计"
+          }
+        ]
+      },
+      "check": {
+        "question": {
+          "en": "Coverage is insufficient, but data and budget look plentiful. Does Equation 11 trigger?",
+          "zh": "覆盖不足，但数据和预算看起来很多，公式 11 是否触发？"
+        },
+        "options": {
+          "en": [
+            "Yes, plentiful budget is sufficient",
+            "No, the reliability verdict must be unreliable",
+            "Yes, insufficient means unreliable"
+          ],
+          "zh": [
+            "是，预算充足就行",
+            "否，可靠性必须判为不可靠",
+            "是，证据不足就是不可靠"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "Insufficient is a distinct state and does not satisfy the unreliability indicator.",
+          "zh": "证据不足是独立状态，不满足“不可靠”指示条件。"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "slug": "retain-a-pair",
+      "part": 2,
+      "title": {
+        "en": "A better component can make a worse pair",
+        "zh": "组件更好，组合仍可能更差"
+      },
+      "question": {
+        "en": "Why check compatibility after checking each component?",
+        "zh": "单独检查组件后，为什么还要检查兼容性？"
+      },
+      "summary": {
+        "en": "Accept revisions at the level of the assembled decision system, with explicit fallback rules.",
+        "zh": "对组装后的决策系统进行验收，并明确失败时回退到哪里。"
+      },
+      "paragraphs": {
+        "en": [
+          "A policy component check measures its declared task utility and constraints against the current policy. A model component check measures relevant predictive quality against the current model. Passed, attempted components enter an assembled candidate pair; a failed or unattempted component contributes its old version. This determines exactly which pair will face compatibility evaluation.",
+          "The pair check addresses interaction: a policy can propose unfamiliar candidates, and a predictor can alter selection or learning signals. Evaluate the assembled system against the current pair under prescribed matched conditions. Matched task conditions do not require identical generated candidates. The check concerns joint decision behavior and prediction suitability on the selected policy’s candidate range.",
+          "If the pair check fails, the entire old pair is retained. If neither component changes, the current pair carries forward without a new pair comparison. Update data construct candidates; gate data choose retained versions; a designated held-out audit set supports final reporting. Reusing a gate for many choices can still motivate an independent final audit."
+        ],
+        "zh": [
+          "策略组件检查把声明的任务效用和约束与当前策略比较，模型组件检查把相关预测质量与当前模型比较。已尝试且通过的组件进入候选组合；未尝试或失败的组件使用旧版本。这样先明确究竟是哪一对版本要进入兼容性评估。",
+          "组合检查处理相互影响：策略可能提出陌生候选，预测器可能改变选择或学习信号。在规定且匹配的条件下，将组装系统与当前组合比较。任务条件匹配不要求生成完全相同候选；检查关注联合决策行为，以及预测器对所选策略候选范围的适用性。",
+          "组合检查失败时，整个旧组合被保留；如果两个组件都没变化，就无需重新比较组合。更新数据用于构建候选，门控数据用于挑选保留版本，指定的留出审计集用于最终报告。若门控被反复用于挑选，也更需要独立最终审计。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "Component checks compare each proposal with its current version.",
+          "Compatibility evaluates the assembled pair.",
+          "Pair failure retains the entire old pair."
+        ],
+        "zh": [
+          "组件检查分别与当前版本比较。",
+          "兼容性检查评估组装后的组合。",
+          "组合失败时，保留整个旧组合。"
+        ]
+      },
+      "example": {
+        "en": "Synthetic example: a new predictor lowers average error, but ranks patches from the new policy poorly. Both may pass separate checks, yet fail the pair check. The retained system is the old pair, not an untested mixture chosen after failure.",
+        "zh": "合成例子：新预测器平均误差更小，但对新策略提出的补丁排序很差。它们可能各自通过检查，却在组合检查中失败。此时保留旧组合，不是失败后临时挑一个未测试的混合组合。"
+      },
+      "notes": {
+        "en": "Work through two cases on the diagram. In the first, the policy component fails but the model passes: the assembled pair is old policy plus proposed model, and that pair must pass compatibility. In the second, both components pass but their pair fails: Equation 18 retains the entire old pair. Do not invent an automatic search through every possible mixture after pair failure. Explain why improving average prediction error is insufficient if error concentrates on candidates favored by the new policy. Then distinguish training, gate selection, and held-out reporting. These roles control what each performance number can legitimately establish and help students recognize repeated-selection bias.",
+        "zh": "在图上走两个案例。第一，策略组件失败、模型通过，组装成旧策略加候选模型，这个组合仍要接受兼容性检查。第二，两个组件分别通过但组合失败，公式 18 保留整个旧组合。不要发明组合失败后自动搜索所有混搭的流程。说明平均预测误差下降为何仍可能不够：如果误差恰好集中在新策略偏爱的候选上，联合表现仍会受损。最后区分训练、门控选择与留出报告，这些数据角色决定性能数字究竟能证明什么，也帮助理解反复挑选带来的偏差。"
+      },
+      "talk": {
+        "en": "A component can improve in isolation yet damage joint behavior. The new policy might propose unfamiliar actions; the new model might rank them poorly. Component checks first decide which proposed versions enter the candidate pair. The pair check then compares that assembled system with the current pair. If it fails, the whole old pair stays. If neither component changes, no new pair comparison is needed. Keep update data, gate data, and final audit data conceptually separate. Acceptance criteria must be declared before inspecting the outcome.",
+        "zh": "组件单独变好，联合行为仍可能变差。新策略可能提出陌生行动，新模型可能把它们排错。先由组件检查决定哪些候选版本进入组合，再由组合检查与当前系统比较。组合失败时，整个旧组合继续保留；若两个组件都未变化，就不必重新比较组合。最后记住更新数据、门控数据和最终审计数据的不同作用。 验收标准应在检查结果之前声明。"
+      },
+      "source": {
+        "label": "§2.5 · Equations 13–18",
+        "url": "https://arxiv.org/html/2610.13912v1#S2.SS5"
+      },
+      "widget": "lab",
+      "formula": {
+        "tex": "(\\theta_{k+1},\\phi_{d,k+1})=\\begin{cases}(\\bar\\theta_{k+1},\\bar\\phi_{d,k+1}),&G_k^{pair}=1\\\\(\\theta_k,\\phi_{d,k}),&G_k^{pair}=0\\end{cases}",
+        "plain": "(θₖ₊₁,φ_d,k+1) = (θ̄ₖ₊₁,φ̄_d,k+1) if G_pair=1; otherwise (θₖ,φ_d,k)",
+        "explanation": {
+          "en": "Bars identify the candidate components after component checks. Each attempted component enters only if its own gate passes; otherwise its current version is used. Equation 18 then makes the pair-level decision.",
+          "zh": "横线表示经过组件检查后的候选组件；只有尝试且通过各自检查的组件才进入，否则使用当前版本。公式 18 再做组合层面的决定。"
+        },
+        "symbols": [
+          {
+            "symbol": "θ_k / φ_d,k",
+            "en": "current policy / current predictor",
+            "zh": "当前策略／当前预测器"
+          },
+          {
+            "symbol": "θ̄ / φ̄",
+            "en": "assembled components after component acceptance",
+            "zh": "组件验收后组装的组件"
+          },
+          {
+            "symbol": "G_k^pair",
+            "en": "compatibility acceptance decision",
+            "zh": "兼容性验收结果"
+          },
+          {
+            "symbol": "k+1",
+            "en": "next cycle’s retained version, possibly unchanged",
+            "zh": "下一周期保留版本，可能不变"
+          }
+        ]
+      },
+      "check": {
+        "question": {
+          "en": "Both proposed components pass, but their pair fails. What is retained?",
+          "zh": "两个候选组件单独通过，但组合失败，保留什么？"
+        },
+        "options": {
+          "en": [
+            "Both new components",
+            "The entire old pair",
+            "An arbitrary old/new mixture"
+          ],
+          "zh": [
+            "两个新组件",
+            "整个旧组合",
+            "随意一个新旧混合"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "Equation 18 falls back to the entire current pair when pair acceptance fails.",
+          "zh": "公式 18 在组合验收失败时回退到整个当前组合。"
+        }
+      }
+    },
+    {
+      "id": 11,
+      "slug": "repair-design",
+      "part": 3,
+      "title": {
+        "en": "Code repair: hold the coder fixed",
+        "zh": "代码修复：把代码生成器固定住"
+      },
+      "question": {
+        "en": "What does this comparison isolate?",
+        "zh": "这一比较究竟隔离了什么因素？"
+      },
+      "summary": {
+        "en": "A shared coder and candidate budget separate the value of selection from the value of predictor adaptation.",
+        "zh": "共用代码生成器和候选预算，区分选择方式与预测器适配的价值。"
+      },
+      "paragraphs": {
+        "en": [
+          "The policy is ReasonFlux-Coder-7B and remains fixed. In each repair round it proposes four revisions, and one is chosen for execution. W1, a 3B execution-outcome predictor adapted from Qwen2.5-Coder-3B-Instruct with LoRA and the JEPA-Anything design, returns five-class probabilities for each candidate–test pair. These probabilities are aggregated to rank revisions.",
+          "The core comparison uses 200 CodeContests tasks, three seeds, and at most three feedback rounds. Random selection, a capacity-matched static verifier, a fixed world model, and a feedback-adapted world model share the coder and candidate budget. Online tests provide repair feedback; hidden tests determine final all-pass success. These are different evaluation roles.",
+          "The official repository adds an important implementation detail beyond the paper’s high-level feedback loop. Its reproduction guide documents a four-stage adaptation training chain on recorded transitions. The final benchmark evaluation performs no optimizer updates. Comparing fixed and adapted checkpoints therefore does not mean that the released final evaluation performs online gradient descent during each of the 600 episodes.",
+          "The classroom repair laboratory illustrates prediction, feedback, conditional adaptation, and retention with small synthetic examples. It does not load ReasonFlux, W1, or the benchmark checkpoints, and it is not a literal replay of the released training chain. Its purpose is to reveal decision logic while keeping reported research results in a separate evidence panel."
+        ],
+        "zh": [
+          "策略是固定的 ReasonFlux-Coder-7B。每轮提出四个修订，只选一个执行。W1 是 3B 执行结果预测器，以 Qwen2.5-Coder-3B-Instruct、LoRA 和 JEPA-Anything 设计构建；它为候选—测试对输出五类概率，再汇总排序修订。",
+          "核心比较使用 200 道 CodeContests 任务、三个随机种子、最多三轮反馈。随机选择、容量匹配静态验证器、固定世界模型和反馈适配世界模型，共用代码生成器和候选预算。在线测试提供修复反馈，隐藏测试决定最终全通过成功率，两者用途不同。",
+          "官方仓库给出超出论文高层闭环描述的重要实现细节：复现指南说明，适配是在已记录转移上进行的四阶段训练链，最终基准评估不执行优化器更新。因此，比较固定与适配检查点，不意味着发布的最终评估会在 600 次任务—种子评估中逐次在线梯度下降。",
+          "本站修复实验台使用小型合成例子，讲解预测、反馈、条件适配和保留，不加载 ReasonFlux、W1 或基准检查点，也不是发布训练链的逐条重放。目的是揭示决策逻辑；论文研究结果放在独立证据面板中。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "The coder stays fixed while the predictor configuration differs.",
+          "Online feedback and hidden final evaluation have distinct roles.",
+          "Repository final evaluation uses fixed checkpoints without optimizer updates."
+        ],
+        "zh": [
+          "代码生成器固定，预测器配置不同。",
+          "在线反馈与隐藏最终评估用途不同。",
+          "仓库最终评估使用固定检查点，不做优化器更新。"
+        ]
+      },
+      "example": {
+        "en": "Teaching example: the same generator offers A–D to two selectors. If their choices differ, this can demonstrate a selector effect. If their generators also differ, candidate quality becomes another possible explanation.",
+        "zh": "教学例子：同一生成器把 A–D 交给两个选择器。选择不同可以说明选择器的作用；若生成器也不同，候选质量就成为另一个可能解释。"
+      },
+      "notes": {
+        "en": "Begin by circling the fixed coder label. Students often hear “repair improves” and assume the code generator was trained. Here the program changes, but the coder remains fixed. Explain the four-candidate, one-execution protocol and the separation of online and hidden tests. Then explicitly distinguish the paper’s general adaptation pathway from the released reproduction procedure: recorded-transition training produces the adapted checkpoint, and final evaluation does not optimize it online. This is a repository-backed detail, not a newly inferred experimental result. The synthetic laboratory may visualize an update within a cycle for teaching, but must not be described as a timing-faithful reproduction of those benchmark episodes.",
+        "zh": "先圈出固定代码生成器标签。听到修复成功率提高时，学生容易误以为代码生成器接受了训练；这里程序改变，但代码生成器固定。解释四选一执行及在线、隐藏测试分工。随后明确区分论文一般适配路径与仓库发布流程：记录转移用于训练适配检查点，最终评估不会在线优化。该细节来自官方复现指南，不是新推断的实验结论。教学实验台可以在周期内可视化一次更新，但不能说它忠实重现了基准评估中的更新时序。"
+      },
+      "talk": {
+        "en": "Code repair gives us a relatively controlled comparison. The same fixed coder proposes four revisions, then a selector chooses one to execute. Online tests guide repair; hidden tests measure final success. Compare a static verifier, a fixed predictor, and an adapted predictor. One implementation detail matters: the official reproduction guide trains adaptation on recorded transitions, and final evaluation does not run optimizer updates. Our small interactive loop explains the protocol, rather than reproducing that benchmark training procedure.",
+        "zh": "代码修复提供较受控的比较：同一个固定代码生成器提出四个修订，选择器挑一个执行。在线测试指导修复，隐藏测试测最终成功。我们比较静态验证器、固定预测器和适配预测器。注意实现细节：官方指南在记录转移上训练适配，最终评估不运行优化器更新。交互小实验解释协议，并不复现该基准训练流程。"
+      },
+      "source": {
+        "label": "§3.1 · §6.1 · Table 4; repository reproduction guide",
+        "url": "https://arxiv.org/html/2610.13912v1#S3.SS1"
+      },
+      "figure": 3,
+      "check": {
+        "question": {
+          "en": "Which object is fixed in the central repair comparison?",
+          "zh": "核心修复比较中，哪个对象固定？"
+        },
+        "options": {
+          "en": [
+            "The repaired program",
+            "ReasonFlux-Coder-7B",
+            "Every world-model checkpoint"
+          ],
+          "zh": [
+            "被修复程序",
+            "ReasonFlux-Coder-7B",
+            "所有世界模型检查点"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "Programs and feedback evolve, but the coder is held fixed while selection and predictor settings are compared.",
+          "zh": "程序与反馈变化，代码生成器固定，用于比较选择和预测器设置。"
+        }
+      }
+    },
+    {
+      "id": 12,
+      "slug": "repair-results",
+      "part": 3,
+      "title": {
+        "en": "Read the repair gains carefully",
+        "zh": "仔细阅读修复增益"
+      },
+      "question": {
+        "en": "Do better forecasts translate into more successful repairs?",
+        "zh": "更好的预测，是否对应更多成功修复？"
+      },
+      "summary": {
+        "en": "The results show successive gains from predictive selection and predictor adaptation at similar online test usage.",
+        "zh": "结果显示：预测选择与预测器适配带来连续增益，在线测试使用相近。"
+      },
+      "paragraphs": {
+        "en": [
+          "Table 2 reports hidden all-pass rates of 26.0% for Random-K, 26.3% for the static verifier, 29.2% for the fixed world model, and 31.2% for the adapted world model. Their mean online suite calls per task are 3.72, 3.72, 3.71, and 3.72. The comparison concerns similar external test usage, not identical overall computation.",
+          "For the fixed-world-model versus static-verifier comparison, ranking accuracy increases from 66.5% to 72.8% and five-class Brier score falls from 0.488 to 0.358. Ranking accuracy asks whether candidates are ordered well. Brier score measures probabilistic prediction error. These diagnostics connect forecasting quality with final repair success, but are different metrics.",
+          "The paper gives a paired gain of +2.83 percentage points for fixed world model versus static verifier, with a 95% interval of [+0.17,+5.50]. Subtracting rounded displayed rates gives 2.9 points; that rounded subtraction is not the same numerical quantity as the reported paired estimate. An adaptive-model Brier score is not supplied in Figure 3c.",
+          "Additional evaluations report 46.37% on APPS Introductory and 33.05% on LiveCodeBench v6 for JEPA-Anything-guided selection, averaged across three seeds. These extend evidence about selection across coding benchmarks. They do not establish that both policy and predictor continuously improve together, because the coder remains fixed in these reported comparisons."
+        ],
+        "zh": [
+          "表 2 的隐藏全通过率分别是：随机选择 26.0%、静态验证器 26.3%、固定世界模型 29.2%、适配世界模型 31.2%。每任务平均在线测试套件调用为 3.72、3.72、3.71、3.72。这里比较的是相近的外部测试用量，不是完全相同的总体计算。",
+          "固定世界模型相对静态验证器，排序准确率从 66.5% 升到 72.8%，五类 Brier 分数从 0.488 降到 0.358。排序准确率问候选次序是否正确，Brier 分数衡量概率预测误差。这些诊断把预测质量与修复成功联系起来，但它们是不同指标。",
+          "论文报告固定世界模型相对静态验证器的配对增益为 +2.83 个百分点，95% 区间为 [+0.17,+5.50]。直接减去四舍五入后的展示成功率，会得到 2.9 点；不能把这个近似差值冒充报告的精确配对估计。图 3c 没有提供适配模型的 Brier 分数。",
+          "补充评估中，JEPA-Anything 引导选择在 APPS Introductory 和 LiveCodeBench v6 上，三种子平均成功率为 46.37% 和 33.05%。它们扩展了跨编码基准的选择证据，但不能建立策略与预测器持续共同提高的结论，因为这些比较中的代码生成器仍固定。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "26.3 → 29.2 → 31.2% supports two successive comparisons.",
+          "Brier and ranking diagnostics compare static verifier with fixed WM.",
+          "Keep exact paired estimates separate from rounded rate subtraction."
+        ],
+        "zh": [
+          "26.3→29.2→31.2% 支持两个连续比较。",
+          "Brier 与排序诊断比较的是静态验证器和固定模型。",
+          "区分精确配对估计与四舍五入数值的相减。"
+        ]
+      },
+      "example": {
+        "en": "Metric illustration: forecasting five classes as probabilities incurs Brier loss against the observed one-hot class. A confident wrong forecast is penalized more than a mildly uncertain wrong one. This illustrates the standard metric, not a recomputation of the paper’s results.",
+        "zh": "指标示意：五类概率与真实类别独热向量比较，得到 Brier 损失。非常自信但错误的预测，比温和不确定的错误预测受罚更重。这解释标准指标，并非重新计算论文结果。"
+      },
+      "notes": {
+        "en": "Read the table in two comparisons. First compare static verifier with fixed world model; then compare fixed with adapted world model. Keep the fixed coder and candidate budget visible. Explain why hidden success, ranking accuracy, and Brier score answer different questions. Identify precisely which systems have reported predictive diagnostics. When discussing uncertainty, use the paper’s paired estimate and interval rather than creating an interval for the adaptive gain. Tasks recur across seeds, so the paper uses task-level resampling for clustered inference. Finally separate matched online test use from total computational cost. We have transcribed the results and inspected the evidence; we have not independently run these models or re-estimated their statistics.",
+        "zh": "分两步读表：先比较静态验证器与固定世界模型，再比较固定与适配世界模型。固定代码生成器和候选预算始终可见。解释隐藏成功率、排序准确率、Brier 分数分别回答什么，指出哪些系统有预测诊断。讨论不确定性时使用论文给出的配对估计和区间，不替适配增益发明区间。同一任务跨种子重复，因此论文按任务重采样做聚类推断。最后区分在线测试匹配与总计算成本。我们核对并转录结果，没有独立运行模型或重估统计。"
+      },
+      "talk": {
+        "en": "Read these as two successive comparisons. Predictive selection raises hidden success from 26.3 to 29.2%, and predictor adaptation reaches 31.2%, with similar online test usage. Better ranking and lower Brier error are reported for the fixed model versus the static verifier. The exact paired gain is 2.83 percentage points, with its reported interval; rounded table subtraction gives 2.9. These results support selection and adaptation, while the fixed coder limits claims about joint policy–model improvement.",
+        "zh": "把结果读成两个连续比较：预测选择把隐藏成功率从 26.3% 提到 29.2%，预测器适配再达到 31.2%，在线测试用量相近。排序与 Brier 改善报告的是固定模型相对静态验证器。精确配对增益是 2.83 个百分点，附有区间；展示率直接相减是约 2.9。这支持选择与适配，但固定代码生成器限制了对策略—模型共同提高的推断。"
+      },
+      "source": {
+        "label": "§3.1 · Table 2 · §6.2",
+        "url": "https://arxiv.org/html/2610.13912v1#S3.SS1"
+      },
+      "widget": "evidence",
+      "formula": {
+        "tex": "\\operatorname{Brier}=\\frac1N\\sum_{i=1}^{N}\\sum_{c=1}^{5}(p_{ic}-y_{ic})^2",
+        "plain": "Brier = (1/N) Σᵢ₌₁ᴺ Σ_c₌₁⁵ (pᵢc − yᵢc)²",
+        "explanation": {
+          "en": "This is the standard explanatory definition of the five-class Brier metric, not a numbered equation introduced by the paper. Lower is better. The site does not recompute the reported values.",
+          "zh": "这是解释五类 Brier 指标的标准定义，不是论文另行编号提出的公式。越低越好，本站没有重算报告值。"
+        },
+        "symbols": [
+          {
+            "symbol": "N",
+            "en": "number of evaluated predictions",
+            "zh": "评估预测数量"
+          },
+          {
+            "symbol": "p_ic",
+            "en": "predicted probability of class c for example i",
+            "zh": "样例 i 属于类别 c 的预测概率"
+          },
+          {
+            "symbol": "y_ic",
+            "en": "1 for the observed class, otherwise 0",
+            "zh": "真实类别为 1，其他为 0"
+          },
+          {
+            "symbol": "c=1…5",
+            "en": "the five execution-result classes",
+            "zh": "五个执行结果类别"
+          }
+        ]
+      },
+      "check": {
+        "question": {
+          "en": "What does similar online suite usage establish?",
+          "zh": "在线套件调用相近能说明什么？"
+        },
+        "options": {
+          "en": [
+            "Identical training cost",
+            "Similar external test usage in this comparison",
+            "Identical latency and hardware"
+          ],
+          "zh": [
+            "训练成本完全相同",
+            "本比较外部测试使用相近",
+            "延迟和硬件完全相同"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "Prediction, adaptation, and acceptance computation are additional resource dimensions.",
+          "zh": "预测、适配和验收计算属于其他资源维度。"
+        }
+      }
+    },
+    {
+      "id": 13,
+      "slug": "gui-feedback",
+      "part": 3,
+      "title": {
+        "en": "GUI: success, errors, and relative gains",
+        "zh": "GUI：成功、错误与相对增益"
+      },
+      "question": {
+        "en": "Do fewer actions always mean a better agent?",
+        "zh": "动作更少，一定代表智能体更好吗？"
+      },
+      "summary": {
+        "en": "Task completion and error diagnostics must be read together; controller attribution needs implementation context.",
+        "zh": "任务完成与错误诊断要一起读；控制器归因还需实现背景。"
+      },
+      "paragraphs": {
+        "en": [
+          "On MiniWoB++ click-checkboxes, the reported RSI-Anything configurations reach 51%, 79%, and 99% success. Average actions change from 5.30 to 2.93 to 3.21. The middle configuration uses the fewest actions but has 21 incorrect-submission episodes, compared with 9 initially and 1 finally. Minimizing actions alone would select the wrong trade-off.",
+          "Repeated clicks fall from 237 initially to 0 finally. The final configuration combines high success with fewer actions than baseline and fewer submission errors. The paper reports policy and world-model updates through interaction feedback. It also reports a world-based control with success of 49%, 96%, and 98% across the corresponding configurations.",
+          "The official GUI results guide adds an attribution caveat: the development-selected controller uses alpha=0 and follows policy ranking, while pure world-based control ranks the same policy candidates by world-model values. The 99% endpoint therefore does not isolate a causal contribution from world-model ranking. Framework-level descriptions and this particular selected controller should be distinguished.",
+          "OSWorld uses relative improvement: RSI-Anything is +18.4% versus the initial agent and +5.5% versus RLAnything; RLAnything is +12.3% versus the initial agent. These are relative percentages, not percentage points. The absolute initial success rate is not supplied here, so the absolute endpoint cannot be recovered from these figures alone."
+        ],
+        "zh": [
+          "MiniWoB++ 复选框任务中，RSI-Anything 三种配置成功率为 51%、79%、99%，平均动作为 5.30、2.93、3.21。中间配置动作最少，却有 21 个错误提交回合；初始为 9，最终为 1。因此只追求动作少，会选错权衡。",
+          "重复点击从初始 237 次降到最终 0 次。最终配置同时实现高成功率、比基线更少的动作和更少的提交错误。论文报告策略与世界模型通过交互反馈更新，也给出世界模型控制器对应的 49%、96%、98% 成功率。",
+          "官方 GUI 结果指南补充了归因限制：开发集选出的控制器 alpha=0，跟随策略排序；纯世界模型控制器则用模型数值排序相同的策略候选。因此，99% 端点不能单独隔离世界模型排序的因果贡献。框架层描述与具体选中控制器应区分。",
+          "OSWorld 报告的是相对改进：RSI-Anything 相对初始智能体 +18.4%，相对 RLAnything +5.5%；RLAnything 相对初始 +12.3%。这些是相对百分比，不是百分点。这里没有给出初始绝对成功率，因此不能只凭这些数字还原绝对端点。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "Fewer actions can coexist with more incorrect submissions.",
+          "99% selected-controller success does not isolate WM ranking.",
+          "OSWorld gains are relative percentages."
+        ],
+        "zh": [
+          "动作更少，也可能错误提交更多。",
+          "99% 选中控制器成功率不能隔离模型排序作用。",
+          "OSWorld 增益使用相对百分比。"
+        ]
+      },
+      "example": {
+        "en": "Synthetic unit example: if initial success were 40%, an 18.4% relative improvement would be 40%×1.184=47.36%, a 7.36-percentage-point gain. The 40% starting value is invented for teaching, not the OSWorld baseline.",
+        "zh": "合成单位例子：若初始成功率是 40%，相对提高 18.4% 后为 40%×1.184=47.36%，增加 7.36 个百分点。40% 只是教学设定，不是 OSWorld 基线。"
+      },
+      "notes": {
+        "en": "Ask students to choose between the middle and final checkbox configurations using actions alone, then reveal the incorrect submissions. This makes multi-metric evaluation concrete. Clarify that diagnostics are not interchangeable: repeated clicks, incorrect episodes, and task success count different things. Introduce the official repository controller detail as additional implementation evidence. It narrows attribution without erasing the reported performance. Explain alpha=0 in plain language as following policy ranking; no internal blending derivation is needed. For OSWorld, calculate one hypothetical relative gain and label the starting value synthetic. Never convert +18.4% into +18.4 percentage points or invent an absolute success endpoint. Ask students to name the comparator before interpreting any gain.",
+        "zh": "先只给动作数，让学生选择中间或最终配置，再展示错误提交，具体说明多指标评估。重复点击、错误回合和任务成功率统计的对象不同。把官方仓库控制器细节作为额外实现证据介绍：它限制归因，但并不抹去已报告表现。alpha=0 用“跟随策略排序”解释即可，无须推导内部混合规则。OSWorld 用假设初始率计算相对增益，并清楚标注为合成。不要把 +18.4% 写成 +18.4 个百分点，也不要发明绝对成功率端点。 解读任何增益前，先让学生说清参照对象。"
+      },
+      "talk": {
+        "en": "The checkbox task shows why action count is not enough. The middle configuration takes only 2.93 actions but has more incorrect submissions; the final one takes 3.21 and reaches 99% success. The repository says this selected controller follows policy ranking, so 99% does not isolate world-model ranking. On OSWorld, the gains are relative percentages. An 18.4% relative gain multiplies the baseline by 1.184; it does not add 18.4 percentage points.",
+        "zh": "复选框任务说明动作数不够：中间配置只有 2.93 个动作，但错误提交更多；最终配置 3.21 个动作，成功率 99%。仓库说明选中控制器跟随策略排序，因此 99% 不能单独归因于世界模型排序。OSWorld 增益是相对百分比，18.4% 相对提高意味着基线乘 1.184，不是增加 18.4 个百分点。"
+      },
+      "source": {
+        "label": "§3.2 · Figure 4 · §6.1; official GUI RESULTS.md",
+        "url": "https://arxiv.org/html/2610.13912v1#S3.SS2"
+      },
+      "figure": 4,
+      "formula": {
+        "tex": "\\operatorname{RelativeGain}=100\\left(\\frac{s_{method}}{s_{reference}}-1\\right)\\%",
+        "plain": "Relative gain = 100 × (s_method / s_reference − 1)%",
+        "explanation": {
+          "en": "A percentage-point difference instead subtracts success rates expressed in percent. These answer different questions.",
+          "zh": "百分点差直接减去以百分数表示的成功率，两种单位回答不同问题。"
+        },
+        "symbols": [
+          {
+            "symbol": "s_method",
+            "en": "method success rate",
+            "zh": "方法成功率"
+          },
+          {
+            "symbol": "s_reference",
+            "en": "reference success rate",
+            "zh": "参照成功率"
+          }
+        ]
+      },
+      "check": {
+        "question": {
+          "en": "Does +18.4% relative improvement mean +18.4 percentage points?",
+          "zh": "相对提高 18.4% 是否就是增加 18.4 个百分点？"
+        },
+        "options": {
+          "en": [
+            "Yes",
+            "No; it multiplies the baseline by 1.184",
+            "Only for OSWorld"
+          ],
+          "zh": [
+            "是",
+            "否，它把基线乘以 1.184",
+            "只有 OSWorld 是"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "An absolute baseline is needed to compute the percentage-point difference.",
+          "zh": "计算百分点差需要知道绝对基线。"
+        }
+      }
+    },
+    {
+      "id": 14,
+      "slug": "laboratory-planning",
+      "part": 3,
+      "title": {
+        "en": "Five planning versions, one benchmark",
+        "zh": "五个规划版本，同一基准"
+      },
+      "question": {
+        "en": "What does the laboratory progression demonstrate?",
+        "zh": "实验室版本递进说明了什么？"
+      },
+      "summary": {
+        "en": "Successive retained policies improve protocol-aligned planning; physical execution is a separate evaluation.",
+        "zh": "连续保留的策略提升了协议一致规划；物理执行需要单独评估。"
+      },
+      "paragraphs": {
+        "en": [
+          "LabHorizon examines laboratory planning under reagent, instrument, and ordering constraints. Level 1 measures visually grounded next-action accuracy. Level 2 measures protocol-aligned action sequences, with a Final Score combining action-sequence similarity and parameter accuracy. The reported F200 setting contains 200 tasks. This score is not a rate of successful physical experiments.",
+          "The paper follows five consecutive versions of the same 4B policy in one development sequence. Their Level-2 scores are 21.80%, 38.03%, 41.99%, 44.56%, and 46.01%. The final-minus-initial difference is 24.21 percentage points. The plot’s horizontal spacing is schematic development order, not elapsed training time or equal update cost.",
+          "The final version scores 46.01% versus 45.32% for the Actor–Simulator–Selector reference, a difference of 0.69 percentage points. Level-1 accuracy is 0.700 versus 0.665. These are reported benchmark means; the paper supplies no uncertainty interval establishing statistical significance for that 0.69-point difference. Model size alone also does not determine total system cost.",
+          "This experiment provides evidence for successive retained policy improvement in planning. It does not by itself establish continuous reciprocal improvement of policy and world model. The framework diagram includes broader update routes, while the quantitative series follows policy versions. Reliable execution on real equipment, with its interfaces and failure modes, remains an additional validation requirement."
+        ],
+        "zh": [
+          "LabHorizon 评估受试剂、仪器和顺序约束的实验室规划。一级衡量视觉支持的下一行动准确率；二级衡量协议一致的行动序列，Final Score 结合序列相似度与参数准确性。F200 有 200 个任务，这个分数不是物理实验成功率。",
+          "论文跟踪一次开发序列中同一 4B 策略的五个连续版本。二级分数依次为 21.80%、38.03%、41.99%、44.56%、46.01%，首尾相差 24.21 个百分点。图中横向距离是示意的开发顺序，并非实际训练时间或相同更新成本。",
+          "最终版本 46.01%，Actor–Simulator–Selector 参照为 45.32%，差 0.69 个百分点；一级准确率为 0.700 对 0.665。它们是报告的基准均值，论文没有提供证明 0.69 点达到统计显著性的区间。模型参数量本身也不能代表系统总成本。",
+          "本实验支持连续保留策略在规划上的改进，但不能单独建立策略与世界模型持续相互提高的结论。框架图包含更广的更新路径，量化曲线实际跟踪的是策略版本。真实设备的接口和失败模式，仍需要额外执行验证。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "F200 Final Score measures planning alignment.",
+          "Five policy versions improve from 21.80 to 46.01%.",
+          "A 0.69-point mean advantage has no supplied significance interval."
+        ],
+        "zh": [
+          "F200 Final Score 衡量规划一致性。",
+          "五个策略版本从 21.80% 提高到 46.01%。",
+          "0.69 点均值优势未附显著性区间。"
+        ]
+      },
+      "example": {
+        "en": "Teaching example: a plan may list the right steps but use an incorrect duration or reagent amount. A score combining sequence and parameter quality can reflect both. It still cannot prove that a robot executed the plan safely or successfully.",
+        "zh": "教学例子：计划步骤正确，却使用错误时长或试剂用量。结合序列与参数的分数可以反映两方面，但不能证明机器人已经安全、成功地执行。"
+      },
+      "notes": {
+        "en": "Read the five points as versions of one policy, not five independent model families. State the benchmark and metric before quoting the improvement. Ask what Final Score measures and what observation would be needed to establish physical execution. Explain the diminishing increments without inferring a general learning law from only five selected points. The 4B label describes the planning policy, while the reference is a multi-component Actor–Simulator–Selector system; avoid turning that into an unsupported total-cost ratio. Finally, distinguish the 24.21-point within-process progression from the 0.69-point reference comparison. They answer different questions and have different evidence strength. Ask students to name the comparator before interpreting any gain.",
+        "zh": "把五个点读成同一策略的版本，而非五种独立模型。先说明基准和指标，再引用增益。问 Final Score 测什么，还需要哪些观察才能证明物理执行。可以观察增量变小，但不能凭五个被评估点推导普遍学习规律。4B 描述规划策略，参照是包含多个组件的 Actor–Simulator–Selector，不能据此发明系统总成本倍数。最后区分 24.21 点的过程内递进与 0.69 点的外部参照比较，两者问题与证据强度不同。 解读任何增益前，先让学生说清参照对象。"
+      },
+      "talk": {
+        "en": "The lab result follows five versions of one 4B policy on the same 200-task planning benchmark. Final Score rises from 21.80 to 46.01%, a 24.21-point gain. The final score is 0.69 points above the reference, without a supplied interval for that difference. Remember the metric: it combines action-sequence and parameter alignment. This supports successive planning improvement, while real equipment execution and sustained joint policy–model improvement require further evidence. Planning alignment and execution success answer different questions.",
+        "zh": "实验室结果在同一 200 任务规划基准上跟踪一个 4B 策略的五个版本，Final Score 从 21.80% 到 46.01%，提高 24.21 点。最终比参照高 0.69 点，但没有给出该差值区间。记住，指标结合序列与参数一致性。它支持连续规划改进，真实设备执行及持续策略—模型共同提高，还需要额外证据。 规划一致性和执行成功回答的是不同问题。"
+      },
+      "source": {
+        "label": "§3.3 · Figure 5 · Table 3",
+        "url": "https://arxiv.org/html/2610.13912v1#S3.SS3"
+      },
+      "figure": 5,
+      "check": {
+        "question": {
+          "en": "What does 46.01% describe?",
+          "zh": "46.01% 描述什么？"
+        },
+        "options": {
+          "en": [
+            "Physical laboratory execution success",
+            "Mean F200 Level-2 protocol-aligned planning score",
+            "World-model calibration accuracy"
+          ],
+          "zh": [
+            "真实实验室执行成功率",
+            "F200 二级协议一致规划平均分",
+            "世界模型校准准确率"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "Final Score combines sequence similarity and parameter accuracy.",
+          "zh": "Final Score 结合序列相似度和参数准确性。"
+        }
+      }
+    },
+    {
+      "id": 15,
+      "slug": "reaction-optimization",
+      "part": 3,
+      "title": {
+        "en": "Chemistry: compare within each screen",
+        "zh": "化学：在各自筛选协议内比较"
+      },
+      "question": {
+        "en": "How much can feedback-guided search achieve within a fixed observation budget?",
+        "zh": "固定观察预算内，反馈引导搜索能达到什么结果？"
+      },
+      "summary": {
+        "en": "Two separate measured-yield screens support budgeted selection; the released flow evaluation is frozen-model pool replay.",
+        "zh": "两个独立实测产率筛选支持预算选择；发布的流动评估是固定模型的候选池重放。"
+      },
+      "paragraphs": {
+        "en": [
+          "The paper studies two Suzuki–Miyaura screens, comparing RSI-Anything with Bayesian optimization inside each protocol. In the GC-analyzed Pd–NHC–DMS screen, the best observed yield after 20 evaluations is 93.0% versus 87.5%, a 5.5-percentage-point difference. This is one screen with its own reaction, choices, and measurement method.",
+          "In the separate flow LC–MS screen using Pd(OAc)2, mean best observed yield after 40 evaluations is 96.15% versus 82.16%, a 13.99-point difference. Do not splice the two screens into a single trajectory or average their endpoints. “Best observed” is a running maximum, so its curve cannot decrease even when the newest observation is worse.",
+          "The official reaction-optimization guide describes the released flow evaluation as sequential replay over a fixed pool of 321 measured conditions, with 100 runs and eight initial observations included within the total budget of 40. Predictions remain frozen. Feedback changes expected-improvement selection and removes already observed candidates rather than updating neural weights at every observation.",
+          "This implementation detail narrows the claim: it is a reproducible feedback-guided selection experiment over measured data. It is not evidence that the released inference loop performs a fresh wet-lab experiment after every choice. More general physical deployment or transfer to different chemistry would need evaluation beyond the reported pools, protocols, and budgets."
+        ],
+        "zh": [
+          "论文研究两个 Suzuki–Miyaura 筛选协议，在各自协议内比较 RSI-Anything 与贝叶斯优化。GC 分析的 Pd–NHC–DMS 筛选中，20 次评估后最佳已观察产率为 93.0% 对 87.5%，相差 5.5 个百分点。这是具有独立反应、选项和测量方法的一组筛选。",
+          "另一组使用 Pd(OAc)2 的流动 LC–MS 筛选中，40 次评估后的平均最佳已观察产率为 96.15% 对 82.16%，相差 13.99 点。两组不能拼成一条轨迹，也不应平均端点。“最佳已观察”是历史最大值，即使新观察变差，曲线也不会下降。",
+          "官方反应优化指南说明，发布的流动评估是在固定的 321 个已测条件池中进行顺序重放，运行 100 次；八个初始观察计入总共 40 的预算。预测保持冻结，反馈改变期望改进选择，并移除已观察候选，而非每次观察后更新神经网络权重。",
+          "这一实现细节限定了结论：它是基于实测数据、可复现的反馈引导选择实验，不能据此说发布推理循环每次选择后都会开展一个全新湿实验。更一般的物理部署和向其他化学体系迁移，需要超出已报告候选池、协议和预算的评估。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "GC: 20 observations, 93.0 vs 87.5%.",
+          "Flow: 40 observations, 96.15 vs 82.16%.",
+          "Released flow replay uses frozen predictions over a measured pool."
+        ],
+        "zh": [
+          "GC：20 次观察，93.0% 对 87.5%。",
+          "流动筛选：40 次观察，96.15% 对 82.16%。",
+          "发布的流动重放在实测池上使用冻结预测。"
+        ]
+      },
+      "example": {
+        "en": "Teaching example: yields 40, 80, 55 give best-so-far values 40, 80, 80. The flat final segment does not mean the third condition achieved 80; it means the best previously observed condition remains 80.",
+        "zh": "教学例子：产率 40、80、55，对应历史最佳 40、80、80。末段持平不代表第三个条件达到 80，而是先前最佳仍为 80。"
+      },
+      "notes": {
+        "en": "Start by separating the two screens on the page. Read each endpoint together with its method and budget. Explain a running maximum using three invented yields, because monotonic curves can otherwise look like guaranteed improvement at every step. Then introduce the repository-backed implementation scope: 321 measured candidates, eight initial observations inside forty, one hundred runs, frozen predictions, and history-dependent expected-improvement selection. Feedback can change decisions without changing model weights. These details prevent conflating replay with a continuously adapting physical laboratory. The paper’s broad selection contract remains useful, while the released evaluation supports a narrower, precisely describable empirical claim. Ask students to name the comparator before interpreting any gain.",
+        "zh": "先把两组筛选在页面上分开，连同方法和预算一起读端点。用三个虚构产率解释历史最大值，否则单调曲线容易被误读为每一步都更好。随后说明仓库实现范围：321 个实测候选，八个初始观察计入四十次，一百次运行，预测冻结，期望改进选择依赖反馈历史。反馈能够改变决策而不改变模型权重。这避免把重放混成持续适配的实体实验室。论文通用选择契约仍有价值，但发布评估支持的是范围更窄、可准确描述的实证结论。 解读任何增益前，先让学生说清参照对象。"
+      },
+      "talk": {
+        "en": "There are two chemistry screens. At twenty observations, the GC screen reaches 93.0 versus 87.5%. At forty, the separate flow screen reaches 96.15 versus 82.16%. Both measure best-so-far yield. The released flow evaluation replays a fixed pool of measured conditions with frozen predictions; feedback changes the next selection. This supports budgeted sequential search, while it does not show a new physical experiment or neural weight update at every step of that released loop.",
+        "zh": "化学部分有两组筛选：GC 在二十次观察后为 93.0% 对 87.5%；另一组流动筛选在四十次后为 96.15% 对 82.16%。指标都是历史最佳产率。发布的流动评估重放固定实测条件池，预测冻结，反馈改变后续选择。它支持预算下的顺序搜索，但不代表发布循环每步都开展全新实体实验或神经权重更新。"
+      },
+      "source": {
+        "label": "§3.4 · Figure 6 · §6.1; official reaction guide",
+        "url": "https://arxiv.org/html/2610.13912v1#S3.SS4"
+      },
+      "figure": 6,
+      "check": {
+        "question": {
+          "en": "Why can a best-so-far curve stay flat after a poor observation?",
+          "zh": "新观察很差，历史最佳曲线为什么仍可持平？"
+        },
+        "options": {
+          "en": [
+            "The poor result is secretly improved",
+            "The metric retains the largest earlier observation",
+            "Every condition has the same yield"
+          ],
+          "zh": [
+            "差结果被暗中提高",
+            "指标保留先前观察中的最大值",
+            "所有条件产率相同"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "The running maximum records the best value seen, not the latest yield.",
+          "zh": "历史最大值记录见过的最佳值，而非最新产率。"
+        }
+      }
+    },
+    {
+      "id": 16,
+      "slug": "immune-science",
+      "part": 3,
+      "title": {
+        "en": "Immune science: construction versus analysis",
+        "zh": "免疫科学：构建与分析分阶段"
+      },
+      "question": {
+        "en": "Which parts improve, and which predictor stays frozen?",
+        "zh": "哪些部分发生改进，哪个预测器保持冻结？"
+      },
+      "summary": {
+        "en": "Workflow evolution constructs a model; downstream self-correcting analysis uses its fixed parameters.",
+        "zh": "工作流演化构建模型；下游自我纠正分析使用固定模型参数。"
+      },
+      "paragraphs": {
+        "en": [
+          "The construction stage uses Agent Genesis to search scientific-agent workflows and model configurations. The selected model-building workflow is retained and produces an action-conditioned immune world model. This establishes a persistent workflow and a resulting predictor. It should be distinguished from the later analysis stage, which uses the constructed model rather than continually retraining it.",
+          "The model represents cellular states, tissue immune context, and individual context. Explicit actions include cytokines, genetic perturbations, or candidate therapies. Its readouts support forecasting and interpretation across these scales. Measured perturbation evidence supports development; withheld interventions and biological contexts assess forecasting and action composition. These are predictive evaluations, not direct proof of therapeutic benefit.",
+          "During downstream analysis, world-model parameters are frozen while analysis state, candidate interventions, tool use, and hypothesis ranking can evolve. The analysis agent coordinates inference, evaluation, and self-correction. Revising a hypothesis is therefore not the same as adapting the underlying world model. The stage distinction is essential when mapping this application onto the general framework.",
+          "The paper reports that self-correction removed screened cytokine-pair candidates, and integrated evidence led to a prospective nomination combining SIRPα inhibition with IL-36γ-axis modulation. This is a concrete hypothesis for subsequent experimental testing. Its appearance at the end of an end-to-end workflow does not establish validated efficacy, clinical suitability, or completed therapeutic experimentation."
+        ],
+        "zh": [
+          "构建阶段使用 Agent Genesis 搜索科学智能体工作流和模型配置，保留选中的模型构建工作流，并产出行动条件化的免疫世界模型。这里留下了持久工作流与所得预测器。要与后续分析阶段区分：后者使用构建好的模型，而非不断重新训练。",
+          "模型表示细胞状态、组织免疫上下文和个体上下文；显式行动包括细胞因子、遗传扰动或候选疗法。读出支持跨尺度预测与解释。实测扰动证据支持开发，留出干预和生物背景用于评估预测与行动组合。这些是预测评估，不直接证明治疗获益。",
+          "下游分析时，世界模型参数冻结，但分析状态、候选干预、工具使用和假设排序可以变化。分析智能体协调推理、评估与自我纠正。因此，修改假设不等于适配底层世界模型。把此应用对应到通用框架时，阶段区分非常重要。",
+          "论文报告自我纠正剔除了筛选的细胞因子对候选，整合证据后提出 SIRPα 抑制与 IL-36γ 轴调节的前瞻组合。这是供后续实验检验的具体假设。工作流端到端产出它，并不等于已经证明疗效、临床适用性或完成治疗实验。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "Construction retains a workflow and its resulting model.",
+          "Downstream predictor parameters stay frozen.",
+          "The therapeutic nomination awaits experimental testing."
+        ],
+        "zh": [
+          "构建阶段保留工作流及所得模型。",
+          "下游预测器参数保持冻结。",
+          "治疗方向提名仍待实验检验。"
+        ]
+      },
+      "example": {
+        "en": "Teaching distinction: deleting a poorly supported candidate from the hypothesis list changes analysis state. Updating model weights to better predict a held-out intervention would change the predictor. The reported downstream analysis does the former while keeping predictor parameters fixed.",
+        "zh": "教学区分：从假设表删除证据薄弱候选，改变的是分析状态；为更准预测留出干预而更新模型权重，改变的是预测器。报告的下游分析进行前一类修订，同时固定预测器参数。"
+      },
+      "notes": {
+        "en": "Draw a vertical boundary between construction and downstream analysis. On the left, a retained model-building workflow produces the immune predictor. On the right, candidate interventions and hypotheses change while the predictor is frozen. Ask which object each arrow modifies. Explain the three biological scales as input and prediction contexts, without implying a fully mechanistic simulator of every immune process. Read the therapeutic endpoint using prospective language. The paper cites a separate immune-world-model study for detailed development and evaluation. Our lesson summarizes this application’s role in RSI-Anything; it neither independently validates that model nor turns the nomination into a treatment recommendation.",
+        "zh": "在构建与下游分析间画清晰分界。左侧由保留的模型构建工作流产出免疫预测器；右侧候选干预和假设变化，预测器冻结。逐条问箭头修改哪个对象。三种生物尺度作为输入与预测背景解释，不要暗示已经完整机制模拟所有免疫过程。治疗端点使用前瞻措辞。论文引用另一篇免疫世界模型研究提供开发与评估细节。本课总结它在 RSI-Anything 中的角色，没有独立验证模型，更不会把假设提名当作治疗建议。"
+      },
+      "talk": {
+        "en": "Separate construction from analysis. First, workflow search selects and retains a model-building workflow that produces the immune world model. Then an analysis agent uses that model with frozen parameters, revising interventions and hypotheses through evidence and self-correction. The final SIRPα and IL-36γ combination is a prospective nomination for testing. It is a useful concrete output, while the evidence does not establish a validated therapy or continual predictor retraining during downstream analysis.",
+        "zh": "先区分构建与分析：工作流搜索选中并保留模型构建流程，产出免疫世界模型；随后分析智能体使用参数冻结的模型，根据证据与自我纠正修订干预和假设。最终 SIRPα 与 IL-36γ 组合是待检验的前瞻提名。它是具体产出，但证据没有建立已验证疗法，也没有说明下游分析持续重训预测器。"
+      },
+      "source": {
+        "label": "§3.5 · Figure 7 · §6.1",
+        "url": "https://arxiv.org/html/2610.13912v1#S3.SS5"
+      },
+      "figure": 7,
+      "check": {
+        "question": {
+          "en": "What stays fixed in downstream immune analysis?",
+          "zh": "下游免疫分析中什么保持固定？"
+        },
+        "options": {
+          "en": [
+            "All hypotheses",
+            "World-model parameters",
+            "The analysis state"
+          ],
+          "zh": [
+            "所有假设",
+            "世界模型参数",
+            "分析状态"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "Hypotheses and analysis can change while the constructed predictor’s parameters remain frozen.",
+          "zh": "假设与分析可以变化，构建好的预测器参数保持冻结。"
+        }
+      }
+    },
+    {
+      "id": 17,
+      "slug": "limits-of-evidence",
+      "part": 4,
+      "title": {
+        "en": "One framework, several evidence scopes",
+        "zh": "一个框架，多种证据范围"
+      },
+      "question": {
+        "en": "What has the paper established, and what remains open?",
+        "zh": "论文已经建立什么，哪些问题仍然开放？"
+      },
+      "summary": {
+        "en": "Cross-domain reuse of a mechanism is different from sustained mutual improvement within one task.",
+        "zh": "机制的跨领域复用，与单个任务中持续相互促进，是不同命题。"
+      },
+      "paragraphs": {
+        "en": [
+          "Read Table 4 before making a broad claim. Code repair fixes the coder and compares selection plus predictor adaptation. Laboratory planning follows successive policy versions. GUI reports updates to both components, with controller-specific attribution caveats. Chemistry evaluates feedback-guided choices; the released flow replay freezes predictions. Immune science separates construction from frozen-model downstream analysis.",
+          "These are complementary demonstrations of a common mechanism, not interchangeable proofs of every pathway. The discussion explicitly says joint multiround evaluation is needed to establish sustained mutual improvement of policy and world model within a single task. No number of different domains automatically supplies that missing longitudinal comparison or proves unrestricted recursive improvement.",
+          "Other limits are domain-specific. Planning alignment needs equipment-level execution validation; chemistry is bounded by the reported screens and budgets; a therapeutic nomination awaits experimentation. Reliability conclusions are also bounded by observed candidate coverage. A strong reading preserves these boundaries while recognizing evidence for predictive selection, predictor adaptation, policy progression, and measured-feedback search."
+        ],
+        "zh": [
+          "广泛下结论前先读表 4：代码固定代码生成器，比较选择和预测器适配；实验室跟踪策略版本；GUI 报告双组件更新，但有控制器归因限制；化学评估反馈选择，发布的流动重放冻结预测；免疫把构建与下游固定模型分析分开。",
+          "这些是共用机制的互补展示，不是每条路径的可互换证明。讨论明确指出，要建立同一任务内策略与世界模型的持续相互促进，还需要联合多轮评估。领域再多，也不会自动补上这项纵向比较，更不能证明不受限制的递归提高。",
+          "其他边界依领域而异：规划一致性需要设备执行验证，化学受已报告筛选与预算限制，治疗提名等待实验。可靠性结论还受观察候选覆盖约束。好的解读既保留边界，也承认预测选择、预测器适配、策略递进和实测反馈搜索的证据。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "Domain generality is reuse of the improvement procedure.",
+          "Sustained coupled improvement needs joint multiround evidence.",
+          "Evaluate each claim against its actual update scope."
+        ],
+        "zh": [
+          "领域通用性指改进流程的复用。",
+          "持续耦合提高需要联合多轮证据。",
+          "每项结论都要对应实际更新范围。"
+        ]
+      },
+      "example": {
+        "en": "Evidence exercise: “A fixed coder plus an improved predictor raises repair success” is supported in its reported setting. “Every domain updates both components every round” is not. “Any future policy remains covered by the current reliability test” is also not supported.",
+        "zh": "证据练习：“固定代码生成器配合改进预测器提高修复成功率”在报告设置中有支持；“每个领域每轮都更新两个组件”没有；“当前可靠性检查覆盖任何未来策略”同样没有支持。"
+      },
+      "notes": {
+        "en": "Show the update-scope matrix and ask students to name the changed object in each row. This consolidates the entire lesson. Read the discussion’s coupled-evaluation limitation in your own words and distinguish absence of evidence from evidence of impossibility. The paper offers useful mechanisms and results; the missing joint longitudinal study is a research opportunity, not a reason to discard all findings. Emphasize two levels of qualification: empirical scope across applications and local reliability scope over covered candidates. Both matter because a model can look good on selected observations while a new policy moves into unmeasured regions. Preserve the difference between author claims, implementation details, and our proposed follow-up tests.",
+        "zh": "展示更新范围矩阵，请学生逐行说出改变对象。用自己的话解释讨论中的联合评估限制，并区分“没有足够证据”与“不可能实现”。论文提供了有用机制和结果，缺少纵向联合研究是研究机会，不代表所有发现无效。强调两层限定：应用实验的经验范围，以及可靠性判断对已覆盖候选的局部范围。新策略可能走向未测区域，所以两层都重要。继续区分作者论文、仓库实现细节和本课提出的后续测试。"
+      },
+      "talk": {
+        "en": "The evidence is strongest when we match each claim to its experiment. Code supports selection and predictor adaptation; lab results support policy progression; chemistry supports budgeted search. These do not combine automatically into proof of sustained mutual improvement inside one task. The authors explicitly call for joint multiround evaluation. Keep the useful contribution and the open question together: a reusable improvement protocol has empirical support, while its strongest long-term coupled claim still needs a dedicated test.",
+        "zh": "证据要与实验逐项对应：代码支持选择和预测器适配，实验室支持策略递进，化学支持预算搜索。它们不会自动合成单个任务内持续相互提高的证明。作者明确要求联合多轮评估。应同时保留贡献与问题：可复用改进协议已有经验支持，而最强的长期耦合命题仍需专门检验。"
+      },
+      "source": {
+        "label": "§5 Discussion · Table 4",
+        "url": "https://arxiv.org/html/2610.13912v1#S5"
+      },
+      "widget": "evidence",
+      "check": {
+        "question": {
+          "en": "Which conclusion requires further joint multiround evaluation?",
+          "zh": "哪个结论还需要联合多轮评估？"
+        },
+        "options": {
+          "en": [
+            "Predictive selection can help reported code repair",
+            "Sustained mutual policy–model improvement within one task",
+            "Five reported lab versions have increasing scores"
+          ],
+          "zh": [
+            "预测选择能帮助报告的代码修复",
+            "单一任务内策略—模型持续相互提高",
+            "五个实验室版本分数递增"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "The paper explicitly identifies this longitudinal coupled claim as requiring further evidence.",
+          "zh": "论文明确指出这项纵向耦合结论需要更多证据。"
+        }
+      }
+    },
+    {
+      "id": 18,
+      "slug": "compare-mechanisms",
+      "part": 4,
+      "title": {
+        "en": "Where does this sit among learning methods?",
+        "zh": "它在已有学习方法中处于什么位置？"
+      },
+      "question": {
+        "en": "How is the loop different from reflection, planning, or self-training alone?",
+        "zh": "它与单独的反思、规划或自训练有何不同？"
+      },
+      "summary": {
+        "en": "The distinction is a combination of predictive choice, feedback-driven revision, and accepted policy–model retention.",
+        "zh": "区别在于把预测选择、反馈修订和策略—模型验收保留组合起来。"
+      },
+      "paragraphs": {
+        "en": [
+          "Within-task reflection uses feedback to revise an answer or action. It can help immediately, but it is not necessarily a persistent policy revision. Self-training and preference learning can make persistent updates, yet they do not automatically provide a world model that forecasts action consequences or an explicit test of policy–predictor compatibility.",
+          "World-model planning evaluates possible futures before acting. That supplies the prospective selection capability. A fixed planning system, however, need not revise or retain either component from new evidence. RSI-Anything’s protocol explicitly connects forecasts to observations, observations to candidate revisions, and revisions to acceptance decisions that determine the next round’s system.",
+          "The paper builds on existing work rather than claiming to invent prediction, verification, or feedback learning individually. Its organizing emphasis is the coupled policy–model system, version-aware reliability, conditional adaptation, and compatibility-aware retention. The instantiated algorithms remain domain-specific. A fair comparison asks which object changes, what evidence drives it, and what is retained."
+        ],
+        "zh": [
+          "任务内反思利用反馈修改答案或行动，可能立即有用，但不一定产生持久策略修订。自训练和偏好学习能做持久更新，却不会自动提供预测行动后果的世界模型，也不自动包含策略—预测器兼容性检查。",
+          "世界模型规划在行动前评估可能未来，提供前瞻选择能力。但固定规划系统未必根据新证据修订或保留任何组件。RSI-Anything 明确连接预测与观察、观察与候选修订，以及决定下一轮系统的验收决策。",
+          "本文建立在已有研究上，并不声称单独发明预测、验证或反馈学习。其组织重点是耦合策略—模型系统、版本感知可靠性、条件适配和考虑兼容性的保留。具体算法仍由领域决定。公平比较应问改变什么、由什么证据驱动、最终保留什么。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "Reflection can change an answer without changing the actor.",
+          "Planning can use a predictor without adapting it.",
+          "The protocol organizes the connection and acceptance of these capabilities."
+        ],
+        "zh": [
+          "反思可以改答案而不改行动系统。",
+          "规划可以用预测器而不适配它。",
+          "该协议组织这些能力间的连接与验收。"
+        ]
+      },
+      "example": {
+        "en": "Comparison exercise: take a planner that always uses the same policy and model. Adding a longer search horizon changes inference. Adding a validated new policy version changes the retained system. These are different experimental interventions.",
+        "zh": "比较练习：一个始终使用相同策略和模型的规划器，增加搜索深度改变的是推理；加入通过验证的新策略版本，改变的是保留系统。它们属于不同实验干预。"
+      },
+      "notes": {
+        "en": "Keep this comparison conceptual rather than building a leaderboard of unrelated methods. Use three columns: object changed, evidence used, and retained artifact. Place within-task reflection, persistent policy learning, fixed world-model planning, and the complete RSI-Anything protocol in those columns. Methods can overlap, so avoid absolute claims that one family never uses a component. The paper’s related-work section provides examples, but our teaching distinction is functional. Ask the audience to identify the extra machinery needed to turn a planner into a retained improvement loop. Their answer should include prediction–observation records, update rules, version-aware reliability, component checks, and pair acceptance. Ask students to name the comparator before interpreting any gain.",
+        "zh": "做机制比较，不做无关方法排行榜。使用三列：改变对象、所用证据、保留产物，把任务内反思、持久策略学习、固定世界模型规划和完整协议放进去。方法之间可能重叠，不要绝对地说某类从不使用某组件。论文相关工作提供例子，本课区分依据是功能。请听众说明把规划器变成保留改进闭环还需要什么，答案应包含预测—观察记录、更新规则、版本可靠性、组件检查和组合验收。 解读任何增益前，先让学生说清参照对象。"
+      },
+      "talk": {
+        "en": "Reflection, learning, and planning contribute different capabilities. Reflection can revise the current answer. Policy learning can persist a behavioral change. A world model can forecast consequences before execution. RSI-Anything organizes these around feedback records and acceptance rules for a policy–model pair. Its contribution is the connection, not the invention of every component. To compare methods fairly, ask what changes, which evidence justifies the change, and what configuration survives into later decisions.",
+        "zh": "反思、学习和规划提供不同能力：反思改当前答案，策略学习保留行为变化，世界模型提前预测后果。RSI-Anything 用反馈记录与验收规则，把这些能力围绕策略—模型组合组织起来。贡献在于连接，而不是发明每个组件。公平比较时，问改变什么、什么证据支持改变、哪个配置进入后续决策。"
+      },
+      "source": {
+        "label": "§4 Related Work · §5",
+        "url": "https://arxiv.org/html/2610.13912v1#S4"
+      },
+      "check": {
+        "question": {
+          "en": "A fixed planner searches deeper with the same policy and model. What changes?",
+          "zh": "固定规划器使用同一策略和模型搜索更深，改变什么？"
+        },
+        "options": {
+          "en": [
+            "Inference effort, without necessarily revising the retained system",
+            "Automatically both neural models",
+            "The acceptance thresholds must change"
+          ],
+          "zh": [
+            "推理投入，不一定修订保留系统",
+            "自动改变两个神经模型",
+            "验收阈值必须变化"
+          ]
+        },
+        "answer": 0,
+        "explanation": {
+          "en": "More inference and accepted system revision are distinct interventions.",
+          "zh": "增加推理与验收系统修订是不同干预。"
+        }
+      }
+    },
+    {
+      "id": 19,
+      "slug": "next-experiment",
+      "part": 4,
+      "title": {
+        "en": "Design the missing coupled experiment",
+        "zh": "设计缺少的耦合实验"
+      },
+      "question": {
+        "en": "What experiment would test sustained mutual improvement?",
+        "zh": "什么实验能检验持续相互促进？"
+      },
+      "summary": {
+        "en": "A proposed study should follow both components over repeated cycles, under matched resources and independent audits.",
+        "zh": "建议研究应在匹配资源和独立审计下，跨周期跟踪两个组件。"
+      },
+      "paragraphs": {
+        "en": [
+          "Proposed follow-up, not a reported result: choose one task family and run four controlled routes—neither component updates, policy only, model only, and both. Keep objectives, interfaces, candidate allowances, acceptance rules, and resource definitions fixed. Follow accepted versions across multiple cycles and evaluate on later tasks, rather than comparing only an initial and final checkpoint.",
+          "Add ablations of conditional adaptation and compatibility retention while measuring the cost of their checks. Record current-version prediction quality on the current policy’s candidate distribution, observed coverage, selected actions, rejected updates, and resource usage. Component performance and joint decision performance should both be reported. A failed proposed update is informative and should not disappear from the log.",
+          "Use update data for candidate construction, gate data for selection, and a protected audit stream for final conclusions. Account for repeated choices and recurring tasks when estimating uncertainty. Examine novel candidate regions and distribution shifts explicitly. If joint gains disappear when observations or computation are matched, that result would constrain the mechanism’s claimed advantage rather than merely lowering a headline score."
+        ],
+        "zh": [
+          "以下是后续研究建议，不是论文结果：选择同一任务族，运行四条受控路线——均不更新、只更新策略、只更新模型、两者都更新。固定目标、接口、候选配额、验收规则和资源定义。跨多个周期跟踪保留版本，在后续任务上评估，而非只比较首尾检查点。",
+          "再消融条件适配和兼容性保留，同时测量检查成本。记录当前模型在当前策略候选分布上的预测质量、观察覆盖、所选行动、被拒更新与资源使用。组件性能与联合决策性能都要报告。失败更新也有信息，不应从日志中消失。",
+          "更新数据构建候选，门控数据做选择，受保护的审计数据支持最终结论。估计不确定性时考虑反复选择和重复任务，明确检查新候选区域与分布变化。若匹配观察或计算后联合收益消失，这会约束机制优势，而不只是降低一个展示分数。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "This chapter proposes tests; it does not add paper results.",
+          "Track both component trajectories and joint behavior.",
+          "Include failed updates, coverage, and all relevant costs."
+        ],
+        "zh": [
+          "本章提出测试，并未增加论文实测结果。",
+          "同时跟踪组件轨迹与联合行为。",
+          "纳入失败更新、覆盖及相关成本。"
+        ]
+      },
+      "example": {
+        "en": "Proposed diagnostic: a policy improves on familiar actions but moves into a new action region. Audit prediction quality in that region before crediting the joint system with reliable improvement. No universal audit threshold is assumed here.",
+        "zh": "建议诊断：策略在熟悉行动上提高，却进入新行动区域。将联合系统称为可靠提高前，先审计新区域的预测质量。这里不假设存在通用审计阈值。"
+      },
+      "notes": {
+        "en": "Signal the change in evidence status before discussing this chapter: these are our research proposals inspired by the paper’s stated limitations. Walk through the four routes and ask what confound each controls. Joint updates may consume more computation, so measuring only external observations can be insufficient for one question while still appropriate for another. Decide the comparison question first. Explain why independent audits matter when gate data repeatedly select versions. Also log no-change cycles and rejected revisions; otherwise a smooth selected-version curve can hide expensive failures. The goal is to determine when coupling helps and where it breaks, not to assume improvement in advance.",
+        "zh": "本章开始先声明证据状态变化：这是根据论文局限提出的研究设计。逐项解释四条路线分别控制什么混杂。联合更新可能耗费更多计算，某些问题只匹配外部观察不够，但另一些问题这样匹配仍合理，应先决定比较问题。解释门控数据反复挑选版本时，独立审计为何重要。也要记录未改变周期和被拒修订，否则漂亮的保留版本曲线可能隐藏昂贵失败。目标是识别耦合何时有帮助、哪里会失败，而不是先假定一定提高。"
+      },
+      "talk": {
+        "en": "Here is a proposed next study. In one task family, compare no updates, policy-only updates, model-only updates, and joint updates across repeated cycles. Track predictive quality on the candidates the current policy actually proposes, alongside joint task performance. Match clearly defined resources and include checking costs. Keep a protected audit stream and log rejected updates too. This would test when coupling produces sustained benefits, rather than assuming that separate component improvements must combine successfully. Our proposal is a study design, not a paper result.",
+        "zh": "下面是后续研究建议：在同一任务族，跨周期比较不更新、只更新策略、只更新模型和联合更新。既跟踪当前策略候选上的预测质量，也跟踪联合任务表现。匹配明确的资源，并计入检查成本；保护审计数据，记录被拒更新。这样才能检验耦合何时产生持续收益，而不是预设组件各自提高就必然组合成功。 这是研究设计建议，并非论文结果。"
+      },
+      "source": {
+        "label": "Motivated by §5 Discussion; proposed study",
+        "url": "https://arxiv.org/html/2610.13912v1#S5"
+      },
+      "check": {
+        "question": {
+          "en": "Which design best tests the coupled claim?",
+          "zh": "哪个设计最适合检验耦合命题？"
+        },
+        "options": {
+          "en": [
+            "One final score from unrelated domains",
+            "Joint multicycle tracking with controlled update routes and independent audits",
+            "A larger framework illustration"
+          ],
+          "zh": [
+            "不同领域各取一个最终分",
+            "受控更新路线、独立审计与联合多周期跟踪",
+            "更大的框架示意图"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "The claim concerns interaction and persistence over time, so the design must observe both.",
+          "zh": "该命题涉及长期相互作用与持续性，设计需同时观察两者。"
+        }
+      }
+    },
+    {
+      "id": 20,
+      "slug": "teach-it-back",
+      "part": 4,
+      "title": {
+        "en": "Teach the loop back in six verbs",
+        "zh": "用六个动词复述闭环"
+      },
+      "question": {
+        "en": "Can you explain the mechanism, evidence, and limits without the diagram?",
+        "zh": "离开框架图，你能解释机制、证据与边界吗？"
+      },
+      "summary": {
+        "en": "Propose, predict, select, observe, revise, retain—and keep the evidence status of every statement clear.",
+        "zh": "提出、预测、选择、观察、修订、保留，并说明每个判断的证据状态。"
+      },
+      "paragraphs": {
+        "en": [
+          "Reconstruct one cycle aloud. Start with an accepted pair, propose feasible actions, predict consequences, and allocate the feedback budget. Observe only what is actually evaluated. Use feedback to construct appropriate candidate updates, with conditional model adaptation. Apply component checks and pair acceptance, then carry the retained pair and linked history into the next cycle.",
+          "Explain the paper with three evidence distinctions. Reported results are the authors’ benchmark observations. The site’s toy patches, arithmetic, and animated gate choices are educational synthesis. The coupled evaluation design is a proposed follow-up. The official repository supplies additional implementation details, including recorded-transition adaptation, frozen measured-pool replay, and selected-controller attribution.",
+          "For a roughly 30-minute presentation, allow about five minutes for foundations, eleven for the method including interaction, nine for evidence, and five for limits and discussion. The concise talk track is a scaffold; detailed notes support preparation and questions. Three short clips revisit the loop, feedback selection, and acceptance. Pause or step the interactive demonstration when explaining a decision."
+        ],
+        "zh": [
+          "口头重建一个周期：从已接受组合出发，提出可行行动，预测后果，分配反馈预算；只有实际评估才有观察。利用反馈构建适当候选更新，其中模型适配有条件；再做组件与组合验收，将保留组合及关联历史带入下一周期。",
+          "用三种证据状态解释论文：报告结果是作者基准观察；本站小补丁、计算与门控动画是教学合成；联合评估设计是后续建议。官方仓库提供额外实现细节，包括记录转移适配、冻结的实测池重放，以及选中控制器归因。",
+          "约三十分钟主讲可分配：基础五分钟，含互动的方法十一分钟，证据九分钟，边界讨论五分钟。精简口播提供主线，详细讲稿用于准备与问答。三段短片回顾闭环、反馈选择和验收。解释每项决策时，可暂停或单步操作演示。"
+        ]
+      },
+      "takeaways": {
+        "en": [
+          "Explain what changes, what is observed, and what is retained.",
+          "Tie every empirical claim to the correct experiment.",
+          "Separate paper findings, repository detail, teaching examples, and proposals."
+        ],
+        "zh": [
+          "说清改变什么、观察什么、保留什么。",
+          "把每个经验结论对应到正确实验。",
+          "区分论文、仓库细节、教学例子与研究建议。"
+        ]
+      },
+      "example": {
+        "en": "Teach-back task: explain why a lower-error predictor might be rejected, why an untested patch has no observed outcome, and why 96.15% best yield is not a success rate for unrestricted chemistry. Give one sentence for each.",
+        "zh": "复述练习：分别用一句话解释，低误差预测器为何仍会被拒；未测试补丁为何没有观察结果；96.15% 最佳产率为何不是任意化学任务的成功率。"
+      },
+      "notes": {
+        "en": "Use the final chapter for retrieval practice rather than reading another summary. Hide the framework and ask the audience to name the six operations. Then reveal the figure and ask where an observation is created, where adaptation is triggered, and where a proposed version is accepted. Replay one clip only if it resolves a missed dependency. Invite a final evidence classification: benchmark result, repository implementation detail, synthetic example, or proposed study. The thirty-minute schedule includes explanation, pauses, figure inspection, interactions, and questions; it is not a claim that the short script takes thirty minutes when read verbatim. Encourage independent source checking through the per-chapter references and evidence audit.",
+        "zh": "把末章用于主动回忆，而不是再读一遍总结。先隐藏框架，让听众说出六个操作；再揭示图，指出观察在哪里产生、适配在哪里触发、候选版本在哪里被接受。只有需要修正漏掉的依赖时才重播短片。最后把陈述分类为基准结果、仓库实现、合成示例或研究建议。三十分钟包含解释、停顿、看图、互动和讨论，不是声称精简讲稿逐字朗读正好三十分钟。鼓励通过章节来源与证据审计独立核查。"
+      },
+      "talk": {
+        "en": "Explain the loop in six verbs: propose, predict, select, observe, revise, retain. Always say which object changes and which evidence supports the change. Then state the evidence carefully: predictive selection and adapted predictors help reported repair tasks, successive policies improve planning, and measured-feedback search improves screen-specific endpoints. Sustained mutual policy–model improvement remains a dedicated evaluation question. Finally, distinguish the paper’s findings from repository details, our synthetic demonstrations, and proposed follow-up experiments. That evidence discipline is part of understanding the method.",
+        "zh": "用六个动词解释闭环：提出、预测、选择、观察、修订、保留。始终说清改变哪个对象、证据来自哪里。实验要准确表述：预测选择和适配预测器帮助报告的修复任务，连续策略提升规划，实测反馈搜索改善特定筛选端点。持续策略—模型相互提高仍需专门评估。最后区分论文发现、仓库细节、本站合成演示和后续研究建议。 这种证据意识也是理解方法的一部分。"
+      },
+      "source": {
+        "label": "§2–§6 · synthesis and teaching route",
+        "url": "https://arxiv.org/html/2610.13912v1#S5"
+      },
+      "widget": "video",
+      "check": {
+        "question": {
+          "en": "Which statement correctly labels its evidence?",
+          "zh": "哪个陈述正确标注证据？"
+        },
+        "options": {
+          "en": [
+            "Our toy arithmetic reproduces the authors’ model training",
+            "The four-route coupled study is a proposed follow-up",
+            "The therapeutic nomination is an experimentally validated treatment"
+          ],
+          "zh": [
+            "教学计算复现作者模型训练",
+            "四路线耦合研究是后续建议",
+            "治疗提名是实验证实的疗法"
+          ]
+        },
+        "answer": 1,
+        "explanation": {
+          "en": "The proposed study is not a reported experiment; demos and hypotheses also have distinct evidence status.",
+          "zh": "建议研究不是已报告实验，演示和假设也有各自证据状态。"
+        }
+      }
+    }
+  ],
+  "glossary": [
+    {
+      "term": "Recursive self-improvement (RSI)",
+      "en": "Experience produces accepted system revisions that persist and shape later interaction and learning.",
+      "zh": "递归自我改进：经验产生验收后的持久系统修订，并影响后续交互与学习。"
+    },
+    {
+      "term": "Policy configuration θ",
+      "en": "The parameters or persistent workflow that determines candidate generation or selection.",
+      "zh": "策略配置 θ：决定候选生成或选择的参数或持久工作流。"
+    },
+    {
+      "term": "World model φ",
+      "en": "A domain predictor of consequences under candidate actions; its supported output interface must be specified.",
+      "zh": "世界模型 φ：预测候选行动后果的领域模型，必须说明支持什么输出接口。"
+    },
+    {
+      "term": "Task state s",
+      "en": "The current task object and information, such as a program with tests and feedback.",
+      "zh": "任务状态 s：当前任务对象及信息，例如程序、测试与反馈。"
+    },
+    {
+      "term": "Domain adapter",
+      "en": "The interface binding domain states, actions, predictions, and feedback to the common protocol.",
+      "zh": "领域适配器：把领域状态、行动、预测与反馈接入共用协议的接口。"
+    },
+    {
+      "term": "Action step t",
+      "en": "An interaction step inside a task, distinct from a system update cycle.",
+      "zh": "行动步骤 t：任务内部的交互步骤，与系统更新周期不同。"
+    },
+    {
+      "term": "Update cycle k",
+      "en": "A cycle ending in update and acceptance decisions, even if no new version is retained.",
+      "zh": "更新周期 k：以更新和验收决策结束的周期，即使没有新版本被保留。"
+    },
+    {
+      "term": "JEPA",
+      "en": "Joint-embedding predictive architecture: predict target representations from context rather than reconstructing every detail.",
+      "zh": "联合嵌入预测架构：从上下文预测目标表征，而不必重建每个细节。"
+    },
+    {
+      "term": "Latent representation z",
+      "en": "A learned internal representation used for prediction, not necessarily directly interpretable.",
+      "zh": "潜在表征 z：用于预测的学习内部表征，不一定可直接解释。"
+    },
+    {
+      "term": "Orthogonal predictive factorization (OPF)",
+      "en": "JEPA-Anything’s factor organization, dedicated prediction, and synthesis foundation; exact factor independence is not independently established here.",
+      "zh": "正交预测分解：JEPA-Anything 的因素组织、专门预测及合成基础；本课没有独立证明因素严格独立。"
+    },
+    {
+      "term": "Outcome readout R",
+      "en": "Converts a predicted latent target into the outcome value or distribution needed by the domain.",
+      "zh": "结果读出 R：把预测潜在目标转成领域所需结果值或分布。"
+    },
+    {
+      "term": "Rollout / imagined trajectory",
+      "en": "A predicted action sequence whose future states remain predictions until externally checked.",
+      "zh": "展开／想象轨迹：未来状态在外部核查前仍属于预测的行动序列。"
+    },
+    {
+      "term": "Verifier",
+      "en": "Records candidate validity, utility, evidence provenance, and available uncertainty.",
+      "zh": "验证器：记录候选有效性、效用、证据来源及可用不确定性。"
+    },
+    {
+      "term": "Utility",
+      "en": "A declared task-value measure used by a ranking or acquisition rule.",
+      "zh": "效用：排序或信息获取规则采用的、预先声明的任务价值度量。"
+    },
+    {
+      "term": "Uncertainty",
+      "en": "A specified estimate of predictive ambiguity; it is not automatically equivalent to observed reliability.",
+      "zh": "不确定性：指定方法给出的预测不明确程度估计，不自动等同于实证可靠性。"
+    },
+    {
+      "term": "Acquisition rule",
+      "en": "A declared rule selecting candidates for feedback, potentially including information-seeking evaluation.",
+      "zh": "信息获取规则：决定哪些候选获得反馈的规则，可包含主动获取信息的评估。"
+    },
+    {
+      "term": "Evidence provenance",
+      "en": "The recorded origin of a claim or observation, kept separate from its sufficiency for a use.",
+      "zh": "证据来源：记录判断或观察从何而来，与是否足以用于某用途分开。"
+    },
+    {
+      "term": "E0 / E1 / E2 / E3",
+      "en": "Rule checks / learned predictions / specialized simulation or higher-fidelity calculation / external measurement.",
+      "zh": "E0／E1／E2／E3：规则检查／学习预测／专门模拟或高保真计算／外部测量。"
+    },
+    {
+      "term": "Prediction–observation pair",
+      "en": "Linked but separate forecast and observed outcome, with action, context, source, and generating version.",
+      "zh": "预测—观察对：关联但分开的预测与观察，连同行动、上下文、来源及生成版本保存。"
+    },
+    {
+      "term": "Training admission",
+      "en": "A separate filter deciding whether imagined evidence may be used for learning.",
+      "zh": "训练准入：单独判断想象证据能否用于学习的过滤过程。"
+    },
+    {
+      "term": "Reliability / coverage",
+      "en": "Agreement with observed outcomes over the candidate range covered by attributable evidence.",
+      "zh": "可靠性／覆盖：在可归属证据所覆盖候选范围内，与观察结果的一致程度。"
+    },
+    {
+      "term": "Insufficient",
+      "en": "A distinct reliability verdict indicating inadequate evidence or coverage; it does not trigger Equation 11.",
+      "zh": "证据不足：证据或覆盖不够的独立可靠性状态，不触发公式 11。"
+    },
+    {
+      "term": "Conditional adaptation",
+      "en": "A model-update attempt requiring unreliability, sufficient adaptation data, and budget.",
+      "zh": "条件适配：同时要求不可靠、适配数据充分与预算足够的模型更新尝试。"
+    },
+    {
+      "term": "Component gate",
+      "en": "A predeclared check comparing one proposed component against its current version.",
+      "zh": "组件门控：按预先规定条件，将候选组件与当前版本比较。"
+    },
+    {
+      "term": "Compatibility / pair gate",
+      "en": "An acceptance check on assembled policy–model behavior and predictor suitability.",
+      "zh": "兼容性／组合门控：检查组装策略—模型的联合行为及预测器适用性。"
+    },
+    {
+      "term": "Retained pair",
+      "en": "The accepted policy and predictor used for subsequent interaction; pair failure preserves the old pair.",
+      "zh": "保留组合：后续交互使用的已接受策略和预测器；组合失败保留旧组合。"
+    },
+    {
+      "term": "Brier score",
+      "en": "Squared error of class probabilities against observed one-hot outcomes; lower is better.",
+      "zh": "Brier 分数：类别概率与真实独热结果的平方误差，越低越好。"
+    },
+    {
+      "term": "Percentage point / relative percent",
+      "en": "A direct difference between percentage rates / a proportional change relative to a reference rate.",
+      "zh": "百分点／相对百分比：百分率的直接相减／相对于参照率的比例变化。"
+    },
+    {
+      "term": "Best-so-far yield",
+      "en": "The maximum yield observed up to a budget count; it is monotonic by definition.",
+      "zh": "历史最佳产率：截至某预算步观察到的最大产率，按定义单调不降。"
+    },
+    {
+      "term": "Held-out audit",
+      "en": "Protected evaluation data reserved for reporting, distinct from training and version-selection data.",
+      "zh": "留出审计：保留用于最终报告的数据，与训练和版本选择数据区分。"
+    }
+  ],
+  "qa": [
+    {
+      "question": {
+        "en": "Why is accumulating experience not enough for RSI?",
+        "zh": "为什么积累经验还不足以构成 RSI？"
+      },
+      "answer": {
+        "en": "A longer history can change available information without revising the decision system. RSI-Anything distinguishes task state and records from accepted policy or world-model configurations. Recursiveness arises when retained revisions change later proposals, selections, and learning experience.",
+        "zh": "历史变长可以改变可用信息，却不一定修订决策系统。本文区分任务状态、记录与验收后的策略或模型配置。保留修订改变后续提案、选择与学习经验时，才形成本文强调的递归机制。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S2.SS1"
+    },
+    {
+      "question": {
+        "en": "Must θ always be neural-network weights?",
+        "zh": "θ 一定是神经网络权重吗？"
+      },
+      "answer": {
+        "en": "No. The policy configuration can be trainable parameters or a persistent agent workflow. The implementation must state what fields can change, what feedback scores or training targets justify a candidate, and how the resulting version is accepted.",
+        "zh": "不一定。策略配置可以是可训练参数，也可以是持久智能体工作流。实现需说明允许变化的字段、用于构建候选的反馈分数或训练目标，以及验收方式。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S2.SS4"
+    },
+    {
+      "question": {
+        "en": "Does every domain use one shared world model?",
+        "zh": "所有领域共用一个世界模型吗？"
+      },
+      "answer": {
+        "en": "The shared object is the improvement procedure and interface contract. Domains bind their own states, actions, predictors, targets, and feedback sources. Reusing notation and the JEPA-Anything foundation does not establish shared parameters or a single model trained across all reported applications.",
+        "zh": "共用的是改进流程与接口契约。各领域绑定自己的状态、行动、预测器、目标和反馈来源。共享符号和 JEPA-Anything 基础，并不意味着报告应用共用同一组权重或单个模型。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S6"
+    },
+    {
+      "question": {
+        "en": "Why does one-step prediction not guarantee multistep planning?",
+        "zh": "为什么单步结果预测不保证多步规划能力？"
+      },
+      "answer": {
+        "en": "Ranking can use an outcome readout alone. A rollout additionally needs an adapter that propagates a future planning state, so another action can be evaluated from it. Predicted states remain unobserved until checked. A final-yield distribution alone does not supply every intermediate state.",
+        "zh": "排序只需要结果读出；多步展开还需适配器推进未来规划状态，让后续行动从该状态继续评估。预测状态在核查前仍未被观察。最终产率分布本身并不提供全部中间状态。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S2.SS2"
+    },
+    {
+      "question": {
+        "en": "Are uncertain candidates always excluded?",
+        "zh": "不确定候选一定被排除吗？"
+      },
+      "answer": {
+        "en": "No. Invalid candidates are excluded, but uncertainty handling depends on the declared selection rule. Utility ranking may penalize uncertainty; an explicitly enabled information-seeking acquisition rule may prioritize it. Training admission is separate, so a candidate can deserve evaluation without qualifying as imagined training data.",
+        "zh": "不是。无效候选被排除，不确定性怎样处理取决于声明选择规则。效用排序可惩罚不确定性，明确启用的信息获取规则也可优先评估它。训练准入独立，因此候选可值得测试，却不能作为想象训练数据。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S2.SS3"
+    },
+    {
+      "question": {
+        "en": "Do E0–E3 form automatic truth levels?",
+        "zh": "E0–E3 是自动的真值等级吗？"
+      },
+      "answer": {
+        "en": "They describe evidence origin and intended fidelity. Suitability depends on quality and admission criteria. External measurement can have error; a learned forecast can be useful without becoming an observation. Preserve provenance rather than collapsing all sources into a single undifferentiated feedback value.",
+        "zh": "它们描述来源与预期保真度，适用性仍取决于质量和准入标准。外部测量可能有误差，学习预测可以有用却不成为观察。应保存来源，而不是把所有信息压成没有区分的反馈值。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S2.SS3"
+    },
+    {
+      "question": {
+        "en": "Why not overwrite a forecast after seeing the answer?",
+        "zh": "知道答案后，为什么不直接覆盖预测？"
+      },
+      "answer": {
+        "en": "The original prediction explains the past selection and enables an error comparison. The observation supplies a distinct target. Overwriting erases that diagnostic information. Link them to the input, action, source, and generating version; current reliability must use attributable current-version predictions.",
+        "zh": "原预测解释过去为何选择，也支持误差比较；观察提供不同的监督目标。覆盖预测会抹掉诊断信息。应关联输入、行动、来源和生成版本；当前可靠性要使用可归属于当前版本的预测。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S2.SS4"
+    },
+    {
+      "question": {
+        "en": "Does insufficient reliability evidence trigger adaptation?",
+        "zh": "可靠性证据不足会触发适配吗？"
+      },
+      "answer": {
+        "en": "No. Equation 11 requires an unreliable verdict plus sufficient adaptation data and budget. Insufficient is a separate state, often reflecting coverage limits, and is not evidence of reliability. Subsequent evaluation follows the declared selection rule rather than an invented automatic trigger.",
+        "zh": "不会。公式 11 要求判定不可靠，并且适配数据和预算充分。证据不足是独立状态，常反映覆盖限制，也不是可靠证明。后续评估按声明规则进行，不能自行发明自动触发。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S2.SS4"
+    },
+    {
+      "question": {
+        "en": "Can scalar feedback train the entire next-state representation?",
+        "zh": "一个标量反馈能监督完整下一状态表征吗？"
+      },
+      "answer": {
+        "en": "A scalar result supplies an outcome target, not a fully observed target state. Its loss can update upstream parameters when those parameters are trainable, but that does not make the scalar a complete state observation. Target type, loss, and trainable subset must be specified.",
+        "zh": "标量结果提供结果目标，不提供完整下一状态观察。如果上游参数可训练，其损失可传到上游，但这不使标量变成完整状态。必须说明目标类型、损失和可训练范围。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S2.SS4"
+    },
+    {
+      "question": {
+        "en": "If both components pass separately, is pair acceptance guaranteed?",
+        "zh": "两个组件分别通过，组合就一定通过吗？"
+      },
+      "answer": {
+        "en": "No. A new policy can shift the candidate distribution, and a new model can change rankings. The pair check evaluates joint decisions and prediction suitability under the assembled policy. Pair failure retains the entire current pair, not an arbitrary untested mixture.",
+        "zh": "不保证。新策略改变候选分布，新模型改变排序。组合检查评估联合决策，以及预测器对组装策略的适用性。组合失败保留整个当前组合，而不是任意未测试混合。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S2.SS5"
+    },
+    {
+      "question": {
+        "en": "Was the code generator trained during the repair comparison?",
+        "zh": "修复比较中训练了代码生成器吗？"
+      },
+      "answer": {
+        "en": "ReasonFlux-Coder-7B is fixed. Programs and feedback change, while the comparison varies selection and W1 predictor settings. This helps distinguish predictive selection from predictor adaptation. It does not demonstrate joint training of coder and world model.",
+        "zh": "ReasonFlux-Coder-7B 固定。程序和反馈变化，比较改变的是选择方式与 W1 预测器设置。这有助区分预测选择和预测器适配，但不能据此声称代码生成器与世界模型联合训练。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S3.SS1"
+    },
+    {
+      "question": {
+        "en": "Does the released final code evaluation adapt W1 online every episode?",
+        "zh": "发布的最终代码评估每个回合都在线适配 W1 吗？"
+      },
+      "answer": {
+        "en": "The official reproduction guide says final evaluation performs no optimizer updates. Adaptation is a four-stage training chain on recorded transitions, followed by checkpoint evaluation. Our within-cycle adaptation animation is synthetic pedagogy, not a literal replay of optimizer timing in the 600 reported episodes.",
+        "zh": "官方复现指南说明最终评估不做优化器更新。适配是在记录转移上的四阶段训练链，再评估检查点。本站周期内适配动画是教学合成，不是对 600 次评估中优化器时序的真实重放。"
+      },
+      "source": "https://github.com/Gen-Verse/RSI-Anything/blob/main/docs/reproduction.en.md"
+    },
+    {
+      "question": {
+        "en": "Why report both ranking accuracy and Brier score?",
+        "zh": "为什么同时报告排序准确率与 Brier 分数？"
+      },
+      "answer": {
+        "en": "Ranking accuracy assesses candidate ordering; Brier assesses class-probability error. Either can change without an identical change in the other. Figure 3c reports both for the static verifier versus fixed world model; it does not report an adaptive-model Brier value.",
+        "zh": "排序准确率评估候选顺序，Brier 评估类别概率误差，两者不必同步等幅变化。图 3c 对静态验证器与固定世界模型报告这两个指标，没有提供适配模型 Brier 值。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S3.SS1"
+    },
+    {
+      "question": {
+        "en": "Does 99% checkbox success isolate world-model ranking?",
+        "zh": "复选框 99% 成功率隔离了世界模型排序作用吗？"
+      },
+      "answer": {
+        "en": "No. The official GUI results guide says the development-selected controller has alpha=0 and follows policy ranking. Pure world-based control ranks the same policy candidates using model values. The endpoint is reported performance, but it is not an isolated causal estimate of model-based ranking.",
+        "zh": "没有。官方 GUI 结果指南说开发选中控制器 alpha=0，跟随策略排序；纯世界模型控制器用模型值排序相同策略候选。99% 是已报告表现，但不是模型排序作用的独立因果估计。"
+      },
+      "source": "https://github.com/Gen-Verse/RSI-Anything/blob/main/tasks/gui/docs/RESULTS.md"
+    },
+    {
+      "question": {
+        "en": "Can we recover OSWorld’s absolute endpoint from +18.4%?",
+        "zh": "能由 +18.4% 还原 OSWorld 绝对成功率吗？"
+      },
+      "answer": {
+        "en": "Not without the absolute reference rate. The figure gives relative improvement, meaning the endpoint is 1.184 times the initial rate. It is not an 18.4-point addition. The reported +5.5% versus RLAnything uses a different denominator.",
+        "zh": "没有绝对参照率就不能。图给相对改进，表示端点为初始率的 1.184 倍，不是增加 18.4 点。相对 RLAnything 的 +5.5% 使用另一分母。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S3.SS2"
+    },
+    {
+      "question": {
+        "en": "Does the lab score prove reliable physical execution?",
+        "zh": "实验室分数证明了可靠物理执行吗？"
+      },
+      "answer": {
+        "en": "No. F200 Level-2 Final Score combines action-sequence similarity and parameter accuracy. The five-version progression supports planning improvement. Real equipment introduces execution interfaces and failure modes requiring evaluation on the relevant apparatus and workflow.",
+        "zh": "没有。F200 二级 Final Score 结合序列相似度与参数准确性。五版本递进支持规划改进；实体设备还有执行接口和失败模式，需要在相应仪器与流程上验证。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S3.SS3"
+    },
+    {
+      "question": {
+        "en": "Does the released chemistry loop run fresh wet-lab experiments each step?",
+        "zh": "发布化学循环每步都做新湿实验吗？"
+      },
+      "answer": {
+        "en": "The released flow guide describes replay of a 321-condition measured pool across 100 runs, with eight initial observations counted inside forty. Predictions are frozen and feedback changes expected-improvement selection. This is measured-data sequential selection, not proof of new live experiments at each inference step.",
+        "zh": "发布的流动指南说明，在 321 条件实测池上重放一百次，八个初始观察计入四十次。预测冻结，反馈改变期望改进选择。这是实测数据顺序选择，不是每步推理都做新实体实验的证明。"
+      },
+      "source": "https://github.com/Gen-Verse/RSI-Anything/blob/main/tasks/reaction_optimization/README.md"
+    },
+    {
+      "question": {
+        "en": "Why can’t we merge the chemistry endpoints?",
+        "zh": "为什么不能合并两组化学端点？"
+      },
+      "answer": {
+        "en": "The GC and flow LC–MS screens differ in reaction setup, condition space, analysis, and observation budget. Their gains are within-screen comparisons. Best observed and mean best observed are also stated separately. Combining them would obscure what was controlled and measured.",
+        "zh": "GC 与流动 LC–MS 在反应设置、条件空间、分析和观察预算上不同，增益是在各自筛选内比较。最佳已观察和平均最佳已观察也分别表述。合并会掩盖控制条件与测量对象。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S3.SS4"
+    },
+    {
+      "question": {
+        "en": "Is the immune nomination a validated therapy?",
+        "zh": "免疫提名是已验证疗法吗？"
+      },
+      "answer": {
+        "en": "It is a prospective hypothesis combining SIRPα inhibition and IL-36γ-axis modulation for later experimental testing. The construction stage retains a workflow and predictor; downstream analysis revises hypotheses with predictor parameters frozen. Neither distinction establishes therapeutic efficacy.",
+        "zh": "它是结合 SIRPα 抑制和 IL-36γ 轴调节、供后续实验检验的前瞻假设。构建阶段保留工作流和预测器，下游参数冻结并修订假设。这些过程并不建立治疗有效性。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S3.SS5"
+    },
+    {
+      "question": {
+        "en": "What is the strongest missing evaluation?",
+        "zh": "最关键的待补评估是什么？"
+      },
+      "answer": {
+        "en": "The paper calls for joint multiround evaluation of sustained mutual policy–world-model improvement within one task. A useful proposed study compares update routes over time, audits current-distribution reliability, matches clearly defined resources, and protects final evaluation from repeated version selection.",
+        "zh": "论文要求在同一任务中联合多轮评估策略与世界模型持续相互改进。可行建议是跨时比较更新路线，审计当前分布可靠性，匹配明确资源，并保护最终评估免受反复版本选择影响。"
+      },
+      "source": "https://arxiv.org/html/2610.13912v1#S5"
+    }
+  ]
+}
